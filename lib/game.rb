@@ -33,6 +33,7 @@ class Game
     @colour_moving = 'White'
     @valid_move = ValidMove.new
     @display_board = DisplayBoard.new
+    @check_for_check = CheckForCheck.new
   end
 
   def play_game
@@ -139,12 +140,11 @@ class Player
   def get_move(valid_move, board)
     # valid_input method collects input and validates it to be in a form such as 'b1c3'
     proposed_move = gets.strip
-    valid_move.all_valid?(proposed_move, @colour_moving, board) ? proposed_move : get_move
-    # write these in Legal class valid_input(proposed_move) && board.our_piece?(proposed_move, @colour_moving) && board.can_it_go_there?(proposed_move, @colour_moving) && board.is_it_legal?(proposed_move, @colour_moving)
-    # our_piece method verifies whether we have a piece on the start square
-    # can_it_go_there verifies if the piece can physically move to the end square regardless of check issues
-    # piece_moving_error unless @board.can_it_go_there?(proposed_move, @colour_moving)
-    # king_in_check_error unless @board.is_it_legal?(proposed_move, @colour_moving)
+    output_hash = valid_move.all_valid?(proposed_move, @colour_moving, board)
+    output_hash ? output_hash : get_move
+    #output_hash is either falsey if move not valid or it is a hash of
+    # format { 'start' => start_square, 'finish' => final_square }
+    # if is falsey, then get_move is called again recursively
   end
 
 
@@ -162,7 +162,7 @@ class ValidMove
   def all_valid?(maybe_move, colour, board)
     return false unless valid_input?(maybe_move)
     
-    moving_piece = our_piece?(maybe_move, colour, board)
+    moving_piece = our_piece(maybe_move, colour, board)
     return false unless moving_piece  
     # our_piece returns the piece
 
@@ -170,13 +170,13 @@ class ValidMove
     # start_square given in co-ordinates the board array can accept
     final_square = board.string_to_coords(maybe_move[2, 2])
     
-    return false unless moving_piece.is_move_legal?(board, maybe_move)
+    return false unless moving_piece.move_legal?(board, start_square, final_square)
     
     # The class of the piece takes care of the remaining tests because
     # type of piece dictates if move is possible and board class lets us
     # know if pieces in the way, Castling, En Passent possibilities 
 
-    true
+    return { 'start' => start_square, 'finish' => final_square }
   end
   
   def valid_input?(string)
@@ -194,7 +194,7 @@ class ValidMove
     "#{string} is not acceptable input. Please type the algebraic notation for starting square and finishing square such as 'g1f3'. Castling is a King move."
   end
 
-  def our_piece?(move, colour, board)
+  def our_piece(move, colour, board)
     possible_piece = board.string_to_square(move[0,2])
       unless possible_piece
         puts no_piece_error(move)
@@ -214,6 +214,9 @@ class ValidMove
   def wrong_piece_error(move, colour)
     "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
   end
+
+  # in final version, #other_colour may be in a Module because several classes could
+  # use it
 
   def other_colour(colour)
     colour == 'White' ? 'Black' : 'White'
@@ -268,21 +271,129 @@ class Board
     # pawn can be taken 
   end
 
-NEW_BOARD_ARRAY = [ [Rook.new('White'), Knight.new('White'), Bishop.new('White'), Queen.new('White'), King.new('White'), Bishop.new('White'), Knight.new('White'), Rook.new('White')], Array.new(8, Pawn.new('White')), Array.new(8), Array.new(8), Array.new(8), Array.new(8), Array.new(8, Pawn.new('Black')), [Rook.new('Black'), Knight.new('Black'), Bishop.new('Black'), Queen.new('Black'), King.new('Black'), Bishop.new('Black'), Knight.new('Black'), Rook.new('Black')]]
+NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
 
   def string_to_coords(string)
     # accepts a string of the form 'e4' and returns co-ordinates for use in the board_array
-    [string[1].to_i - 1, char_to_num(string[0])]
+    # if other classes want this, maybe put it in a Module?
+    [char_to_num(string[0]), string[1].to_i - 1]
   end
 
   def string_to_square(string)
     # accepts a string of the form 'c6' and returns the contents of that square 
-    board_array.dig(string[1].to_i - 1, char_to_num(string[0]))
+    
+    board_array.dig(char_to_num(string[0], string[1].to_i - 1))
   end
 
   def char_to_num(char)
     ok_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
     ok_letters.index(char)
+  end
+
+  def add_vector(first_vector, second_vector)
+    first_vector.each_with_index.map { |num, index| num + second_vector[index] }
+  end
+  
+  
+  def pieces_allow_move(start, finish, colour, direction = nil)
+    current_coords = add_vector(start, direction)
+      until current_coords == finish
+        if board_array.dig(current_coords[0], current_coords[1])
+          puts piece_in_the_way_error
+          return false
+        end
+        current_coords = add_vector(current_coords, direction)
+      end
+      finish_piece = board_array.dig(finish[0], finish[1])
+      return 'not_capture' unless finish_piece
+
+      if finish_piece.colour == colour 
+        puts capture_own_piece_error
+        return false
+      end
+
+      return 'capture'
+    # direction is an optional argument, valid for rook/bishop/queen moves.
+    # This method checks whether any pieces are in the way or if the finish square
+    # has a piece of the same colour, so move is not allowed, or a piece of the
+    # opposite colour, making it a capturing move
+  end
+
+  def piece_in_the_way_error
+    "There is a piece in the way of that move. Please try again."
+  end
+
+  def capture_own_piece_error
+    "You cannot capture your own pieces. Please try again."
+  end
+
+end
+
+# At first various Piece classes will repeat each other. Refactor repitition out at the end
+class Piece
+  def initialize (colour)
+    @colour = colour 
+  end
+
+  def move_legal?(board, start, finish)
+    # start and finish are arrays of 2 co-ordinates for use in the board_array
+    # of the board
+  end
+
+end
+
+class Bishop < Piece
+
+  def move_legal?(board, start, finish)
+    direction = empty_board_move(start, finish)
+    return false unless direction 
+    # direction returns either false or [1,1], [1, -1], [-1, 1] or [-1, -1]
+
+    capture_or_not = board.pieces_allow_move(start, finish, colour, direction)
+    return false unless capture_or_not
+    # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
+    # This distinction may not be relevant for the algorithm overall
+
+
+
+  end
+
+  def empty_board_move(start, finish)
+    vector = [finish[0] - start[0], finish[1] - start[1]]
+    if vector[0] == vector[1]
+      return [1, 1] if vector[0] > 0
+      return [-1, -1] if vector[0] < 0
+      puts same_square_error
+      return false
+    end
+
+    if vector[0] == -vector[1]
+      return [1, -1] if vector[0] > 0
+      return [-1, 1] if vector[0] < 0
+    end
+    puts bishop_move_error
+    return false
+  end
+
+  def same_square_error
+    "Finishing square cannot be the same as starting square. Please try again."
+  end
+
+  def bishop_move_error
+    "The bishop does not move like that. Please try again."
+  end
+
+end
+
+class Rook < Piece
+
+end
+
+class CheckForCheck
+  def check_for_check(colour, poss_board_array)
+    # poss_board_array is an actual or hypothetical board position given in the
+    # format of the Board class @board_array variable. We are checking whether the King
+    # of colour 'colour' is in check.
   end
 
 end
