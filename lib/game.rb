@@ -33,7 +33,6 @@ class Game
     @colour_moving = 'White'
     @valid_move = ValidMove.new
     @display_board = DisplayBoard.new
-    @check_for_check = CheckForCheck.new
   end
 
   def play_game
@@ -266,6 +265,7 @@ class Board
   def initialize(board_array = NEW_BOARD_ARRAY)
     @board_array = NEW_BOARD_ARRAY
     @castling_rights = { 'White_0-0-0' => true, 'White_0-0' => true, 'Black_0-0-0' => true, 'Black_0-0' => true }
+    @colour_moving = 'White'
     @en_passent = {}
     # if there is an en_passent possibility maybe it is denoted by the square on which the
     # pawn can be taken 
@@ -327,6 +327,21 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     "You cannot capture your own pieces. Please try again."
   end
 
+  def check_for_check(start, finish, colour, #maybe other optional arguments depending on castling or en passent)
+    possible_board_array = change_array(board_array, start, finish)
+    # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
+    checking = CheckForCheck.new(possible_board_array, colour)
+    checking.king_in_check?
+  end
+
+  def change_array(array, start, finish)
+    # array is a current board_array and we are moving a piece from start to finish co-ordinates
+    new_array = array.map { |item| item.clone }
+    new_array[finish[0]][finish[1]] = array[start[0]start[1]]
+    new_array[start[0]][start[1]] = nil
+    new_array
+  end
+
 end
 
 # At first various Piece classes will repeat each other. Refactor repitition out at the end
@@ -354,8 +369,8 @@ class Bishop < Piece
     # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
     # This distinction may not be relevant for the algorithm overall
 
-
-
+    return false if board.check_for_check(start, finish, colour)
+    true
   end
 
   def empty_board_move(start, finish)
@@ -390,10 +405,77 @@ class Rook < Piece
 end
 
 class CheckForCheck
-  def check_for_check(colour, poss_board_array)
+
+  attr_accessor :colour, :poss_board_array
+  
+  def initialize(colour, poss_board_array)
+    @colour = colour
+    @poss_board_array = poss_board_array
+  end
+
+  def king_in_check?
+    coords_hash = find_both_king_coords
+    return true if adjacent?(coords_hash[:our_king], coords_hash[:other_king])
+    
+    king_square = coords_hash[:our_king]
+    return true if any_hostile_knights?(king_square)
+
+    return true if any_hostile_orthogonals?(king_square)
+
+    return true if any_hostile_diagonals?(king_square)
+
     # poss_board_array is an actual or hypothetical board position given in the
     # format of the Board class @board_array variable. We are checking whether the King
     # of colour 'colour' is in check.
+  end
+
+  def find_both_king_coords
+    output = {}
+    poss_board_array.each_with_index do |file, file_index|
+      file.each_with_index do |piece, rank_index|
+        if piece.kind_of?(King) 
+          output[:our_king] = [file, rank] if piece.colour == colour
+        else output[:other_king] = [file, rank]
+        end
+      end
+    end
+  end
+
+  def adjacent?(coords_one, coords_two)
+    coords_one[0] - coords_two[0].between?(-1,1) && coords_one[1] - coords_two[1].between?(-1,1)
+  end
+
+  # KNIGHT_VECTORS and #add_vectors will end up in a Module
+  KNIGHT_VECTORS = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+
+  def add_vector(first_vector, second_vector)
+    first_vector.each_with_index.map { |num, index| num + second_vector[index] }
+  end
+
+  def get_item(array, coords)
+    array[coords[0]][coords[1]]
+  end
+
+  def on_the_board?(coords)
+    coords[0].between?(0, 7) && coords[1].between?(0, 7)
+  end
+  
+  def any_hostile_knights?(square)
+    KNIGHT_VECTORS.each do |vector|
+      poss_square = add_vector(square, vector)
+      if poss_square.on_the_board?
+        poss_piece = get_item(poss_board_array, poss_square)
+        return true if poss_piece.kind_of?(Knight) && poss_piece.colour != colour
+      end
+    end
+  end
+
+  def any_hostile_orthogonals?(square)
+
+  end
+
+  def any_hostile_diagonals?(square)
+
   end
 
 end
