@@ -2,8 +2,14 @@
 
 # At first various Piece classes will repeat each other. Refactor repitition out at the end
 class Piece
+  
+include Miscellaneous
+  
+  attr_accessor :colour, :movement_vectors
+
   def initialize (colour)
-    @colour = colour 
+    @colour = colour
+    @movement_vectors = get_vectors
   end
 
   def move_legal?(board, start, finish)
@@ -38,34 +44,36 @@ class Bishop < Piece
   
   def move_legal?(board, start, finish)
     vector_tried = subtract_vector(finish, start)
-    # write the subtract_vector method #
-    return false unless direction 
-    # direction returns either false or [1,1], [1, -1], [-1, 1] or [-1, -1]
-
-    capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
+    if vector_tried = [0, 0]
+      puts same_square_error
+      return false
+    end
+    unless movement_vectors.include?(vector_tried)
+      puts piece_move_error
+      return false
+    end
+    squares_between = find_squares_between(start, vector_tried)capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
     return false unless capture_or_not
     # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
     # This distinction may not be relevant for the algorithm overall
-
     return false if board.check_for_check(start, finish, colour)
     true
   end
 
-  def empty_board_move(start, finish)
-    vector = [finish[0] - start[0], finish[1] - start[1]]
-    if vector[0] == vector[1]
-      return [1, 1] if vector[0] > 0
-      return [-1, -1] if vector[0] < 0
-      puts same_square_error
-      return false
+  def subvector?(big_vector, small_vector)
+    big_vector.each_with_index do |big_num, index|
+      return false unless small_vector[index].between?(1, big_num - 1) || small_vector[index].between?(big_num + 1, -1)
+      # each value of small_vector must lie strictly between the 
+      # corresponding value of big_vector and zero, with the same sign
     end
-
-    if vector[0] == -vector[1]
-      return [1, -1] if vector[0] > 0
-      return [-1, 1] if vector[0] < 0
+    true
+  end
+  
+  def find_squares_between(start, vector)
+    squares_between = []
+    movement_vectors.each do |movement|
+      squares_between.push(add_vector(start, movement)) if subvector?(vector, movement)
     end
-    puts piece_move_error
-    return false
   end
 
 end

@@ -24,29 +24,37 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   end
   
   
-  def pieces_allow_move(start, finish, colour, direction = nil)
-    # NEEDS TO BE REWORKED TO ALLOW FOR CHANGES IN INFORMATION COMING OUT OF PIECE CLASS 
-    current_coords = add_vector(start, direction)
-      until current_coords == finish
-        if board_array.dig(current_coords[0], current_coords[1])
-          puts piece_in_the_way_error
-          return false
-        end
-        current_coords = add_vector(current_coords, direction)
-      end
-      finish_piece = board_array.dig(finish[0], finish[1])
-      return 'not_capture' unless finish_piece
+  def pieces_allow_move(start, finish, colour, squares_between)
+    return false unless pieces_between_allow_move?(start, finish, squares_between)
 
-      if finish_piece.colour == colour 
-        puts capture_own_piece_error
+    finish_square_ok(finish, colour)
+  end
+  
+  def pieces_between_allow_move?(start, finish, squares_between)
+    # This method checks whether any pieces are in the way
+    # squares_between is a 2-D array of the squares in between where
+    # if a piece were present it would get in the way of the move
+    squares_between.each |coords| do
+      if get_item(board_array, coords)
+        # get_item returns piece on the square with coordinates coords, or nil if no piece is there.
+        puts piece_in_the_way_error
         return false
       end
+    end
+    true
+  end
+      
+  def finish_square_ok(finish, colour)
+    finish_piece = get_item(board_array, finish)
+          
+    return 'not_capture' unless finish_piece
 
-      return 'capture'
-    # direction is an optional argument, valid for rook/bishop/queen moves.
-    # This method checks whether any pieces are in the way or if the finish square
-    # has a piece of the same colour, so move is not allowed, or a piece of the
-    # opposite colour, making it a capturing move
+    if finish_piece.colour == colour 
+        puts capture_own_piece_error
+        return false
+    end
+
+    return 'capture'
   end
 
   def piece_in_the_way_error

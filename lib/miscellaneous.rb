@@ -19,6 +19,10 @@ module Miscellaneous
   def add_vector(first_vector, second_vector)
     first_vector.each_with_index.map { |num, index| num + second_vector[index] }
   end
+
+  def subtract_vector(first_vector, second_vector)
+    first_vector.each_with_index.map { |num, index| num - second_vector[index] }
+  end
   
   def on_the_board?(coords)
     coords[0].between?(0, 7) && coords[1].between?(0, 7)
