@@ -137,7 +137,6 @@ class Player
   end
 
   def get_move(valid_move, board)
-    # valid_input method collects input and validates it to be in a form such as 'b1c3'
     proposed_move = gets.strip
     output_hash = valid_move.all_valid?(proposed_move, @colour_moving, board)
     output_hash ? output_hash : get_move
@@ -159,12 +158,13 @@ end
 
 class ValidMove
   def all_valid?(maybe_move, colour, board)
+    # maybe_move is the raw input from the player
     return false unless valid_input?(maybe_move)
     
     moving_piece = our_piece(maybe_move, colour, board)
     return false unless moving_piece  
     # our_piece returns the piece
-
+    # can include string_to_coords in a module so this ValidMove class can use it directly
     start_square = board.string_to_coords(maybe_move[0, 2])
     # start_square given in co-ordinates the board array can accept
     final_square = board.string_to_coords(maybe_move[2, 2])
@@ -359,6 +359,20 @@ end
 
 class Bishop < Piece
 
+  def initialize
+    @movement_vectors = get_vectors
+  end
+
+  def get_vectors
+    # outputs the vectors the piece can move in, assuming we don't go off the edge of 
+    # the board. 
+  end
+
+  def get_subvectors(vector)
+    # outputs the intermediate vector steps as a 2-D array so that we can tell the board class which
+    # squares in between have to be checked for a move to be legal
+  end
+  
   def move_legal?(board, start, finish)
     direction = empty_board_move(start, finish)
     return false unless direction 
