@@ -1,6 +1,8 @@
 # frozen-string-literal: true
 
 class Board
+
+include Miscellaneous
   
   attr_accessor :board_array, :castling_rights, :en_passent
   
@@ -15,25 +17,10 @@ class Board
 
 NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
 
-  def string_to_coords(string)
-    # accepts a string of the form 'e4' and returns co-ordinates for use in the board_array
-    # if other classes want this, maybe put it in a Module?
-    [char_to_num(string[0]), string[1].to_i - 1]
-  end
-
   def string_to_square(string)
     # accepts a string of the form 'c6' and returns the contents of that square 
     
     board_array.dig(char_to_num(string[0], string[1].to_i - 1))
-  end
-
-  def char_to_num(char)
-    ok_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-    ok_letters.index(char)
-  end
-
-  def add_vector(first_vector, second_vector)
-    first_vector.each_with_index.map { |num, index| num + second_vector[index] }
   end
   
   

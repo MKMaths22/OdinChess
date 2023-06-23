@@ -2,6 +2,8 @@
 
 class CheckForCheck
 
+include Miscellaneous
+
   attr_accessor :colour, :poss_board_array
   
   def initialize(colour, poss_board_array)
@@ -39,25 +41,9 @@ class CheckForCheck
     end
   end
 
-  def adjacent?(coords_one, coords_two)
-    coords_one[0] - coords_two[0].between?(-1,1) && coords_one[1] - coords_two[1].between?(-1,1)
-  end
-
   # KNIGHT_VECTORS and #add_vectors will end up in a Module
   KNIGHT_VECTORS = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
 
-  def add_vector(first_vector, second_vector)
-    first_vector.each_with_index.map { |num, index| num + second_vector[index] }
-  end
-
-  def get_item(array, coords)
-    array[coords[0]][coords[1]]
-  end
-
-  def on_the_board?(coords)
-    coords[0].between?(0, 7) && coords[1].between?(0, 7)
-  end
-  
   def any_hostile_knights?(square)
     KNIGHT_VECTORS.each do |vector|
       poss_square = add_vector(square, vector)

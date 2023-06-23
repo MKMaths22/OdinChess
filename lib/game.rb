@@ -79,7 +79,7 @@ include Miscellaneous
   end
 
   def toggle_colours
-    colour_moving = @colour_moving == 'White' ? 'Black' : 'White'
+    colour_moving = other_colour(colour_moving)
   end
   
   def games_saved?

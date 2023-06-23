@@ -11,6 +11,13 @@ class Piece
     # of the board
   end
 
+  def same_square_error
+    "Finishing square cannot be the same as starting square. Please try again."
+  end
+
+  def piece_move_error
+    "The #{self.class} does not move like that. Please try again."
+  end
 end
 
 class Bishop < Piece
@@ -57,18 +64,8 @@ class Bishop < Piece
       return [1, -1] if vector[0] > 0
       return [-1, 1] if vector[0] < 0
     end
-    puts bishop_move_error
+    puts piece_move_error
     return false
-  end
-
-  def same_square_error
-    "Finishing square cannot be the same as starting square. Please try again."
-  end
-
-  # for refactoring could use .class to name the piece in this error message below
-  
-  def bishop_move_error
-    "The bishop does not move like that. Please try again."
   end
 
 end
