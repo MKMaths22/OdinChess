@@ -1,3 +1,5 @@
+# frozen-string-literal: true
+
 class Board
   
   attr_accessor :board_array, :castling_rights, :en_passent
@@ -36,6 +38,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   
   
   def pieces_allow_move(start, finish, colour, direction = nil)
+    # NEEDS TO BE REWORKED TO ALLOW FOR CHANGES IN INFORMATION COMING OUT OF PIECE CLASS 
     current_coords = add_vector(start, direction)
       until current_coords == finish
         if board_array.dig(current_coords[0], current_coords[1])

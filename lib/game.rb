@@ -27,8 +27,11 @@ require-relative 'valid_move'
 require-relative 'check_for_check'
 require-relative 'result'
 require-relative 'piece'
+require-relative 'miscellaneous'
 
 class Game
+
+include Miscellaneous
   
   attr_accessor :white, :black, :board, :result, :colour_moving
   

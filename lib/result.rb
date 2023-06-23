@@ -1,3 +1,5 @@
+# frozen-string-literal: true
+
 class Result
   
   attr_accessor :previous_positions, :half_moves_count

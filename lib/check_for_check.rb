@@ -1,3 +1,5 @@
+# frozen-string-literal: true
+
 class CheckForCheck
 
   attr_accessor :colour, :poss_board_array

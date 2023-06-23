@@ -1,3 +1,5 @@
+# frozen-string-literal: true
+
 class ValidMove
   def all_valid?(maybe_move, colour, board)
     # maybe_move is the raw input from the player

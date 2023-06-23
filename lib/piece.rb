@@ -1,3 +1,5 @@
+# frozen-string-literal: true
+
 # At first various Piece classes will repeat each other. Refactor repitition out at the end
 class Piece
   def initialize (colour)
@@ -28,11 +30,12 @@ class Bishop < Piece
   end
   
   def move_legal?(board, start, finish)
-    direction = empty_board_move(start, finish)
+    vector_tried = subtract_vector(finish, start)
+    # write the subtract_vector method #
     return false unless direction 
     # direction returns either false or [1,1], [1, -1], [-1, 1] or [-1, -1]
 
-    capture_or_not = board.pieces_allow_move(start, finish, colour, direction)
+    capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
     return false unless capture_or_not
     # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
     # This distinction may not be relevant for the algorithm overall

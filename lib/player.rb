@@ -1,3 +1,5 @@
+# frozen-string-literal: true
+
 class Player
   
   attr_accessor :colour, :name
