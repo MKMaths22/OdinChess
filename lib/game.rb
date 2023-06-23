@@ -394,6 +394,8 @@ class Bishop < Piece
     "Finishing square cannot be the same as starting square. Please try again."
   end
 
+  # for refactoring could use .class to name the piece in this error message below
+  
   def bishop_move_error
     "The bishop does not move like that. Please try again."
   end
@@ -423,6 +425,8 @@ class CheckForCheck
     return true if any_hostile_orthogonals?(king_square)
 
     return true if any_hostile_diagonals?(king_square)
+
+    return true if any_hostile_pawns?(king_square)
 
     # poss_board_array is an actual or hypothetical board position given in the
     # format of the Board class @board_array variable. We are checking whether the King
@@ -470,12 +474,49 @@ class CheckForCheck
     end
   end
 
+  def find_first_piece(square, direction)
+    # returns the first piece encountered in direction e.g. [x, y] from square which
+    # is also given as a coordinate vector. Returns nil if hits the edge of the board 
+    # without finding a piece.
+    current_coords = add_vector(square, direction)
+      while current_coords.on_the_board?
+        poss_piece = get_item(poss_board_array, current_coords)
+        return poss_piece if poss_piece 
+        current_coords = add_vector(current_coords, direction)
+      end
+      return nil
+  end
+  
   def any_hostile_orthogonals?(square)
+    [[0, 1], [0, -1], [1, 0], [-1, 0]].each do |direction|
+      poss_piece = find_first_piece(square, direction)
+      if poss_piece
+        return true unless poss_piece.colour == colour || piece.is_a?(Knight) || piece.is_a?(Pawn) || piece.is_a?(Bishop) || piece.is_a?(King)
+        # we already dealt with adjacent Kings case in find_both_king_coords so this works
+      end
+    end
 
   end
 
   def any_hostile_diagonals?(square)
+    [[1, -1], [1, 1], [-1, 1], [-1, -1]].each do |direction|
+      poss_piece = find_first_piece(square, direction)
+      if poss_piece
+        return true unless poss.piece.colour == colour || piece.is_a?(Knight) || piece.is_a?(Pawn) || piece.is_a?(Rook) || piece.is_a?(King)
+        # pawns will be dealt with separately
+      end
+    end
+  end
 
+  def any_hostile_pawns?(square)
+    danger_vectors = colour == 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
+    danger_vectors.each do |vector| 
+      poss_square = add_vector(square, vector)
+      if poss_square.on_the_board? 
+        poss_piece = get_item(poss_board_array, poss_square)
+        return true if poss_piece.kind_of?(Pawn) && poss_piece.colour != colour
+      end
+    end
   end
 
 end
