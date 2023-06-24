@@ -7,30 +7,14 @@ include Miscellaneous
   
   attr_accessor :colour, :movement_vectors
 
-  def initialize (colour)
+  def initialize(colour)
     @colour = colour
     @movement_vectors = get_vectors
   end
 
-  def move_legal?(board, start, finish)
-    # start and finish are arrays of 2 co-ordinates for use in the board_array
-    # of the board
-  end
-
-  def same_square_error
-    "Finishing square cannot be the same as starting square. Please try again."
-  end
-
-  def piece_move_error
-    "The #{self.class} does not move like that. Please try again."
-  end
-end
-
-class Bishop < Piece
-
-  def get_vectors
+  def get_vectors(base_vectors)
     output = []
-    [[-1, -1], [-1, 1], [1, -1], [1, 1]].each do |vector|
+    base_vectors.each do |vector|
       (1..7).each do |num|
         output.push([num*vector[0], num*vector[1]])
       end
@@ -61,10 +45,9 @@ class Bishop < Piece
   end
 
   def subvector?(big_vector, small_vector)
-    big_vector.each_with_index do |big_num, index|
-      return false unless small_vector[index].between?(1, big_num - 1) || small_vector[index].between?(big_num + 1, -1)
-      # each value of small_vector must lie strictly between the 
-      # corresponding value of big_vector and zero, with the same sign
+    return false unless big_vector[1]*small_vector[0] == big_vector[0]*small_vector[1]
+    (1...2).each do |num|
+      return false if big_vector[num]*small_vector[num].negative?
     end
     true
   end
@@ -74,6 +57,24 @@ class Bishop < Piece
     movement_vectors.each do |movement|
       squares_between.push(add_vector(start, movement)) if subvector?(vector, movement)
     end
+  end
+
+  def same_square_error
+    "Finishing square cannot be the same as starting square. Please try again."
+  end
+
+  def piece_move_error
+    "The #{self.class} does not move like that. Please try again."
+  end
+end
+
+class Bishop < Piece
+
+  attr_accessor :base_vectors
+  
+  def initialize
+    super
+    @base_vectors = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
   end
 
 end
