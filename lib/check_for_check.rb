@@ -41,9 +41,6 @@ include Miscellaneous
     end
   end
 
-  # KNIGHT_VECTORS and #add_vectors will end up in a Module
-  KNIGHT_VECTORS = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
-
   def any_hostile_knights?(square)
     KNIGHT_VECTORS.each do |vector|
       poss_square = add_vector(square, vector)
