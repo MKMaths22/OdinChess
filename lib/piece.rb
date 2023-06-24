@@ -11,6 +11,7 @@ include Miscellaneous
     @colour = colour
     @movement_vectors = get_vectors(base_vectors)
     @base_vectors = nil
+    @castling_vectors = []
   end
 
   def get_vectors(base_vectors)
@@ -33,6 +34,10 @@ include Miscellaneous
       puts same_square_error
       return false
     end
+    return board.castling_legal? if castling_vectors.include?(vector_tried)
+    # can only be triggered in King class, otherwise there
+    # are no castling vectors
+
     unless movement_vectors.include?(vector_tried)
       puts piece_move_error
       return false
@@ -214,6 +219,30 @@ class King
     @colour = colour
     @movement_vectors = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
     @castling_vectors = [[0, -2], [0, 2]]
+  end
+
+  def find_squares_between
+    # not strictly necessary, but for emphasis that King moves
+    # cannot be blocked by pieces in the way
+    []
+  end
+
+  def move_legal?(board, start, finish)
+    vector_tried = subtract_vector(finish, start)
+    if vector_tried = [0, 0]
+      puts same_square_error
+      return false
+    end
+    unless movement_vectors.include?(vector_tried)
+      puts piece_move_error
+      return false
+    end
+    squares_between = find_squares_between(start, vector_tried)
+    capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
+    return false unless capture_or_not
+    # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
+    # This distinction may not be relevant for the algorithm overall
+    return !board.check_for_check(start, finish, colour)
   end
 
   

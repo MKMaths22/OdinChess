@@ -29,6 +29,10 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   def en_passent?(coords)
     en_passent['Pawn passed through'] == coords
   end
+
+  def castling_legal?(colour, vector)
+    # colour is the colour of the King trying to castle and vector is [2, 0] or [-2, 0]
+  end
   
   def pieces_allow_move(start, finish, colour, squares_between)
     return false unless pieces_between_allow_move?(start, finish, squares_between)
