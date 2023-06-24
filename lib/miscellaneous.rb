@@ -54,4 +54,13 @@ module Miscellaneous
     "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
   end
 
+  def no_castling_error(query_string)
+    case query_string.length
+    when 9
+      "#{query_string[0, 5]} can no longer castle on the King side."
+    when 11
+      "#{query_string[0, 5]} can no longer castle on the Queen side."
+    end
+  end
+
 end
