@@ -85,4 +85,34 @@ end
 
 class Rook < Piece
 
+  attr_accessor :base_vectors
+
+  def initialize
+    super
+    @base_vectors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+  end
+
+end
+
+class Queen < Piece
+
+  attr_accessor :base_vectors
+
+  def initialize
+    super
+    @base_vectors = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
+  end
+
+end
+
+class Pawn < Piece
+  
+  def initialize(colour)
+
+  end
+  
+  attr_accessor :colour, :movement_vectors
+
+
+
 end
