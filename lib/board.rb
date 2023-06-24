@@ -10,7 +10,7 @@ include Miscellaneous
     @board_array = NEW_BOARD_ARRAY
     @castling_rights = { 'White_0-0-0' => true, 'White_0-0' => true, 'Black_0-0-0' => true, 'Black_0-0' => true }
     @colour_moving = 'White'
-    @en_passent = []
+    @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
     # if there is an en_passent possibility maybe it is denoted by the coordinates of the square on which the
     # pawn can be taken 
   end
@@ -28,7 +28,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   end
   
   def en_passent?(coords)
-    en_passent == coords
+    en_passent['Pawn passed through'] == coords
   end
   
   def pieces_allow_move(start, finish, colour, squares_between)
@@ -64,18 +64,19 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     return 'capture'
   end
 
-  def check_for_check(start, finish, colour, en_passent = false, castling = false)
-    possible_board_array = change_array(board_array, start, finish)
+  def check_for_check(start, finish, colour, e_p = false, castle = false)
+    possible_board_array = change_array(board_array, start, finish, e_p, castle)
     # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
     checking = CheckForCheck.new(possible_board_array, colour)
     checking.king_in_check?
   end
 
-  def change_array(array, start, finish)
+  def change_array(array, start, finish, e_p = false, castle = false)
     # array is a current board_array and we are moving a piece from start to finish co-ordinates
     new_array = array.map { |item| item.clone }
-    new_array[finish[0]][finish[1]] = array[start[0]start[1]]
+    new_array[finish[0]][finish[1]] = array[start[0]][start[1]]
     new_array[start[0]][start[1]] = nil
+    new_array[en_passent['Pawn now at'][0]][en_passent['Pawn now at'][1]] = nil if e_p
     new_array
   end
 
