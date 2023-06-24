@@ -53,19 +53,4 @@ include Miscellaneous
     possible_piece  
   end
 
-  def no_piece_error(move)
-    "There is no piece on the square #{move[0,2]}. Please input a valid move."
-  end
-
-  def wrong_piece_error(move, colour)
-    "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
-  end
-
-  # in final version, #other_colour may be in a Module because several classes could
-  # use it
-
-  def other_colour(colour)
-    colour == 'White' ? 'Black' : 'White'
-  end
-
 end

@@ -19,8 +19,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
 
   def string_to_square(string)
     # accepts a string of the form 'c6' and returns the contents of that square 
-    
-    board_array.dig(char_to_num(string[0], string[1].to_i - 1))
+    get_piece_at(string_to_coords(string))
   end
   
   def get_piece_at(coords)

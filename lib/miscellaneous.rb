@@ -46,5 +46,12 @@ module Miscellaneous
     "You cannot capture your own pieces. Please try again."
   end
 
+  def no_piece_error(move)
+    "There is no piece on the square #{move[0,2]}. Please input a valid move."
+  end
+
+  def wrong_piece_error(move, colour)
+    "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
+  end
 
 end
