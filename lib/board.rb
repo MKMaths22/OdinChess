@@ -61,14 +61,6 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     return 'capture'
   end
 
-  def piece_in_the_way_error
-    "There is a piece in the way of that move. Please try again."
-  end
-
-  def capture_own_piece_error
-    "You cannot capture your own pieces. Please try again."
-  end
-
   def check_for_check(start, finish, colour, #maybe other optional arguments depending on castling or en passent)
     possible_board_array = change_array(board_array, start, finish)
     # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates

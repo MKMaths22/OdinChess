@@ -150,6 +150,16 @@ class Pawn < Piece
     unless movement_vectors.include?(vector_tried)
       puts piece_move_error
       return false
+
+      if moved && [2, -2].include?(vector_tried[1])
+      puts piece_move_error
+      return false 
+
+      finish_piece = board.get_piece_at(finish)
+      if finish_piece.colour == colour
+        puts piece_in_the_way_error
+        return false
+      end
     end
 
     squares_between = find_squares_between(start, vector_tried)capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)

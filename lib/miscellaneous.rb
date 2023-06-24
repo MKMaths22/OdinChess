@@ -38,4 +38,13 @@ module Miscellaneous
 
   KNIGHT_VECTORS = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
 
+  def piece_in_the_way_error
+    "There is a piece in the way of that move. Please try again."
+  end
+
+  def capture_own_piece_error
+    "You cannot capture your own pieces. Please try again."
+  end
+
+
 end
