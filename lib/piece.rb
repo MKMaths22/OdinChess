@@ -133,18 +133,25 @@ class Pawn < Piece
   def initialize(colour)
     @colour = colour
     @moved = false
+    @movement_vectors = get_vectors(colour)
   end
 
+  def get_vectors(colour)
+    colour = 'White' ? [[0, 2], [0, 1], [-1, 1], [1, 1]] : [[0, -2], [0, -1], [-1, -1], [1, -1]]
+  end
+  
   def move_legal?(board, start, finish)
     vector_tried = subtract_vector(finish, start)
     if vector_tried = [0, 0]
       puts same_square_error
       return false
     end
+    
     unless movement_vectors.include?(vector_tried)
       puts piece_move_error
       return false
     end
+
     squares_between = find_squares_between(start, vector_tried)capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
     return false unless capture_or_not
     # if capture_or_not is truthy, it is either 'capture' or 'not_capture'

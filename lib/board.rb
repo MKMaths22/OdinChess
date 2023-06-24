@@ -23,6 +23,10 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     board_array.dig(char_to_num(string[0], string[1].to_i - 1))
   end
   
+  def get_piece_at(coords)
+    get_item(board_array, coords)
+  end
+  
   
   def pieces_allow_move(start, finish, colour, squares_between)
     return false unless pieces_between_allow_move?(start, finish, squares_between)
@@ -35,7 +39,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     # squares_between is a 2-D array of the squares in between where
     # if a piece were present it would get in the way of the move
     squares_between.each |coords| do
-      if get_item(board_array, coords)
+      if get_piece_at(coords)
         # get_item returns piece on the square with coordinates coords, or nil if no piece is there.
         puts piece_in_the_way_error
         return false
