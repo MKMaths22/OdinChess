@@ -28,18 +28,18 @@ end
 
 class Bishop < Piece
 
-  def initialize
-    @movement_vectors = get_vectors
-  end
-
   def get_vectors
-    # outputs the vectors the piece can move in, assuming we don't go off the edge of 
-    # the board. 
+    output = []
+    [[-1, -1], [-1, 1], [1, -1], [1, 1]].each do |vector|
+      (1..7).each do |num|
+        output.push([num*vector[0], num*vector[1]])
+      end
+    end
+    output
   end
 
   def get_subvectors(vector)
-    # outputs the intermediate vector steps as a 2-D array so that we can tell the board class which
-    # squares in between have to be checked for a move to be legal
+    movement_vectors.select { |movement| subvector?(vector, movement) }
   end
   
   def move_legal?(board, start, finish)
