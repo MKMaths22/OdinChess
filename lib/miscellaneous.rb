@@ -63,4 +63,15 @@ module Miscellaneous
     end
   end
 
+  def find_squares_to_check(colour, vector)
+    # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
+    # method outputs the squares that have to be empty between the King and Rook, as a 2-D array
+    output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
+    row = colour == 'White' ? 0 : 7
+    output.each do |item|
+      item.push(row)
+    end
+    output
+  end
+
 end

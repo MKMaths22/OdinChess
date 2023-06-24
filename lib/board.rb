@@ -32,8 +32,8 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
 
   def castling_legal?(colour, vector)
     # colour is the colour of the King trying to castle, which may not even be in its starting position and vector is [2, 0] or [-2, 0]
-    query_string = colour + '_0_0'
-    query_string += '_0' if vector[0].negative?
+    query_string = colour + '_0-0'
+    query_string += '-0' if vector[0].negative?
     # query_string is now the appropriate key for the castling_rights hash
     unless castling_rights[query_string]
       puts no_castling_error(query_string)
