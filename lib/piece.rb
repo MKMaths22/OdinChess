@@ -37,12 +37,12 @@ include Miscellaneous
       puts piece_move_error
       return false
     end
-    squares_between = find_squares_between(start, vector_tried)capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
+    squares_between = find_squares_between(start, vector_tried)
+    capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
     return false unless capture_or_not
     # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
     # This distinction may not be relevant for the algorithm overall
-    return false if board.check_for_check(start, finish, colour)
-    true
+    return !board.check_for_check(start, finish, colour)
   end
 
   def magnitude_squared(vector)
@@ -121,7 +121,6 @@ class Knight < Piece
 
 
 end
-
 
 class Pawn < Piece
 
@@ -207,47 +206,16 @@ class Pawn < Piece
 
       return !board.check_for_check(start, finish, colour, true)
   end
-  
-  
-  # if moved && [2, -2].include?(vector_tried[1])
-   #   puts piece_move_error
-   #   return false
-   # end
+end
 
-    # at this stage the vector_tried is a valid one for the
-    # pawn's colour but we still don't know if it is
-    # trying to capture or not
-    finish_piece = board.get_piece_at(finish)
-      
-    #unless finish_piece
-    #  unless vector_tried[0].zero?
-   #     puts piece_move_error
-    #    return false
-   #   end
-   #     squares_between = find_squares_between(start, vector_tried)
-   #     return false unless board.pieces_allow_move(start, finish, colour, squares_between)
-        # pawn move is not a capture in this case
-   # end
-      
-   # if finish_piece && finish_piece.colour == colour
-    #  puts piece_in_the_way_error
-   #   return false
-   # end
+class King
 
-   # if finish_piece
-   #   # in this case finish_piece is of the opposite colour
-   #  if vector_tried[0].zero?
-    #    puts piece_move_error
-   #   end
-   # end
-
-   # return false if board.check_for_check(start, finish, colour)
-    
-   # true
- # end
+  def initialize(colour)
+    @colour = colour
+    @movement_vectors = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
+    @castling_vectors = [[0, -2], [0, 2]]
+  end
 
   
-
-
 
 end

@@ -70,7 +70,7 @@ include Miscellaneous
     @display_board.show_the_board
     player_name = @colour_moving == 'White' ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
-    next_move = @colour_moving == 'White' ? white.get_move(board) : black.get_move(board)
+    next_move = @colour_moving == 'White' ? white.get_move(valid_move, board) : black.get_move(valid_move, board)
     # next_move is a string like 'e3f5' in which we purely list two squares on the board
 
 

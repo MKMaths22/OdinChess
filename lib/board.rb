@@ -71,12 +71,13 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     checking.king_in_check?
   end
 
-  def change_array(array, start, finish, e_p = false, castle = false)
+  def change_array(array, start, finish, e_p = false)
     # array is a current board_array and we are moving a piece from start to finish co-ordinates
     new_array = array.map { |item| item.clone }
     new_array[finish[0]][finish[1]] = array[start[0]][start[1]]
     new_array[start[0]][start[1]] = nil
     new_array[en_passent['Pawn now at'][0]][en_passent['Pawn now at'][1]] = nil if e_p
+    # if it is en_passent we also remove the pawn captured
     new_array
   end
 
