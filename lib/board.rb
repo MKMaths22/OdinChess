@@ -30,8 +30,8 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     en_passent['Pawn passed through'] == coords
   end
 
-  def castling_legal?(colour, vector)
-    # colour is the colour of the King trying to castle, which may not even be in its starting position and vector is [2, 0] or [-2, 0]
+  def castling_legal?(colour, start, vector)
+    # colour is the colour of the King trying to castle, which may not even be in its starting position and vector is [2, 0] or [-2, 0] Start is the King's initial square
     query_string = colour + '_0-0'
     query_string += '-0' if vector[0].negative?
     # query_string is now the appropriate key for the castling_rights hash
@@ -39,16 +39,24 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
       puts no_castling_error(query_string)
       return false
     end
+    squares_to_check = find_squares_to_check(colour, vector)
+    return false unless pieces_between_allow_move?(squares_to_check)
+
+    reduced_vector = vector[0].negative? ? [-1, 0] : [1, 0]
+
+    # NEED TO MAKE THREE possible_board_array values to check in all three that 
+    # the king is not in check.
+
 
   end
 
   def pieces_allow_move(start, finish, colour, squares_between)
-    return false unless pieces_between_allow_move?(start, finish, squares_between)
+    return false unless pieces_between_allow_move?(squares_between)
 
     finish_square_ok(finish, colour)
   end
   
-  def pieces_between_allow_move?(start, finish, squares_between)
+  def pieces_between_allow_move?(squares_between)
     # This method checks whether any pieces are in the way
     # squares_between is a 2-D array of the squares in between where
     # if a piece were present it would get in the way of the move
