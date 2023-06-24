@@ -137,6 +137,10 @@ class Pawn < Piece
     @non_capture_vectors = get_non_captures(colour)
   end
 
+  def pawn_capture_error
+    "Pawns don't capture like that. Please try again."
+  end
+
   def get_captures(colour)
     colour = 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
   end
@@ -157,10 +161,38 @@ class Pawn < Piece
       return false
     end
 
-    capture_vectors.include?(vector_tried) ? capture_legal?(board, start, finish) : non_capture_legal?(board, start, finish)
+    capture_vectors.include?(vector_tried) ? capture_legal?(board, start, finish) : non_capture_legal?(board, start, finish, vector_tried)
   end
 
-   # if moved && [2, -2].include?(vector_tried[1])
+  def non_capture_legal?(board, start, finish, vector)
+    squares_between = find_squares_between(start, finish, vector)
+    
+    return false unless board.pieces_between_allow_move?(start, finish, squares_between)
+
+    poss_piece_at_finish = board.get_piece_at(finish)
+      if poss_piece_at_finish
+        puts poss_piece_at_finish.colour == colour? piece_in_the_way_error : pawn_capture_error
+        return false
+      end
+
+    return false if board.check_for_check(start, finish, colour)
+    
+    true
+  end
+
+  def find_squares_between(start, finish, vector)
+    return [] if vector[1].between?(-1, 1)
+    
+    [[0, 1]] if vector[1].positive?
+    [[0, -1]] if vector[1].negative?
+  end
+  
+  def capture_legal?(board, start, finish)
+    # now no squares between, but En Passent must be considered
+  end
+  
+  
+  # if moved && [2, -2].include?(vector_tried[1])
    #   puts piece_move_error
    #   return false
    # end
