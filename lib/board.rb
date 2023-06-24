@@ -10,8 +10,8 @@ include Miscellaneous
     @board_array = NEW_BOARD_ARRAY
     @castling_rights = { 'White_0-0-0' => true, 'White_0-0' => true, 'Black_0-0-0' => true, 'Black_0-0' => true }
     @colour_moving = 'White'
-    @en_passent = {}
-    # if there is an en_passent possibility maybe it is denoted by the square on which the
+    @en_passent = []
+    # if there is an en_passent possibility maybe it is denoted by the coordinates of the square on which the
     # pawn can be taken 
   end
 
@@ -27,6 +27,9 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     get_item(board_array, coords)
   end
   
+  def en_passent?(coords)
+    en_passent == coords
+  end
   
   def pieces_allow_move(start, finish, colour, squares_between)
     return false unless pieces_between_allow_move?(start, finish, squares_between)
@@ -61,7 +64,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     return 'capture'
   end
 
-  def check_for_check(start, finish, colour, #maybe other optional arguments depending on castling or en passent)
+  def check_for_check(start, finish, colour, en_passent = false, castling = false)
     possible_board_array = change_array(board_array, start, finish)
     # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
     checking = CheckForCheck.new(possible_board_array, colour)

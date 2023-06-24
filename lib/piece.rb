@@ -188,7 +188,24 @@ class Pawn < Piece
   end
   
   def capture_legal?(board, start, finish)
-    # now no squares between, but En Passent must be considered
+    poss_piece_at_finish = board.get_piece_at(finish)
+      if poss_piece_at_finish && poss_piece_at_finish.colour == colour
+        puts capture_own_piece_error
+        return false
+      end
+
+      if poss_piece_at_finish
+        # in this case the piece is one we can capture
+        return !board.check_for_check(start, finish, colour)
+      end
+
+      # now definitely no piece on finish square
+      unless board.en_passent?(finish)
+        puts piece_move_error
+        return false
+      end
+
+      return !board.check_for_check(start, finish, colour, true)
   end
   
   
