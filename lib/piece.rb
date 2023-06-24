@@ -44,12 +44,16 @@ include Miscellaneous
     true
   end
 
+  def magnitude_squared(vector)
+    vector[0]*vector[0] + vector[1]*vector[1]
+  end
+  
   def subvector?(big_vector, small_vector)
-    return false unless big_vector[1]*small_vector[0] == big_vector[0]*small_vector[1]
-    (1...2).each do |num|
-      return false if big_vector[num]*small_vector[num].negative?
-    end
-    true
+      return false unless big_vector[1]*small_vector[0] == big_vector[0]*small_vector[1]
+      (0...1).each do |num|
+        return false if (big_vector[num]*small_vector[num]).negative?
+      end
+      return true if magnitude_squared(small_vector) < magnitude_squared(big_vector)
   end
   
   def find_squares_between(start, vector)
