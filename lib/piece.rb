@@ -128,16 +128,21 @@ class Pawn < Piece
   # pawn promotion dealt with separately under 'ConsequencesOfMove'
   # which may be a separate class?
   
-  attr_accessor :colour, :movement_vectors
+  attr_accessor :colour, :capture_vectors, :non_capture_vectors
   
   def initialize(colour)
     @colour = colour
     @moved = false
-    @movement_vectors = get_vectors(colour)
+    @capture_vectors = get_captures(colour)
+    @non_capture_vectors = get_non_captures(colour)
   end
 
-  def get_vectors(colour)
-    colour = 'White' ? [[0, 2], [0, 1], [-1, 1], [1, 1]] : [[0, -2], [0, -1], [-1, -1], [1, -1]]
+  def get_captures(colour)
+    colour = 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
+  end
+
+  def get_non_captures(colour)
+    colour = 'White' ? [[0, 1], [0, 2]] : [[0, -1], [0, -2]]
   end
   
   def move_legal?(board, start, finish)
@@ -147,28 +152,50 @@ class Pawn < Piece
       return false
     end
     
-    unless movement_vectors.include?(vector_tried)
+    unless capture_vectors.include?(vector_tried) || non_capture_vectors.include?(vector_tried)
       puts piece_move_error
       return false
-
-      if moved && [2, -2].include?(vector_tried[1])
-      puts piece_move_error
-      return false 
-
-      finish_piece = board.get_piece_at(finish)
-      if finish_piece.colour == colour
-        puts piece_in_the_way_error
-        return false
-      end
     end
 
-    squares_between = find_squares_between(start, vector_tried)capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
-    return false unless capture_or_not
-    # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
-    # This distinction may not be relevant for the algorithm overall
-    return false if board.check_for_check(start, finish, colour)
-    true
+    capture_vectors.include?(vector_tried) ? capture_legal?(board, start, finish) : non_capture_legal?(board, start, finish)
   end
+
+   # if moved && [2, -2].include?(vector_tried[1])
+   #   puts piece_move_error
+   #   return false
+   # end
+
+    # at this stage the vector_tried is a valid one for the
+    # pawn's colour but we still don't know if it is
+    # trying to capture or not
+    finish_piece = board.get_piece_at(finish)
+      
+    #unless finish_piece
+    #  unless vector_tried[0].zero?
+   #     puts piece_move_error
+    #    return false
+   #   end
+   #     squares_between = find_squares_between(start, vector_tried)
+   #     return false unless board.pieces_allow_move(start, finish, colour, squares_between)
+        # pawn move is not a capture in this case
+   # end
+      
+   # if finish_piece && finish_piece.colour == colour
+    #  puts piece_in_the_way_error
+   #   return false
+   # end
+
+   # if finish_piece
+   #   # in this case finish_piece is of the opposite colour
+   #  if vector_tried[0].zero?
+    #    puts piece_move_error
+   #   end
+   # end
+
+   # return false if board.check_for_check(start, finish, colour)
+    
+   # true
+ # end
 
   
 
