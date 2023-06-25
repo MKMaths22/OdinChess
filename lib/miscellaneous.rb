@@ -63,6 +63,18 @@ module Miscellaneous
     end
   end
 
+  def castle_from_check_error
+    "You cannot castle because you are in check. Please input another move."
+  end
+
+  def castle_through_check_error
+    "You cannot castle by passing your King through a square that is under attack. Please input another move."
+  end
+
+  def general_into_check_error
+    "That move would leave your King in check. Please try again."
+  end
+
   def find_squares_to_check(colour, vector)
     # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
     # method outputs the squares that have to be empty between the King and Rook, as a 2-D array

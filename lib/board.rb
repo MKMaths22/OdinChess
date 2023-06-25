@@ -46,8 +46,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
 
     # NEED TO MAKE THREE possible_board_array values to check in all three that 
     # the king is not in check.
-
-
+    !check_castling_for_check?(colour, start, vector, reduced_vector)
   end
 
   def pieces_allow_move(start, finish, colour, squares_between)
@@ -83,14 +82,48 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     return 'capture'
   end
 
-  def check_for_check(start, finish, colour, e_p = false, castle = false)
-    possible_board_array = change_array(board_array, start, finish, e_p, castle)
+  def check_for_check(start, finish, colour, e_p = false)
+    possible_board_array = change_array(board_array, start, finish, e_p)
     # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
     checking = CheckForCheck.new(possible_board_array, colour)
-    checking.king_in_check?
+    if checking.king_in_check?
+      puts general_into_check_error
+      return true
+    end
   end
 
-  def change_array(array, start, finish, e_p = false)
+  def check_castling_for_check?(colour, start, vector, reduced_vector)
+    check_first = CheckForCheck.new(board_array, colour)
+    if check_first.king_in_check?
+      puts castle_from_check_error
+      return true
+    end
+    middle_square = add_vector(start, reduced_vector)
+    middle_of_castling = change_array(board_array, start, middle_square)
+    check_middle = CheckForCheck.new(middle_of_castling, colour)
+    if check_middle.king_in_check?
+      puts castle_through_check_error
+      return true
+    end
+    finish_square = add_vector(start, vector)
+    finish_of_castling = change_array(board_array, start, finish_square)
+    check_finish = CheckForCheck.new(finish_of_castling, colour)
+    if check_finish.king_in_check?
+      puts general_into_check_error
+      return true
+    end
+    false
+  end
+
+  # in case of castling we have three board_arrays to check, corresponding to the king's
+    # start square, in-between square and finishing square
+  
+  #possible_board_arrays.each |array| do 
+   # checking = CheckForCheck.new(array, colour)
+  #  return true if checking.king_in_check?
+  # end
+
+  def change_array(array, start, finish, e_p = false, castle = false)
     # array is a current board_array and we are moving a piece from start to finish co-ordinates
     new_array = array.map { |item| item.clone }
     new_array[finish[0]][finish[1]] = array[start[0]][start[1]]
