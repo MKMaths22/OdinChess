@@ -5,6 +5,21 @@ module Miscellaneous
     colour == 'White' ? 'Black' : 'White'
   end
 
+  def valid_input?(string)
+    string = string.downcase
+    ok_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    ok_numbers = ['1', '2', '3', '4', '5', '6', '7', '8']
+    valid = true
+    valid = false unless ok_letters.include?(string[0]) && ok_letters.include?(string[2])
+    valid = false unless ok_numbers.include?(string[1]) && ok_numbers.include?(string[3])
+    puts input_error(string) unless valid
+    valid
+  end
+
+  def input_error(string)
+    "#{string} is not acceptable input. Please type the algebraic notation for starting square and finishing square such as 'g1f3'. Castling is a King move."
+  end
+  
   def string_to_coords(string)
     # accepts a string of the form 'e4' and returns co-ordinates for use in the board_array
     # if other classes want this, maybe put it in a Module?

@@ -11,11 +11,9 @@ class Player
 
   def get_move(valid_move, board)
     proposed_move = gets.strip
-    output_hash = valid_move.all_valid?(proposed_move, @colour_moving, board)
-    output_hash ? output_hash : get_move
-    #output_hash is either falsey if move not valid or it is a hash of
-    # format { 'start' => start_square, 'finish' => final_square }
-    # if is falsey, then get_move is called again recursively
+    move_to_play = valid_move.all_valid?(proposed_move, @colour_moving, board)
+    move_to_play ? move_to_play : get_move
+    # move_to_play is either falsey if move not valid or it is a Move object
   end
 
 
