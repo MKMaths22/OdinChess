@@ -4,14 +4,21 @@ class CheckForCheck
 
 include Miscellaneous
 
-  attr_accessor :colour, :poss_board_array
+  attr_accessor :colour, :poss_board_array, :error_message
   
-  def initialize(colour, poss_board_array)
+  def initialize(colour, poss_board_array, error_message = general_into_check_error)
     @colour = colour
     @poss_board_array = poss_board_array
+    @error_message = error_message
   end
 
   def king_in_check?
+    boolean = boolean_only_king_in_check?
+    puts error_message if boolean
+    boolean
+  end
+  
+  def boolean_only_king_in_check?
     coords_hash = find_both_king_coords
     return true if adjacent?(coords_hash[:our_king], coords_hash[:other_king])
     

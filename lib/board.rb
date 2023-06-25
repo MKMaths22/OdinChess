@@ -93,26 +93,18 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   end
 
   def check_castling_for_check?(colour, start, vector, reduced_vector)
-    check_first = CheckForCheck.new(board_array, colour)
-    if check_first.king_in_check?
-      puts castle_from_check_error
-      return true
-    end
+    check_first = CheckForCheck.new(board_array, colour, castle_from_check_error)
+    return true if check_first.king_in_check?
+    
     middle_square = add_vector(start, reduced_vector)
     middle_of_castling = change_array(board_array, start, middle_square)
-    check_middle = CheckForCheck.new(middle_of_castling, colour)
-    if check_middle.king_in_check?
-      puts castle_through_check_error
-      return true
-    end
+    check_middle = CheckForCheck.new(middle_of_castling, colour, castle_through_check_error)
+    return true if check_middle.king_in_check?
+    
     finish_square = add_vector(start, vector)
     finish_of_castling = change_array(board_array, start, finish_square)
     check_finish = CheckForCheck.new(finish_of_castling, colour)
-    if check_finish.king_in_check?
-      puts general_into_check_error
-      return true
-    end
-    false
+    return check_finish.king_in_check?
   end
 
   # in case of castling we have three board_arrays to check, corresponding to the king's
