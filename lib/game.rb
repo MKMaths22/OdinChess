@@ -28,6 +28,7 @@ require-relative 'check_for_check'
 require-relative 'result'
 require-relative 'piece'
 require-relative 'miscellaneous'
+require-relative 'move'
 
 class Game
 
