@@ -39,14 +39,6 @@ class Player
     return this_move.legal?
   end
     
-   # moving_piece = our_piece(maybe_move, colour, board)
-   # return false unless moving_piece  
-    # our_piece returns the piece
-    # can include string_to_coords in a module so this ValidMove class can use it directly
-   # start_square = string_to_coords(maybe_move[0, 2])
-    # start_square given in co-ordinates the board array can accept
-    #final_square = string_to_coords(maybe_move[2, 2])
-    
    # return false unless moving_piece.move_legal?(board, start_square, final_square)
     
     # The class of the piece takes care of the remaining tests because

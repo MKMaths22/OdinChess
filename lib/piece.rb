@@ -30,10 +30,7 @@ include Miscellaneous
   
   def move_legal?(board, start, finish)
     vector_tried = subtract_vector(finish, start)
-    if vector_tried = [0, 0]
-      puts same_square_error
-      return false
-    end
+    
     return board.castling_legal?(colour, start, vector_tried) if castling_vectors.include?(vector_tried)
     # can only be triggered in King class, otherwise there
     # are no castling vectors
