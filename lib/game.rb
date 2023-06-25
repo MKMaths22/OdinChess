@@ -23,7 +23,6 @@ require 'yaml'
 require-relative 'board'
 require-relative 'player'
 require-relative 'display_board'
-require-relative 'valid_move'
 require-relative 'check_for_check'
 require-relative 'result'
 require-relative 'piece'
@@ -42,7 +41,6 @@ include Miscellaneous
     @black = black
     @result = result
     @colour_moving = 'White'
-    @valid_move = ValidMove.new
     @display_board = DisplayBoard.new
   end
 
