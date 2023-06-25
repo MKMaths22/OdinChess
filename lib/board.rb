@@ -107,14 +107,6 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     return check_finish.king_in_check?
   end
 
-  # in case of castling we have three board_arrays to check, corresponding to the king's
-    # start square, in-between square and finishing square
-  
-  #possible_board_arrays.each |array| do 
-   # checking = CheckForCheck.new(array, colour)
-  #  return true if checking.king_in_check?
-  # end
-
   def change_array(array, start, finish, e_p = false, castle = false)
     # array is a current board_array and we are moving a piece from start to finish co-ordinates
     new_array = array.map { |item| item.clone }
