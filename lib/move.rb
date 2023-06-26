@@ -14,25 +14,27 @@ include Miscellaneous
     @start_square = find_start_square
     @finish_square = find_finish_square
     @our_piece = nil
-    @other_piece = board.get_piece_at(finish_square)
+    @other_piece = nil
   end
 
   def legal?
     our_piece = find_our_piece
-    other_piece = find_other_piece
     return false unless our_piece
+    
+    other_piece = find_other_piece
+    return false if other_piece = 'Error'
 
     self.vector = get_move_vector
     if @vector == [0, 0]
       puts same_square_error
       return false
     end
-
-    answer_from_piece = our_piece.move_like_that(vector)
-    # MAY NEED TO ASK PIECE OBJECT A SERIES OF QUESTIONS OR
-    # LET THE PIECE OBJECT TALK TO THE BOARD OBJECT AS BEFORE
-
-
+    capture_or_not = !!other_piece
+    # is true if other_piece is a piece, false otherwise
+    answer_from_piece = our_piece.move_like_that(vector, capture_or_not)
+    # piece object replies 'if_0-0-0', 'if_0-0' 'yes', 'no' or 'if_en_passent'
+    # the output from the piece also tells this Move object which squares_between have to be
+    # checked for pieces getting in the way
 
 
   end
@@ -60,6 +62,15 @@ include Miscellaneous
       return nil
     end
     possible_piece  
+  end
+
+  def find_other_piece
+    possible_piece = board.get_piece_at(finish_square)
+    if possible_piece && possible_piece.colour == colour
+      puts capture_own_piece_error
+      return 'Error'
+    end
+    possible_piece
   end
 
 end

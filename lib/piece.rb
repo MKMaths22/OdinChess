@@ -28,9 +28,11 @@ include Miscellaneous
     movement_vectors.select { |movement| subvector?(vector, movement) }
   end
   
-  def move_legal?(board, start, finish)
+  def move_like_that(vector, capture_or_not)
+    # this method asks if the piece can move in the fashion of 'vector' given
+    # that 'capture_or_not' is a Boolean saying whether it is a capturing move
     vector_tried = subtract_vector(finish, start)
-    
+
     return board.castling_legal?(colour, start, vector_tried) if castling_vectors.include?(vector_tried)
     # can only be triggered in King class, otherwise there
     # are no castling vectors
