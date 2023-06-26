@@ -29,24 +29,30 @@ include Miscellaneous
   end
   
   def move_like_that(vector, capture_or_not)
-    # this method asks if the piece can move in the fashion of 'vector' given
+    # this method asks if the piece can move in the fashion of 'vector' subject to pieces getting in the way or own-King-in-check issues given
     # that 'capture_or_not' is a Boolean saying whether it is a capturing move
-    vector_tried = subtract_vector(finish, start)
+    # output is either false or a hash featuring castling and en passent keys 
+    # which can have only at most one true value and a 'sub_vectors' which allows the Move class to ask the Board class which squares may have pieces
+    # in the way.
+    # Effectively if a Pawn is replying to this method it may say 'move is OK only if it is en_passent'
 
-    return board.castling_legal?(colour, start, vector_tried) if castling_vectors.include?(vector_tried)
-    # can only be triggered in King class, otherwise there
-    # are no castling vectors
+    output_hash = { 'White_0-0-0' => false, 'White_0-0' => false, 'Black_0-0' => false, 'Black_0-0-0' => false, 'en_passent' => false, 'sub_vectors' => [] }
+
+    if castling_vectors.include?(vector)
+      # can only be triggered in King class, otherwise there
+      # are no castling vectors
+      new_hash = add_castling_to_hash(vector, colour, output_hash)
+      
+      return output_hash
+    end
 
     unless movement_vectors.include?(vector_tried)
       puts piece_move_error
       return false
     end
-    squares_between = find_squares_between(start, vector_tried)
-    capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
-    return false unless capture_or_not
-    # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
-    # This distinction may not be relevant for the algorithm overall
-    return !board.check_for_check(start, finish, colour)
+    
+    output_hash['sub_vectors'] = movement_vectors.select { |movement| subvector?(vector, movement) }
+    output_hash
   end
 
   def magnitude_squared(vector)
@@ -61,12 +67,12 @@ include Miscellaneous
       return true if magnitude_squared(small_vector) < magnitude_squared(big_vector)
   end
   
-  def find_squares_between(start, vector)
-    squares_between = []
-    movement_vectors.each do |movement|
-      squares_between.push(add_vector(start, movement)) if subvector?(vector, movement)
-    end
-  end
+  # def find_squares_between(start, vector)
+  #  squares_between = []
+  #  movement_vectors.each do |movement|
+  #    squares_between.push(add_vector(start, movement)) if subvector?(vector, movement)
+  #  end
+  #  end
 
   def same_square_error
     "Finishing square cannot be the same as starting square. Please try again."

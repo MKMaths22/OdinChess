@@ -86,4 +86,10 @@ module Miscellaneous
     output
   end
 
+  def add_castling_to_hash(vector, colour, hash)
+    # the hash takes the form of output_hash in the Piece class
+    # vector is either [2, 0] or [-2, 0]
+
+  end
+
 end
