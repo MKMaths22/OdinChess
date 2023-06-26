@@ -29,9 +29,10 @@ include Miscellaneous
       puts same_square_error
       return false
     end
-    capture_or_not = !!other_piece
-    # is true if other_piece is a piece, false otherwise
-    answer_from_piece = our_piece.move_like_that(vector, capture_or_not)
+    capture = !!other_piece
+    # is true if other_piece is an opposition piece, false otherwise.
+    # find_other_piece dealt with case of friendly piece in the way.
+    answer_from_piece = our_piece.move_like_that(vector, capture)
     # piece object replies 'if_0-0-0', 'if_0-0' 'yes', 'no' or 'if_en_passent'
     # the output from the piece also tells this Move object which squares_between have to be
     # checked for pieces getting in the way

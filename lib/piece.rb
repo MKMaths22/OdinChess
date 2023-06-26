@@ -28,9 +28,9 @@ include Miscellaneous
     movement_vectors.select { |movement| subvector?(vector, movement) }
   end
   
-  def move_like_that(vector, capture_or_not)
+  def move_like_that(vector, capture)
     # this method asks if the piece can move in the fashion of 'vector' subject to pieces getting in the way or own-King-in-check issues given
-    # that 'capture_or_not' is a Boolean saying whether it is a capturing move
+    # that 'capture' is a Boolean saying whether it is a capturing move
     # output is either false or a hash featuring castling and en passent keys 
     # which can have only at most one true value and a 'sub_vectors' which allows the Move class to ask the Board class which squares may have pieces
     # in the way.
@@ -66,13 +66,6 @@ include Miscellaneous
       end
       return true if magnitude_squared(small_vector) < magnitude_squared(big_vector)
   end
-  
-  # def find_squares_between(start, vector)
-  #  squares_between = []
-  #  movement_vectors.each do |movement|
-  #    squares_between.push(add_vector(start, movement)) if subvector?(vector, movement)
-  #  end
-  #  end
 
   def same_square_error
     "Finishing square cannot be the same as starting square. Please try again."
@@ -123,7 +116,7 @@ class Knight < Piece
     @movement_vectors = KNIGHT_VECTORS
   end
 
-  def find_squares_between
+  def get_subvectors
     # not strictly necessary, but for emphasis that knight moves
     # cannot be blocked by pieces in the way
     []
@@ -146,8 +139,56 @@ class Pawn < Piece
     @non_capture_vectors = get_non_captures(colour)
   end
 
+  def move_like_that(vector, capture)
+    # this method asks if the Pawn can move in the fashion of 'vector' subject to pieces getting in the way or own-King-in-check issues given
+    # that 'capture' is a Boolean saying whether it is a capturing move
+    # output is either false or a hash featuring castling and en passent keys 
+    # which can have only at most one true value and a 2-D array which is the value of the key 'sub_vectors' which allows the Move class to ask the Board class which squares may have pieces
+    # in the way.
+    # Effectively if a Pawn is replying to this method it may say 'move is OK only if it is en_passent'
+
+    output_hash = { 'White_0-0-0' => false, 'White_0-0' => false, 'Black_0-0' => false, 'Black_0-0-0' => false, 'en_passent' => false, 'sub_vectors' => [] }
+
+    unless capture_vectors.include?(vector) || non_capture_vectors.include?(vector)
+      puts piece_move_error
+      return false
+    end
+    
+    non_capture_vectors.include?(vector) ? pawn_goes_straight_forwards(vector, output_hash, capture) : pawn_goes_diagonally(output_hash, capture)
+  end
+      
+  def pawn_goes_straight_forwards(vector, hash, capture)
+    
+    if moved && !vector[1].between?(-1, 1)
+      puts pawn_already_moved_error
+      return false
+    end
+
+    if capture
+      puts pawn_capture_error
+      return false
+    end
+        
+    hash['sub_vectors'] => non_capture_vectors.select { |movement| subvector?(vector, movement) }
+        
+    return hash
+  end
+  
+  def pawn_goes_diagonally(hash, capture)
+    # In this scenario there are no sub_vectors.
+
+    # if not , Pawn class responds effectively saying move is 
+    # OK subject to king_in_check issues if and only if it is en_passent.
+    hash['en_passent'] = true unless capture
+    hash
+  end
+
   def pawn_capture_error
     "Pawns don't capture like that. Please try again."
+  end
+
+  def pawn_already_moved_error
+    "Pawns can only go two squares if they haven't already moved. Please try again."
   end
 
   def get_captures(colour)
@@ -158,67 +199,67 @@ class Pawn < Piece
     colour = 'White' ? [[0, 1], [0, 2]] : [[0, -1], [0, -2]]
   end
   
-  def move_legal?(board, start, finish)
-    vector_tried = subtract_vector(finish, start)
-    if vector_tried = [0, 0]
-      puts same_square_error
-      return false
-    end
+  # def move_legal?(board, start, finish)
+  #  vector_tried = subtract_vector(finish, start)
+  #  if vector_tried = [0, 0]
+  #    puts same_square_error
+  #    return false
+  #  end
     
-    unless capture_vectors.include?(vector_tried) || non_capture_vectors.include?(vector_tried)
-      puts piece_move_error
-      return false
-    end
+  #  unless capture_vectors.include?(vector_tried) || non_capture_vectors.include?(vector_tried)
+   #   puts piece_move_error
+    #  return false
+  #  end
 
-    capture_vectors.include?(vector_tried) ? capture_legal?(board, start, finish) : non_capture_legal?(board, start, finish, vector_tried)
-  end
+   # capture_vectors.include?(vector_tried) ? capture_legal?(board, start, finish) : non_capture_legal?(board, start, finish, vector_tried)
+  # end
 
-  def non_capture_legal?(board, start, finish, vector)
-    squares_between = find_squares_between(start, finish, vector)
+  # def non_capture_legal?(board, start, finish, vector)
+  #  squares_between = find_squares_between(start, finish, vector)
     
-    return false unless board.pieces_between_allow_move?(start, finish, squares_between)
+   # return false unless board.pieces_between_allow_move?(start, finish, squares_between)
 
-    poss_piece_at_finish = board.get_piece_at(finish)
-      if poss_piece_at_finish
-        puts poss_piece_at_finish.colour == colour? piece_in_the_way_error : pawn_capture_error
-        return false
-      end
+   # poss_piece_at_finish = board.get_piece_at(finish)
+   #   if poss_piece_at_finish
+   #     puts poss_piece_at_finish.colour == colour? piece_in_the_way_error : pawn_capture_error
+    #    return false
+   #   end
 
-    return false if board.check_for_check(start, finish, colour)
+  #  return false if board.check_for_check(start, finish, colour)
     
-    true
-  end
+  #  true
+  # end
 
-  def find_squares_between(start, finish, vector)
-    return [] if vector[1].between?(-1, 1)
+  # def find_squares_between(start, finish, vector)
+  #  return [] if vector[1].between?(-1, 1)
     
-    [[0, 1]] if vector[1].positive?
-    [[0, -1]] if vector[1].negative?
-  end
+  #  [[0, 1]] if vector[1].positive?
+  #  [[0, -1]] if vector[1].negative?
+  # end
   
-  def capture_legal?(board, start, finish)
-    poss_piece_at_finish = board.get_piece_at(finish)
-      if poss_piece_at_finish && poss_piece_at_finish.colour == colour
-        puts capture_own_piece_error
-        return false
-      end
+  # def capture_legal?(board, start, finish)
+  #  poss_piece_at_finish = board.get_piece_at(finish)
+  #    if poss_piece_at_finish && poss_piece_at_finish.colour == colour
+  #      puts capture_own_piece_error
+  #      return false
+  #    end
 
-      if poss_piece_at_finish
+  #    if poss_piece_at_finish
         # in this case the piece is one we can capture
-        return !board.check_for_check(start, finish, colour)
-      end
+  #      return !board.check_for_check(start, finish, colour)
+  #    end
 
       # now definitely no piece on finish square
-      unless board.en_passent?(finish)
-        puts piece_move_error
-        return false
-      end
+  #    unless board.en_passent?(finish)
+   #     puts piece_move_error
+   #     return false
+   #   end
 
-      return !board.check_for_check(start, finish, colour, true)
-  end
+  #    return !board.check_for_check(start, finish, colour, true)
+  # end
 end
 
-class King
+class King < Piece
 
   def initialize(colour)
     @colour = colour
@@ -231,25 +272,4 @@ class King
     # cannot be blocked by pieces in the way
     []
   end
-
-  def move_legal?(board, start, finish)
-    vector_tried = subtract_vector(finish, start)
-    if vector_tried = [0, 0]
-      puts same_square_error
-      return false
-    end
-    unless movement_vectors.include?(vector_tried)
-      puts piece_move_error
-      return false
-    end
-    squares_between = find_squares_between(start, vector_tried)
-    capture_or_not = board.pieces_allow_move(start, finish, colour, squares_between)
-    return false unless capture_or_not
-    # if capture_or_not is truthy, it is either 'capture' or 'not_capture'
-    # This distinction may not be relevant for the algorithm overall
-    return !board.check_for_check(start, finish, colour)
-  end
-
-  
-
 end
