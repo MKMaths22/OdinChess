@@ -75,21 +75,28 @@ module Miscellaneous
     "That move would leave your King in check. Please try again."
   end
 
-  def find_squares_to_check(colour, vector)
+  # def find_squares_to_check(colour, vector)
     # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
     # method outputs the squares that have to be empty between the King and Rook, as a 2-D array
-    output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
-    row = colour == 'White' ? 0 : 7
-    output.each do |item|
-      item.push(row)
-    end
-    output
-  end
+   # output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
+   # row = colour == 'White' ? 0 : 7
+   # output.each do |item|
+    #  item.push(row)
+   # end
+   # output
+ # end
 
   def add_castling_to_hash(vector, colour, hash)
     # the hash takes the form of output_hash in the Piece class
     # vector is either [2, 0] or [-2, 0]
-
+    # method adds 'White_0-0' => true to hash or other as appropriate. It also
+    # adds the squares between to check, relative to the king's starting position, so will be [1, 0] and [2, 0] or [-1, 0], [-2, 0] and [-3, 0] 
+    output_hash = hash
+    output_hash["#{colour}_0-0-0"] = true if vector[0].negative?
+    output_hash["#{colour}_0-0"] = true if vector[0].positive?
+    output_hash['sub_vectors'] = [[1, 0], [2, 0]] if vector[0].positive?
+    output_hash['sub_vectors'] = [[-1, 0], [-2, 0], [-3, 0]] if vector[0].negative?
+    output_hash
   end
 
 end
