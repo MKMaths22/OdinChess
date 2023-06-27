@@ -54,6 +54,10 @@ module Miscellaneous
     "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
   end
 
+  def get_reduced_vector(castling_vector)
+    castling_vector[0].positive? ? [1, 0] : [-1, 0]
+  end
+
   def no_castling_error(query_string)
     case query_string.length
     when 9

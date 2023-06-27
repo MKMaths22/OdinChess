@@ -15,6 +15,10 @@ include Miscellaneous
 
 NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
 
+  def castling_rights?(string)
+    castling_rights[string]
+  end
+
   def string_to_square(string)
     # accepts a string of the form 'c6' and returns the contents of that square 
     get_piece_at(string_to_coords(string))
@@ -63,17 +67,16 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     true
   end
 
-  def check_for_check(start, finish, colour, e_p = false)
+  def would_move_leave_us_in_check?(start, finish, colour, e_p = false)
     possible_board_array = change_array(board_array, start, finish, e_p)
     # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
     checking = CheckForCheck.new(possible_board_array, colour)
-    if checking.king_in_check?
-      puts general_into_check_error
-      return true
-    end
+    boolean = checking.king_in_check?
+    puts general_into_check_error if boolean
+    return boolean
   end
 
-  def check_castling_for_check?(colour, start, vector, reduced_vector)
+  def would_castling_be_illegal_due_to_check?(colour, start, vector, reduced_vector)
     check_first = CheckForCheck.new(board_array, colour, castle_from_check_error)
     return true if check_first.king_in_check?
     

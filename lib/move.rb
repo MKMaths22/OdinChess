@@ -4,7 +4,7 @@ class Move
 
 include Miscellaneous
 
-  attr_accessor :string, :colour, :board, :our_piece, :vector, :other_piece, :start_square, :finish_square, :en_passent
+  attr_accessor :string, :colour, :board, :our_piece, :vector, :other_piece, :start_square, :finish_square, :en_passent, :castling
 
   def initialize(string, colour, board)
     @string = string
@@ -16,6 +16,7 @@ include Miscellaneous
     @our_piece = nil
     @other_piece = nil
     @en_passent = false
+    @castling = false
   end
 
   def legal?
@@ -52,10 +53,19 @@ include Miscellaneous
       end
     end
     if hash_from_piece['castling']
-      # then we ask the board object if the appropriate castling rights exist. We ask the board object to TAKE OVER in checking that the castling move is legal, including check issues.
+      string = hash_from_piece['castling']
+      self.castling = string
+      unless board.castling_rights?(string)
+        puts no_castling_error(string)
+        return false
+
+      end
+      reduced_vector = get_reduced_vector(vector)
+      # reduced_vector is the vector the king travels to the square in the middle of the castling move e.g. from e1 to f1.
+      return !board.would_castling_be_illegal_due_to_check?(colour, start_square, vector, reduced_vector)
     end
 
-    return !board.check_for_check(appropriate arguments)
+    return !board.would_move_leave_us_in_check?(start, finish, colour, en_passent)
   end
 
   def find_start_square
