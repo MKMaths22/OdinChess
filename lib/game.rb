@@ -70,8 +70,7 @@ include Miscellaneous
     player_name = @colour_moving == 'White' ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
     next_move = @colour_moving == 'White' ? white.get_legal_move(board) : black.get_legal_move(board)
-    # next_move is a string like 'e3f5' in which we purely list two squares on the board
-
+    # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
 
     
     toggle_colours
