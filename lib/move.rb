@@ -36,7 +36,7 @@ include Miscellaneous
     # find_other_piece dealt with case of friendly piece in the way.
     hash_from_piece = our_piece.move_like_that(vector, capture)
     # piece object replies with hash of the form 
-    # { 'White_0-0-0' => false, 'White_0-0' => false, 'Black_0-0' => false, 'Black_0-0-0' => false, 'en_passent' => false, 'sub_vectors' => [] }
+    # { 'castling' => descriptive string or false 'en_passent' => true/false, 'sub_vectors' => [] }
     squares_to_check = find_squares_to_check(hash_from_piece['sub_vectors'])
     if board.pieces_in_the_way?(squares_to_check)
       puts piece_in_the_way_error
