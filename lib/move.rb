@@ -24,7 +24,7 @@ include Miscellaneous
     return false unless our_piece
     
     other_piece = find_other_piece
-    return false if other_piece = 'Error'
+    return false if other_piece == 'Error'
 
     self.vector = get_move_vector
     if @vector == [0, 0]
@@ -65,7 +65,7 @@ include Miscellaneous
       return !board.would_castling_be_illegal_due_to_check?(colour, start_square, vector, reduced_vector)
     end
 
-    return !board.would_move_leave_us_in_check?(start, finish, colour, en_passent)
+    return !board.would_move_leave_us_in_check?(start_square, finish_square, colour, en_passent)
   end
 
   def find_start_square
@@ -91,7 +91,8 @@ include Miscellaneous
       return nil
     end
     unless possible_piece.colour == colour
-      puts wrong_piece_error(move, colour)
+      p possible_piece
+      puts wrong_piece_error(colour)
       return nil
     end
     possible_piece  

@@ -2,7 +2,10 @@
 
 class Board
 
-include Miscellaneous
+  require './miscellaneous.rb'
+  require './piece.rb'
+
+  include Miscellaneous
   
   attr_accessor :board_array, :castling_rights, :en_passent
   
@@ -57,14 +60,14 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     # This method checks whether any pieces are in the way
     # squares_between is a 2-D array of the squares in between where
     # if a piece were present it would get in the way of the move
-    squares_between.each |coords| do
+    squares_between.each do |coords|
       if get_piece_at(coords)
         # get_item returns piece on the square with coordinates coords, or nil if no piece is there.
         puts piece_in_the_way_error
-        return false
+        return true
       end
     end
-    true
+    false
   end
 
   def would_move_leave_us_in_check?(start, finish, colour, e_p = false)

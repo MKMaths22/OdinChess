@@ -2,11 +2,15 @@
 
 class Player
   
-  attr_accessor :colour, :name
+  attr_reader :colour, :name
   
   def initialize(colour, name = nil)
     @colour = colour
     @name = name
+  end
+
+  def set_name(string)
+    @name = string
   end
 
   def get_legal_move(board)
@@ -14,7 +18,7 @@ class Player
     unless valid_input?(maybe_move)
       return get_legal_move(board)
     end
-    move_to_play = Move.new(maybe_move, @colour_moving, board)
+    move_to_play = Move.new(maybe_move, colour, board)
     move_to_play.legal? ? move_to_play : get_legal_move(board)
     # move_to_play is either falsey if move not valid or it is a Move object
   end

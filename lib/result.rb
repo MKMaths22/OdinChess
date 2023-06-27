@@ -6,7 +6,7 @@ class Result
 
   def initialize(previous_positions = {}, half_moves_count = 0)
     @previous_positions = previous_positions
-    @half_moves_count = moves_count
+    @half_moves_count = half_moves_count
   end
 
   def add_position(position)

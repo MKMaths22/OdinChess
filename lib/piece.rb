@@ -5,16 +5,16 @@ class Piece
   
 include Miscellaneous
   
-  attr_accessor :colour, :movement_vectors
+attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors
 
   def initialize(colour)
     @colour = colour
-    @movement_vectors = get_vectors(base_vectors)
+    @movement_vectors = nil
     @base_vectors = nil
     @castling_vectors = []
   end
 
-  def get_vectors(base_vectors)
+  def get_movement_vectors(base_vectors)
     output = []
     base_vectors.each do |vector|
       (1..7).each do |num|
@@ -78,42 +78,51 @@ end
 
 class Bishop < Piece
 
-  attr_accessor :base_vectors
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors
   
-  def initialize
-    super
+  def initialize(colour)
+    @colour = colour
     @base_vectors = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+    @movement_vectors = get_movement_vectors(base_vectors)
+    @castling_vectors = []
   end
 
 end
 
 class Rook < Piece
 
-  attr_accessor :base_vectors
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors
 
-  def initialize
-    super
+  def initialize(colour)
+    @colour = colour
     @base_vectors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+    @movement_vectors = get_movement_vectors(base_vectors)
+    @castling_vectors = []
   end
 
 end
 
 class Queen < Piece
 
-  attr_accessor :base_vectors
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors
 
-  def initialize
-    super
+  def initialize(colour)
+    @colour = colour
     @base_vectors = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
+    @movement_vectors = get_movement_vectors(base_vectors)
+    @castling_vectors = []
   end
 
 end
 
 class Knight < Piece
 
+  attr_accessor :colour, :movement_vectors, :castling_vector, :base_vectors
+
   def initialize(colour)
     @colour = colour
     @movement_vectors = KNIGHT_VECTORS
+    @castling_vectors = []
   end
 
   def get_subvectors
@@ -130,13 +139,14 @@ class Pawn < Piece
   # pawn promotion dealt with separately under 'ConsequencesOfMove'
   # which may be a separate class?
   
-  attr_accessor :colour, :capture_vectors, :non_capture_vectors
+  attr_accessor :colour, :capture_vectors, :non_capture_vectors, :moved, :base_vectors
   
   def initialize(colour)
     @colour = colour
     @moved = false
     @capture_vectors = get_captures(colour)
     @non_capture_vectors = get_non_captures(colour)
+    @castling_vectors = []
   end
 
   def move_like_that(vector, capture)
@@ -169,7 +179,7 @@ class Pawn < Piece
       return false
     end
         
-    hash['sub_vectors'] => non_capture_vectors.select { |movement| subvector?(vector, movement) }
+    hash['sub_vectors'] = non_capture_vectors.select { |movement| subvector?(vector, movement) }
         
     return hash
   end
@@ -192,11 +202,11 @@ class Pawn < Piece
   end
 
   def get_captures(colour)
-    colour = 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
+    colour == 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
   end
 
   def get_non_captures(colour)
-    colour = 'White' ? [[0, 1], [0, 2]] : [[0, -1], [0, -2]]
+    colour == 'White' ? [[0, 1], [0, 2]] : [[0, -1], [0, -2]]
   end
   
   # def move_legal?(board, start, finish)
@@ -261,6 +271,8 @@ end
 
 class King < Piece
 
+  attr_accessor :colour, :capture_vectors, :non_capture_vectors, :moved
+  
   def initialize(colour)
     @colour = colour
     @movement_vectors = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]

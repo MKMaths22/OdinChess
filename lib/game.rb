@@ -20,14 +20,14 @@
 # The procedure for determining if a move is legal
 
 require 'yaml'
-require-relative 'board'
-require-relative 'player'
-require-relative 'display_board'
-require-relative 'check_for_check'
-require-relative 'result'
-require-relative 'piece'
-require-relative 'miscellaneous'
-require-relative 'move'
+require './board.rb'
+require './player.rb'
+require './display_board.rb'
+require './check_for_check.rb'
+require './result.rb'
+require './piece.rb'
+require './miscellaneous.rb'
+require './move.rb'
 
 class Game
 
@@ -67,7 +67,7 @@ include Miscellaneous
 
   def one_turn
     @display_board.show_the_board
-    player_name = @colour_moving == 'White' ? white.name : black.name
+    player_name = (@colour_moving == 'White') ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
     next_move = @colour_moving == 'White' ? white.get_legal_move(board) : black.get_legal_move(board)
     # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
@@ -127,10 +127,10 @@ include Miscellaneous
   def name_the_players
     puts 'Please input the name of the player with the White pieces.'
     input = gets.strip
-    @white.set_name(input)
+    white.set_name(input)
     puts 'And now input the name of the player playing Black.'
     input = gets.strip
-    @black.set_name(input)
+    black.set_name(input)
   end
 
 end
