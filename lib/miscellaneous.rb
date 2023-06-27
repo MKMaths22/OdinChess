@@ -87,13 +87,14 @@ module Miscellaneous
  # end
 
   def add_castling_to_hash(vector, colour, hash)
-    # the hash takes the form of output_hash in the Piece class
+    # the hash takes the form of output_hash in the Piece class i.e.
+    # output_hash = { 'castling' => false, 'en_passent' => false, 'sub_vectors' => [] }
     # vector is either [2, 0] or [-2, 0]
-    # method adds 'White_0-0' => true to hash or other as appropriate. It also
+    # method sets the value of castling in the hash to 'White_0-0' or other as appropriate. It also
     # adds the squares between to check, relative to the king's starting position, so will be [1, 0] and [2, 0] or [-1, 0], [-2, 0] and [-3, 0] 
     output_hash = hash
-    output_hash["#{colour}_0-0-0"] = true if vector[0].negative?
-    output_hash["#{colour}_0-0"] = true if vector[0].positive?
+    output_hash['castling'] = ["#{colour}_0-0-0"] if vector[0].negative?
+    output_hash['castling'] = ["#{colour}_0-0"] if vector[0].positive?
     output_hash['sub_vectors'] = [[1, 0], [2, 0]] if vector[0].positive?
     output_hash['sub_vectors'] = [[-1, 0], [-2, 0], [-3, 0]] if vector[0].negative?
     output_hash

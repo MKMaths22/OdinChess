@@ -11,8 +11,6 @@ include Miscellaneous
     @castling_rights = { 'White_0-0-0' => true, 'White_0-0' => true, 'Black_0-0-0' => true, 'Black_0-0' => true }
     @colour_moving = 'White'
     @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
-    # if there is an en_passent possibility maybe it is denoted by the coordinates of the square on which the
-    # pawn can be taken 
   end
 
 NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
@@ -26,11 +24,13 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     get_item(board_array, coords)
   end
   
-  def en_passent?(coords)
+  def en_passent_capture_possible_at?(coords)
     en_passent['Pawn passed through'] == coords
   end
 
   def castling_legal?(colour, start, vector)
+    # THIS METHOD HAS TO CHANGE BECAUSE OF HOW THE MOVE CLASS IS NOW
+    # HANDLING THE QUESTIONS TO THE BOARD CLASS!!
     # colour is the colour of the King trying to castle, which may not even be in its starting position and vector is [2, 0] or [-2, 0] Start is the King's initial square
     query_string = colour + '_0-0'
     query_string += '-0' if vector[0].negative?
@@ -39,23 +39,17 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
       puts no_castling_error(query_string)
       return false
     end
-    squares_to_check = find_squares_to_check(colour, vector)
-    return false unless pieces_between_allow_move?(squares_to_check)
+    # squares_to_check = find_squares_to_check(colour, vector)
+    # return false unless pieces_between_allow_move?(squares_to_check)
 
-    reduced_vector = vector[0].negative? ? [-1, 0] : [1, 0]
+    # reduced_vector = vector[0].negative? ? [-1, 0] : [1, 0]
 
     # NEED TO MAKE THREE possible_board_array values to check in all three that 
     # the king is not in check.
     !check_castling_for_check?(colour, start, vector, reduced_vector)
   end
-
-  def pieces_allow_move(start, finish, colour, squares_between)
-    return false unless pieces_between_allow_move?(squares_between)
-
-    finish_square_ok(finish, colour)
-  end
   
-  def pieces_between_allow_move?(squares_between)
+  def pieces_in_the_way?(squares_between)
     # This method checks whether any pieces are in the way
     # squares_between is a 2-D array of the squares in between where
     # if a piece were present it would get in the way of the move
@@ -67,19 +61,6 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
       end
     end
     true
-  end
-      
-  def finish_square_ok(finish, colour)
-    finish_piece = get_item(board_array, finish)
-          
-    return 'not_capture' unless finish_piece
-
-    if finish_piece.colour == colour 
-        puts capture_own_piece_error
-        return false
-    end
-
-    return 'capture'
   end
 
   def check_for_check(start, finish, colour, e_p = false)

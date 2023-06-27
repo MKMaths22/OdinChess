@@ -36,7 +36,7 @@ include Miscellaneous
     # in the way.
     # Effectively if a Pawn is replying to this method it may say 'move is OK only if it is en_passent'
 
-    output_hash = { 'White_0-0-0' => false, 'White_0-0' => false, 'Black_0-0' => false, 'Black_0-0-0' => false, 'en_passent' => false, 'sub_vectors' => [] }
+    output_hash = { 'castling' => false, 'en_passent' => false, 'sub_vectors' => [] }
 
     if castling_vectors.include?(vector)
       # can only be triggered in King class, otherwise there
@@ -147,7 +147,7 @@ class Pawn < Piece
     # in the way.
     # Effectively if a Pawn is replying to this method it may say 'move is OK only if it is en_passent'
 
-    output_hash = { 'White_0-0-0' => false, 'White_0-0' => false, 'Black_0-0' => false, 'Black_0-0-0' => false, 'en_passent' => false, 'sub_vectors' => [] }
+    output_hash = { 'castling' => false, 'en_passent' => false, 'sub_vectors' => [] }
 
     unless capture_vectors.include?(vector) || non_capture_vectors.include?(vector)
       puts piece_move_error
@@ -270,6 +270,7 @@ class King < Piece
   def find_squares_between
     # not strictly necessary, but for emphasis that King moves
     # cannot be blocked by pieces in the way
+    # Castling is dealt with separately in this regard
     []
   end
 end
