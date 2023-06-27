@@ -11,7 +11,7 @@ class Player
 
   def get_move(board)
     maybe_move = gets.strip
-    move_to_play = all_valid?(maybe_move, @colour_moving, board)
+    move_to_play = validate_move(maybe_move, @colour_moving, board)
     move_to_play ? move_to_play : get_move
     # move_to_play is either falsey if move not valid or it is a Move object
   end
@@ -31,12 +31,13 @@ class Player
     "#{string} is not acceptable input. Please type the algebraic notation for starting square and finishing square such as 'g1f3'. Castling is a King move."
   end
 
-  def all_valid?(maybe_move, colour, board)
+  def validate_move(maybe_move, colour, board)
     # maybe_move is the raw input from the player
     return false unless valid_input?(maybe_move)
 
     this_move = Move.new(maybe_move, colour, board)
-    return this_move.legal?
+    return this_move.legal
+    # which is either false or a Move object
   end
     
    # return false unless moving_piece.move_legal?(board, start_square, final_square)

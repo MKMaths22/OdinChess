@@ -19,7 +19,14 @@ include Miscellaneous
     @castling = false
   end
 
-  def legal?
+  def legal
+    boolean = legal_boolean
+    return false unless boolean
+
+    return self
+  end
+  
+  def legal_boolean?
     our_piece = find_our_piece
     return false unless our_piece
     
