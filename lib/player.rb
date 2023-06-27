@@ -9,10 +9,13 @@ class Player
     @name = name
   end
 
-  def get_move(board)
+  def get_legal_move(board)
     maybe_move = gets.strip
-    move_to_play = validate_move(maybe_move, @colour_moving, board)
-    move_to_play ? move_to_play : get_move
+    unless valid_input?(maybe_move)
+      return get_legal_move(board)
+    end
+    move_to_play = Move.new(maybe_move, @colour_moving, board)
+    move_to_play.legal? ? move_to_play : get_legal_move(board)
     # move_to_play is either falsey if move not valid or it is a Move object
   end
 
@@ -30,22 +33,4 @@ class Player
   def input_error(string)
     "#{string} is not acceptable input. Please type the algebraic notation for starting square and finishing square such as 'g1f3'. Castling is a King move."
   end
-
-  def validate_move(maybe_move, colour, board)
-    # maybe_move is the raw input from the player
-    return false unless valid_input?(maybe_move)
-
-    this_move = Move.new(maybe_move, colour, board)
-    return this_move.legal
-    # which is either false or a Move object
-  end
-    
-   # return false unless moving_piece.move_legal?(board, start_square, final_square)
-    
-    # The class of the piece takes care of the remaining tests because
-    # type of piece dictates if move is possible and board class lets us
-    # know if pieces in the way, Castling, En Passent possibilities 
-
-    # return { 'start' => start_square, 'finish' => final_square }
-  # end
 end
