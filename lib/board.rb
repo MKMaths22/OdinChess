@@ -73,9 +73,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     possible_board_array = change_array(board_array, start, finish, e_p)
     # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
     checking = CheckForCheck.new(possible_board_array, colour)
-    boolean = checking.king_in_check?
-    puts general_into_check_error if boolean
-    return boolean
+    checking.king_in_check?
   end
 
   def would_castling_be_illegal_due_to_check?(colour, start, vector, reduced_vector)
