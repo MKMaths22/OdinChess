@@ -46,12 +46,16 @@ module Miscellaneous
     "You cannot capture your own pieces. Please try again."
   end
 
-  def no_piece_error(move)
-    "There is no piece on the square #{move[0,2]}. Please input a valid move."
+  def no_piece_error
+    "There is no piece on the starting square. Please input a valid move."
   end
 
   def wrong_piece_error(colour)
     "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
+  end
+
+  def en_passent_error
+    "There is no en_passent capture on that square. Please try again."
   end
 
   def get_reduced_vector(castling_vector)

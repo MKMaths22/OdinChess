@@ -87,11 +87,10 @@ include Miscellaneous
   def find_our_piece
     possible_piece = board.get_piece_at(start_square)
     unless possible_piece
-      puts no_piece_error(move)
+      puts no_piece_error
       return nil
     end
     unless possible_piece.colour == colour
-      p possible_piece
       puts wrong_piece_error(colour)
       return nil
     end
