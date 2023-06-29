@@ -9,7 +9,6 @@ class Piece
   end
 
   def apply_colour(array_of_strings)
-    # square_color = (rank + file).odd? ? :white : :black
     colour_to_use = (colour == 'White' ? :light_white : :black)
     array_of_strings.map { |string| string.colorize(color: colour_to_use) } 
   end

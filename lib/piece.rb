@@ -1,17 +1,23 @@
 # frozen-string-literal: true
 
+require 'colorize'
 # At first various Piece classes will repeat each other. Refactor repitition out at the end
 class Piece
   
 include Miscellaneous
   
-attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors
+attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings
 
   def initialize(colour)
     @colour = colour
     @movement_vectors = nil
     @base_vectors = nil
     @castling_vectors = []
+  end
+
+  def apply_colour(array_of_strings)
+    colour_to_use = (colour == 'White' ? :light_white : :black)
+    array_of_strings.map { |string| string.colorize(color: colour_to_use) } 
   end
 
   def get_movement_vectors(base_vectors)
@@ -85,6 +91,8 @@ class Bishop < Piece
     @base_vectors = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     @movement_vectors = get_movement_vectors(base_vectors)
     @castling_vectors = []
+    @basic_display_strings = ['    o    ', '   ( )   ', '   / \   ', '  /___\  ']
+    @display_strings = apply_colour(@basic_display_strings)
   end
 
 end
@@ -98,6 +106,8 @@ class Rook < Piece
     @base_vectors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
     @movement_vectors = get_movement_vectors(base_vectors)
     @castling_vectors = []
+    @basic_display_strings = ['  n_n_n  ', '  \   /  ', '  |   |  ', '  /___\  ']
+    @display_strings = apply_colour(@basic_display_strings)
   end
 
 end
@@ -111,6 +121,8 @@ class Queen < Piece
     @base_vectors = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
     @movement_vectors = get_movement_vectors(base_vectors)
     @castling_vectors = []
+    @basic_display_strings = ['  ooooo  ', '   \ /   ', '   / \   ', '  /___\  ']
+    @display_strings = apply_colour(@basic_display_strings)
   end
 
 end
@@ -123,6 +135,8 @@ class Knight < Piece
     @colour = colour
     @movement_vectors = KNIGHT_VECTORS
     @castling_vectors = []
+    @basic_display_strings = ['    __,  ', '  /  o\  ', '  \  \_> ', '  /__\   ']
+    @display_strings = apply_colour(@basic_display_strings)
   end
 
   def get_subvectors
@@ -147,6 +161,8 @@ class Pawn < Piece
     @capture_vectors = get_captures(colour)
     @non_capture_vectors = get_non_captures(colour)
     @castling_vectors = []
+    @basic_display_strings = ['         ', '    o    ', '   ( )   ', '   |_|   ']
+    @display_strings = apply_colour(@basic_display_strings)
   end
 
   def move_like_that(vector, capture)
@@ -277,6 +293,8 @@ class King < Piece
     @colour = colour
     @movement_vectors = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
     @castling_vectors = [[0, -2], [0, 2]]
+    @basic_display_strings = ['    +    ', '   \ /   ', '   ( )   ', '   /_\   ']
+    @display_strings = apply_colour(@basic_display_strings)
   end
 
   def find_squares_between
