@@ -61,11 +61,8 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     # squares_between is a 2-D array of the squares in between where
     # if a piece were present it would get in the way of the move
     squares_between.each do |coords|
-      if get_piece_at(coords)
+      return true if get_piece_at(coords)
         # get_item returns piece on the square with coordinates coords, or nil if no piece is there.
-        puts piece_in_the_way_error
-        return true
-      end
     end
     false
   end
