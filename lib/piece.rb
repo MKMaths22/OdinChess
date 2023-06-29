@@ -52,7 +52,7 @@ attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :dis
       return output_hash
     end
 
-    unless movement_vectors.include?(vector_tried)
+    unless movement_vectors.include?(vector)
       puts piece_move_error
       return false
     end
