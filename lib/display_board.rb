@@ -14,10 +14,23 @@ class DisplayBoard
       end
       rank -= 1
     end
+    puts final_row
+  end
+
+  def number_string(rank_number)
+    "      #{rank_number + 1}  "
+  end
+
+  def final_row
+    string = EMPTY_STRING
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].each do |letter|
+      string += "    #{letter}    "
+    end
+    string
   end
   
   def make_a_row(array, rank, num)
-    string = ''
+    string = num == 2 ? number_string(rank) : EMPTY_STRING
     (0..7).each do |file|
       poss_piece = array[file][rank]
       square_color = (rank + file).odd? ? :white : :light_black
