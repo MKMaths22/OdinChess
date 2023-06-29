@@ -66,7 +66,7 @@ include Miscellaneous
   end
 
   def one_turn
-    @display_board.show_the_board
+    @display_board.show_the_board(board)
     player_name = (@colour_moving == 'White') ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
     next_move = @colour_moving == 'White' ? white.get_legal_move(board) : black.get_legal_move(board)
