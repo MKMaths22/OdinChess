@@ -292,7 +292,7 @@ class King < Piece
   def initialize(colour)
     @colour = colour
     @movement_vectors = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
-    @castling_vectors = [[0, -2], [0, 2]]
+    @castling_vectors = [[-2, 0], [2, 0]]
     @basic_display_strings = ['    +    ', '   \ /   ', '   ( )   ', '   /_\   ']
     @display_strings = apply_colour(@basic_display_strings)
   end
