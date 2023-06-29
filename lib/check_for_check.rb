@@ -80,7 +80,7 @@ include Miscellaneous
     [[0, 1], [0, -1], [1, 0], [-1, 0]].each do |direction|
       poss_piece = find_first_piece(square, direction)
       if poss_piece
-        return true unless poss_piece.colour == colour || piece.is_a?(Knight) || piece.is_a?(Pawn) || piece.is_a?(Bishop) || piece.is_a?(King)
+        return true unless poss_piece.colour == colour || poss_piece.is_a?(Knight) || poss_piece.is_a?(Pawn) || poss_piece.is_a?(Bishop) || poss_piece.is_a?(King)
         # we already dealt with adjacent Kings case in find_both_king_coords so this works
       end
     end
@@ -91,7 +91,7 @@ include Miscellaneous
     [[1, -1], [1, 1], [-1, 1], [-1, -1]].each do |direction|
       poss_piece = find_first_piece(square, direction)
       if poss_piece
-        return true unless poss_piece.colour == colour || piece.is_a?(Knight) || piece.is_a?(Pawn) || piece.is_a?(Rook) || piece.is_a?(King)
+        return true unless poss_piece.colour == colour || poss_piece.is_a?(Knight) || poss_piece.is_a?(Pawn) || poss_piece.is_a?(Rook) || poss_piece.is_a?(King)
         # pawns will be dealt with separately
       end
     end

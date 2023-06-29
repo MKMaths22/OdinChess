@@ -63,11 +63,14 @@ module Miscellaneous
   end
 
   def no_castling_error(query_string)
+    puts "query_string = #{query_string} with length #{query_string.length}"
     case query_string.length
     when 9
       "#{query_string[0, 5]} can no longer castle on the King side."
     when 11
       "#{query_string[0, 5]} can no longer castle on the Queen side."
+    else
+      "Some sort of error in the no_castling_error method."
     end
   end
 
@@ -101,8 +104,8 @@ module Miscellaneous
     # method sets the value of castling in the hash to 'White_0-0' or other as appropriate. It also
     # adds the squares between to check, relative to the king's starting position, so will be [1, 0] and [2, 0] or [-1, 0], [-2, 0] and [-3, 0] 
     output_hash = hash
-    output_hash['castling'] = ["#{colour}_0-0-0"] if vector[0].negative?
-    output_hash['castling'] = ["#{colour}_0-0"] if vector[0].positive?
+    output_hash['castling'] = "#{colour}_0-0-0" if vector[0].negative?
+    output_hash['castling'] = "#{colour}_0-0" if vector[0].positive?
     output_hash['sub_vectors'] = [[1, 0], [2, 0]] if vector[0].positive?
     output_hash['sub_vectors'] = [[-1, 0], [-2, 0], [-3, 0]] if vector[0].negative?
     output_hash
