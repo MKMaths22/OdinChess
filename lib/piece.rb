@@ -172,7 +172,7 @@ class Pawn < Piece
     # which can have only at most one true value and a 2-D array which is the value of the key 'sub_vectors' which allows the Move class to ask the Board class which squares may have pieces
     # in the way.
     # Effectively if a Pawn is replying to this method it may say 'move is OK only if it is en_passent'
-
+    
     output_hash = { 'castling' => false, 'en_passent' => false, 'sub_vectors' => [] }
 
     unless capture_vectors.include?(vector) || non_capture_vectors.include?(vector)

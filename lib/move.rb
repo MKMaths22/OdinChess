@@ -36,6 +36,7 @@ include Miscellaneous
     # is true if other_piece is an opposition piece, false otherwise.
     # find_other_piece dealt with case of friendly piece in the way.
     hash_from_piece = our_piece.move_like_that(vector, capture)
+    return false unless hash_from_piece
     # piece object replies with hash of the form 
     # { 'castling' => descriptive string or false 'en_passent' => true/false, 'sub_vectors' => [] }
     squares_to_check = find_squares_to_check(hash_from_piece['sub_vectors'])
