@@ -7,7 +7,7 @@ class Board
 
   include Miscellaneous
   
-  attr_accessor :board_array, :castling_rights, :en_passent
+  attr_accessor :board_array, :castling_rights, :en_passent, :colour_moving
   
   def initialize(board_array = NEW_BOARD_ARRAY)
     @board_array = NEW_BOARD_ARRAY
@@ -20,6 +20,11 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   
   def castling_rights?(string)
     castling_rights[string]
+  end
+
+  def remove_castling_rights(side)
+    # side is '0-0' or '0-0-0'
+    castling_rights["#{colour_moving}_#{side}"] = false
   end
 
   def string_to_square(string)
@@ -36,8 +41,6 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   end
 
   def castling_legal?(colour, start, vector)
-    # THIS METHOD HAS TO CHANGE BECAUSE OF HOW THE MOVE CLASS IS NOW
-    # HANDLING THE QUESTIONS TO THE BOARD CLASS!!
     # colour is the colour of the King trying to castle, which may not even be in its starting position and vector is [2, 0] or [-2, 0] Start is the King's initial square
     query_string = colour + '_0-0'
     query_string += '-0' if vector[0].negative?

@@ -153,7 +153,8 @@ class Pawn < Piece
   # pawn promotion dealt with separately under 'CarryOutMove'
   # which may be a separate class?
   
-  attr_accessor :colour, :capture_vectors, :non_capture_vectors, :moved, :base_vectors
+  attr_accessor :colour, :capture_vectors, :non_capture_vectors, :base_vectors
+  attr_reader :moved
   
   def initialize(colour)
     @colour = colour
@@ -207,6 +208,10 @@ class Pawn < Piece
     # OK subject to king_in_check issues if and only if it is en_passent.
     hash['en_passent'] = true unless capture
     hash
+  end
+
+  def update_moved_variable
+    @moved = true
   end
 
   def pawn_capture_error
