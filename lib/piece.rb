@@ -150,7 +150,7 @@ end
 
 class Pawn < Piece
 
-  # pawn promotion dealt with separately under 'ConsequencesOfMove'
+  # pawn promotion dealt with separately under 'CarryOutMove'
   # which may be a separate class?
   
   attr_accessor :colour, :capture_vectors, :non_capture_vectors, :moved, :base_vectors

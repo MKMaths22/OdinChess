@@ -13,7 +13,7 @@ class Board
     @board_array = NEW_BOARD_ARRAY
     @castling_rights = { 'White_0-0-0' => true, 'White_0-0' => true, 'Black_0-0-0' => true, 'Black_0-0' => true }
     @colour_moving = 'White'
-    @en_passent = { 'Pawn passed through' => [4, 5], 'Pawn now at' => [4, 4] }
+    @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
   end
 
 NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
@@ -96,6 +96,15 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     new_array[start[0]][start[1]] = nil
     new_array[en_passent['Pawn now at'][0]][en_passent['Pawn now at'][1]] = nil if e_p
     # if it is en_passent we also remove the pawn captured
+    new_array
+  end
+
+  def change_array_for_castling(king_start, king_finish, rook_start, rook_finish)
+    new_array = array.map { |item| item.clone }
+    new_array[king_finish[0]][king_finish[1]] = array[king_start[0]][king_start[1]]
+    new_array[king_start[0]][king_start[1]] = nil
+    new_array[rook_finish[0]][rook_finish[1]] = array[rook_start[0]][rook_start[1]]
+    new_array[rook_start[0]][rook_start[1]] = nil
     new_array
   end
 

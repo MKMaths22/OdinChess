@@ -28,6 +28,7 @@ require './result.rb'
 require './piece.rb'
 require './miscellaneous.rb'
 require './move.rb'
+require './change_the_board.rb'
 
 class Game
 
@@ -71,6 +72,9 @@ include Miscellaneous
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
     next_move = @colour_moving == 'White' ? white.get_legal_move(board) : black.get_legal_move(board)
     # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
+    update_board = ChangeTheBoard.new(next_move, board)
+    @board = update_board.update_the_board
+    # the #update_the_board method generates a new Board object which becomes the @board instance variable value of the Game object
 
     
     toggle_colours
@@ -78,6 +82,7 @@ include Miscellaneous
 
   def toggle_colours
     colour_moving = other_colour(colour_moving)
+    # the colour_moving variable in the Board class needs to be toggled separately
   end
   
   def games_saved?
