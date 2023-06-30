@@ -6,8 +6,7 @@ class ChangeTheBoard
   end
 
   def update_the_board
-    # will ask questions of the Move object @move and the Board object @board to generate a new 
-    # Board object 
+    # will ask questions of the Move object @move and tell the Board object to update itself
   end
 
 end
