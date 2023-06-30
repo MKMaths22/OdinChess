@@ -161,7 +161,7 @@ class Pawn < Piece
     @capture_vectors = get_captures(colour)
     @non_capture_vectors = get_non_captures(colour)
     @castling_vectors = []
-    @basic_display_strings = ['         ', '    o    ', '   ( )   ', '   |_|   ']
+    @basic_display_strings = ['         ', '    o    ', '   / \   ', '   |_|   ']
     @display_strings = apply_colour(@basic_display_strings)
   end
 
