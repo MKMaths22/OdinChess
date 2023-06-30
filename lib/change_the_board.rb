@@ -1,5 +1,8 @@
 # ChangeTheBoard class implements the moving of pieces, including en passent/castling. Player who moved is prompted for promotion and en_passent chances and castling_rights are updated.
 class ChangeTheBoard
+  
+  attr_accessor :move, :board
+  
   def initialize(move, board)
     @move = move
     @board = board
@@ -45,7 +48,7 @@ class ChangeTheBoard
   end
 
   def make_general_move
-
+    board.update_array(move.poss_board_array)
 
     board.reset_en_passent
     board.add_en_passent_chance(finish_square) if move.our_piece.kind_of?(Pawn) && !move.vector[1].between(-1, 1)

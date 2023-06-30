@@ -7,7 +7,7 @@ class Board
 
   include Miscellaneous
   
-  attr_accessor :board_array, :castling_rights, :colour_moving
+  attr_accessor :board_array, :castling_rights, :colour_moving, :en_passent
   
   def initialize(board_array = NEW_BOARD_ARRAY)
     @board_array = NEW_BOARD_ARRAY
@@ -35,6 +35,10 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
 
   def reset_en_passent
     @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
+  end
+
+  def update_array(poss_board_array)
+    board_array = poss_board_array
   end
 
   def string_to_square(string)
@@ -81,22 +85,22 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   end
 
   def would_move_leave_us_in_check?(possible_board_array)
-    checking = CheckForCheck.new(possible_board_array, colour)
+    checking = CheckForCheck.new(possible_board_array, colour_moving)
     checking.king_in_check?
   end
 
   def would_castling_be_illegal_due_to_check?(colour, start, vector, reduced_vector)
-    check_first = CheckForCheck.new(board_array, colour, castle_from_check_error)
+    check_first = CheckForCheck.new(board_array, colour_moving, castle_from_check_error)
     return true if check_first.king_in_check?
     
     middle_square = add_vector(start, reduced_vector)
     middle_of_castling = make_new_array(start, middle_square)
-    check_middle = CheckForCheck.new(middle_of_castling, colour, castle_through_check_error)
+    check_middle = CheckForCheck.new(middle_of_castling, colour_moving, castle_through_check_error)
     return true if check_middle.king_in_check?
     
     finish_square = add_vector(start, vector)
     finish_of_castling = make_new_array(start, finish_square)
-    check_finish = CheckForCheck.new(finish_of_castling, colour)
+    check_finish = CheckForCheck.new(finish_of_castling, colour_moving)
     return check_finish.king_in_check?
   end
 
