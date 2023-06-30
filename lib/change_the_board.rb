@@ -24,7 +24,7 @@ class ChangeTheBoard
     # pawns need to know when they have moved so that they can't go 2 squares in one go
     if move.en_passent 
       make_en_passent
-    elsif move.finish_square[1] == 7
+    elsif [0, 7].include?move.finish_square[1]
       promote_pawn
     else
       make_general_move
@@ -35,6 +35,32 @@ class ChangeTheBoard
     board.remove_castling_rights('0-0-0')
     board.remove_castling_rights('0-0')
     move.castling? ? make_castling : make_general_move
+  end
+
+  def make_rook_move
+    start_rank = colour == 'White' ? 0 : 7
+    board.remove_castling_rights('0-0-0') if move.start_square == [0, start_rank]
+    board.remove_castling_rights('0-0') if move.start_square[0] == [7, start_rank]
+    make_general_move
+  end
+
+  def make_general_move
+
+
+    board.reset_en_passent
+    board.add_en_passent_chance(finish_square) if move.our_piece.kind_of?(Pawn) && !move.vector[1].between(-1, 1)
+  end
+
+  def make_en_passent
+
+  end
+
+  def make_castling
+
+  end
+
+  def promote_pawn
+
   end
 
 end

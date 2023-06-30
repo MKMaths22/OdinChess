@@ -111,4 +111,19 @@ module Miscellaneous
     output_hash
   end
 
+  def get_rook_start(castling)
+    # outputs the rook's starting co-ordinates for a string 'castling' such as appears in the output_hash given by the Rook class from the #move_like_that method
+    file = castling.length == 9 ? 7 : 0
+    [file, get_rook_rank(castling)]
+  end
+
+  def get_rook_finish(castling)
+    file = castling.length == 9 ? 5 : 3
+    [file, get_rook_rank(castling)]
+  end
+
+  def get_rook_rank(castling)
+    castling[0] == 'W' ? 0 : 7
+  end
+
 end

@@ -4,7 +4,7 @@ class Move
 
 include Miscellaneous
 
-  attr_accessor :string, :colour, :board, :our_piece, :vector, :other_piece, :start_square, :finish_square, :en_passent, :castling
+  attr_accessor :string, :colour, :board, :our_piece, :vector, :other_piece, :start_square, :finish_square, :en_passent, :castling, :poss_board_array
 
   def initialize(string, colour, board)
     @string = string
@@ -17,6 +17,7 @@ include Miscellaneous
     @other_piece = nil
     @en_passent = false
     @castling = false
+    @poss_board_array = nil
   end
 
   def legal?
@@ -65,11 +66,14 @@ include Miscellaneous
 
       end
       reduced_vector = get_reduced_vector(vector)
+      rook_start = get_rook_start(castling)
+      rook_finish = get_rook_finish(castling)
       # reduced_vector is the vector the king travels to the square in the middle of the castling move e.g. from e1 to f1.
+      poss_board_array = board.make_new_array_for_castling(start_square, finish_square, rook_start, rook_finish)
       return !board.would_castling_be_illegal_due_to_check?(colour, start_square, vector, reduced_vector)
     end
-
-    return !board.would_move_leave_us_in_check?(start_square, finish_square, colour, en_passent)
+    poss_board_array = board.make_new_array(start_square, finish_square, en_passent)
+    return !board.would_move_leave_us_in_check?(poss_board_array)
   end
 
   def find_start_square

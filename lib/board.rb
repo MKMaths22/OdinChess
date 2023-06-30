@@ -7,7 +7,7 @@ class Board
 
   include Miscellaneous
   
-  attr_accessor :board_array, :castling_rights, :en_passent, :colour_moving
+  attr_accessor :board_array, :castling_rights, :colour_moving
   
   def initialize(board_array = NEW_BOARD_ARRAY)
     @board_array = NEW_BOARD_ARRAY
@@ -25,6 +25,16 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
   def remove_castling_rights(side)
     # side is '0-0' or '0-0-0'
     castling_rights["#{colour_moving}_#{side}"] = false
+  end
+
+  def add_en_passent_chance(finish_square)
+    file = finish_square[0]
+    capture_rank = finish_square[1] == 3 ? 2 : 5
+    en_passent = { 'Pawn passed through' => [file, capture_rank], 'Pawn now at' => finish_square }
+  end
+
+  def reset_en_passent
+    @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
   end
 
   def string_to_square(string)
@@ -70,9 +80,7 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     false
   end
 
-  def would_move_leave_us_in_check?(start, finish, colour, e_p = false)
-    possible_board_array = change_array(board_array, start, finish, e_p)
-    # board_array but with the piece at 'start' overwriting whatever was at 'finish' co-ordinates
+  def would_move_leave_us_in_check?(possible_board_array)
     checking = CheckForCheck.new(possible_board_array, colour)
     checking.king_in_check?
   end
@@ -82,31 +90,31 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     return true if check_first.king_in_check?
     
     middle_square = add_vector(start, reduced_vector)
-    middle_of_castling = change_array(board_array, start, middle_square)
+    middle_of_castling = make_new_array(start, middle_square)
     check_middle = CheckForCheck.new(middle_of_castling, colour, castle_through_check_error)
     return true if check_middle.king_in_check?
     
     finish_square = add_vector(start, vector)
-    finish_of_castling = change_array(board_array, start, finish_square)
+    finish_of_castling = make_new_array(start, finish_square)
     check_finish = CheckForCheck.new(finish_of_castling, colour)
     return check_finish.king_in_check?
   end
 
-  def change_array(array, start, finish, e_p = false, castle = false)
+  def make_new_array(start, finish, e_p = false)
     # array is a current board_array and we are moving a piece from start to finish co-ordinates
-    new_array = array.map { |item| item.clone }
-    new_array[finish[0]][finish[1]] = array[start[0]][start[1]]
+    new_array = board_array.map { |item| item.clone }
+    new_array[finish[0]][finish[1]] = board_array[start[0]][start[1]]
     new_array[start[0]][start[1]] = nil
     new_array[en_passent['Pawn now at'][0]][en_passent['Pawn now at'][1]] = nil if e_p
     # if it is en_passent we also remove the pawn captured
     new_array
   end
 
-  def change_array_for_castling(king_start, king_finish, rook_start, rook_finish)
-    new_array = array.map { |item| item.clone }
-    new_array[king_finish[0]][king_finish[1]] = array[king_start[0]][king_start[1]]
+  def make_new_array_for_castling(king_start, king_finish, rook_start, rook_finish)
+    new_array = board_array.map { |item| item.clone }
+    new_array[king_finish[0]][king_finish[1]] = board_array[king_start[0]][king_start[1]]
     new_array[king_start[0]][king_start[1]] = nil
-    new_array[rook_finish[0]][rook_finish[1]] = array[rook_start[0]][rook_start[1]]
+    new_array[rook_finish[0]][rook_finish[1]] = board_array[rook_start[0]][rook_start[1]]
     new_array[rook_start[0]][rook_start[1]] = nil
     new_array
   end
