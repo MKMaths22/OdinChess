@@ -19,7 +19,10 @@ class Player
       return get_legal_move(board)
     end
     move_to_play = Move.new(maybe_move, colour, board)
-    move_to_play.legal? ? move_to_play : get_legal_move(board)
+    boolean = move_to_play.legal? 
+    # the move_to_play object should be modified by the #legal? method but this
+    # does not seem to be working
+    boolean ? move_to_play : get_legal_move(board)
     # move_to_play is either falsey if move not valid or it is a Move object
   end
 

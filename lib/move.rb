@@ -21,10 +21,11 @@ include Miscellaneous
   end
 
   def legal?
-    our_piece = find_our_piece
+    self.our_piece = find_our_piece
+    puts "our_piece.class = #{our_piece.class}"
     return false unless our_piece
     
-    other_piece = find_other_piece
+    self.other_piece = find_other_piece
     return false if other_piece == 'Error'
 
     self.vector = get_move_vector
@@ -69,10 +70,10 @@ include Miscellaneous
       rook_start = get_rook_start(castling)
       rook_finish = get_rook_finish(castling)
       # reduced_vector is the vector the king travels to the square in the middle of the castling move e.g. from e1 to f1.
-      poss_board_array = board.make_new_array_for_castling(start_square, finish_square, rook_start, rook_finish)
+      self.poss_board_array = board.make_new_array_for_castling(start_square, finish_square, rook_start, rook_finish)
       return !board.would_castling_be_illegal_due_to_check?(colour, start_square, vector, reduced_vector)
     end
-    poss_board_array = board.make_new_array(start_square, finish_square, en_passent)
+    self.poss_board_array = board.make_new_array(start_square, finish_square, en_passent)
     return !board.would_move_leave_us_in_check?(poss_board_array)
   end
 
