@@ -41,6 +41,10 @@ NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pa
     board_array = poss_board_array
   end
 
+  def replace_pawn_with(new_piece, square)
+    board_array[square[0]][square[1]] = new_piece
+  end
+
   def string_to_square(string)
     # accepts a string of the form 'c6' and returns the contents of that square 
     get_piece_at(string_to_coords(string))
