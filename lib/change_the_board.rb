@@ -29,7 +29,7 @@ class ChangeTheBoard
   def make_pawn_move
     move.our_piece.update_moved_variable
     # pawns need to know when they have moved so that they can't go 2 squares in one go
-    [0, 7].include?move.finish_square[1] ? promote_pawn : make_general_move
+    [0, 7].include?(move.finish_square[1]) ? promote_pawn : make_general_move
     # en_passent Move object already has its own poss_board_array so this case
     # does not need to be dealt with separately at this stage.
   end
@@ -52,7 +52,7 @@ class ChangeTheBoard
   def make_general_move
     board.update_array(move.poss_board_array)
     board.reset_en_passent
-    board.add_en_passent_chance(finish_square) if move.our_piece.kind_of?(Pawn) && !move.vector[1].between?(-1, 1)
+    board.add_en_passent_chance(move.finish_square) if move.our_piece.kind_of?(Pawn) && !move.vector[1].between?(-1, 1)
   end
 
   def promote_pawn
