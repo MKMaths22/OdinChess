@@ -77,6 +77,7 @@ include Miscellaneous
     pawn_move_or_capture = next_move.pawn_move_or_capture?
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
+    
 
     
     toggle_colours
