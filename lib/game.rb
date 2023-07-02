@@ -29,6 +29,7 @@ require './piece.rb'
 require './miscellaneous.rb'
 require './move.rb'
 require './change_the_board.rb'
+require './generate_legal_moves.rb'
 
 class Game
 
@@ -75,9 +76,11 @@ include Miscellaneous
     update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
     update_board.update_the_board
     pawn_move_or_capture = next_move.pawn_move_or_capture?
+    # pawn_move_or_capture will be used later for updating information in Result class
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
-    
+    find_moves = GenerateLegalMoves.new(board)
+
 
     
     toggle_colours
