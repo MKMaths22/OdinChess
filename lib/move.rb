@@ -115,4 +115,8 @@ include Miscellaneous
     possible_piece
   end
 
+  def pawn_move_or_capture?
+    our_piece.kind_of?(Pawn) || other_piece
+  end
+
 end

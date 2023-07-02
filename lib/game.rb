@@ -74,7 +74,9 @@ include Miscellaneous
     # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
     update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
     update_board.update_the_board
-    # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself
+    pawn_move_or_capture = next_move.pawn_move_or_capture?
+    # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
+    # @colour_moving in Game class gets toggled later
 
     
     toggle_colours
