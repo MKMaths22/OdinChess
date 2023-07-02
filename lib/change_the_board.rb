@@ -12,6 +12,8 @@ class ChangeTheBoard
 
   def update_the_board
     # will ask questions of the Move object @move and tell the Board object to update itself
+    board.toggle_colour_moving
+    # the position on the board will tell us whose turn it is to move, but only at the end of the one_turn method is its @colour_moving toggled
     case move.our_piece.class.to_s
     when 'Pawn'
       make_pawn_move
