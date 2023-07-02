@@ -12,9 +12,6 @@ class ChangeTheBoard
 
   def update_the_board
     # will ask questions of the Move object @move and tell the Board object to update itself
-    # puts "update_the_board is executing"
-    # puts "move.our_piece.class = #{move.our_piece.class}"
-    # puts "move class is #{move.class}"
     case move.our_piece.class.to_s
     when 'Pawn'
       make_pawn_move
@@ -51,10 +48,7 @@ class ChangeTheBoard
   end
 
   def make_general_move
-    puts "make_general_move is working"
     board.update_array(move.poss_board_array)
-    p move.poss_board_array[7][6]
-    p board.board_array[7][6]
     board.reset_en_passent
     board.add_en_passent_chance(finish_square) if move.our_piece.kind_of?(Pawn) && !move.vector[1].between?(-1, 1)
   end
