@@ -6,13 +6,12 @@ include Miscellaneous
 
   attr_accessor :string, :colour, :board, :our_piece, :vector, :other_piece, :start_square, :finish_square, :en_passent, :castling, :poss_board_array
 
-  def initialize(string, colour, board)
-    @string = string
-    @colour = colour
+  def initialize(board, start_square, finish_square)
+    @colour = board.colour_moving
     @board = board
-    @vector = nil
-    @start_square = find_start_square
-    @finish_square = find_finish_square
+    @vector = subtract_vector(finish_square, start_square)
+    @start_square = start_square
+    @finish_square = finish_square
     @our_piece = nil
     @other_piece = nil
     @en_passent = false

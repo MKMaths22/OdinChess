@@ -79,8 +79,14 @@ include Miscellaneous
     # pawn_move_or_capture will be used later for updating information in Result class
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
-    find_moves = GenerateLegalMoves.new(board)
-
+    check_status = CheckForCheck.new(board.board_array, board.colour_moving, '')
+    output_hash = check_status.partly_boolean_king_in_check?
+    # board.colour_moving is the next player
+    find_moves = GenerateLegalMoves.new(board, output_hash)
+    unless find_moves.legal_move_exists?
+      check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
+      # board.colour_moving is the colour of the player checkmated in that case
+    end
 
     
     toggle_colours

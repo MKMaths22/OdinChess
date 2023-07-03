@@ -2,6 +2,8 @@
 
 class Player
   
+include Miscellaneous
+  
   attr_reader :colour, :name
   
   def initialize(colour, name = nil)
@@ -18,7 +20,9 @@ class Player
     unless valid_input?(maybe_move)
       return get_legal_move(board)
     end
-    move_to_play = Move.new(maybe_move, colour, board)
+    start_square = string_to_coords(maybe_move[0,2])
+    finish_square = string_to_coords(maybe_move[2,2])
+    move_to_play = Move.new(board, start_square, finish_square)
     boolean = move_to_play.legal? 
     # the move_to_play object should be modified by the #legal? method but this
     # does not seem to be working
