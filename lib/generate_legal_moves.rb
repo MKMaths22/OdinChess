@@ -28,7 +28,7 @@ class GenerateLegalMoves
     while hash_from_board
       current_square = hash_from_board['square']
       current_piece = hash_from_board['piece']
-      output.push(current_piece.get_all_legal_moves_from(current_square))
+      output.push(current_piece.get_all_legal_moves_from(current_square, board))
       return output[0] if output[0] && get_just_one
       hash_from_board = board.next_square_with_piece(current_square)
     end
