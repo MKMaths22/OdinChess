@@ -34,7 +34,7 @@ class Piece
     def use_the_base_vectors(board)
         base_vectors.each do |vector|
           possible_squares = get_possible_squares_in_this_direction(vector, board)
-          moves_to_check_for_check = make_move_objects(possible_squares)
+          moves_to_check_for_check = make_move_objects(board, possible_squares)
         end
     end
 
@@ -47,10 +47,12 @@ class Piece
             possible_squares.push(maybe_square) unless poss_piece && poss_piece.colour == colour
           end
         end
+        moves_to_check_for_check = make_move_objects(board, possible_squares)
+        possible_squares = []
         castling_vectors.each do |vector|
           possible_squares.push(add_vector(square, vector)) if board.castling_rights_from_vector?(vector)
         end
-        moves_to_check_for_check = make_move_objects(possible_squares)
+        moves_to_check_for_check.push(make_move_objects(board, possible_squares, false, true))
     end
 
     def get_possible_squares_in_this_direction(vector, board)
@@ -65,8 +67,8 @@ class Piece
       squares_found
     end
 
-    def make_move_objects(possible_squares)
-
+    def make_move_objects(board, possible_squares, en_passent = false, castling = false)
+      possible_squares.map { |finish| Move.new()}
     end
 
     # Knight class will have movement vectors but no base vectors
