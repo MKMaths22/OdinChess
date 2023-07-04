@@ -92,6 +92,24 @@ class Board
     false
   end
 
+  def next_square_with_piece_to_move(square)
+    # scrolls through the board_array for the next square with a piece of the colour 'colour_moving'
+    # outputs nil if no such piece found
+    return nil if square == [7, 7]
+
+    next_one = next_square(square)
+    poss_piece = get_piece_at(next_one)
+    return { 'square' => next_one, 'piece' => poss_piece } if poss_piece && poss_piece.colour == colour_moving
+
+    next_square_with_piece_to_move(next_one)
+  end
+
+  def next_square(coords)
+    return [coords[0], coords[1] + 1] unless coords[1] == 7
+    return [coords[0] + 1, 0] unless coords[0] == 7
+    nil
+  end
+
   def would_move_leave_us_in_check?(possible_board_array)
     checking = CheckForCheck.new(possible_board_array, colour_moving)
     !!checking.king_in_check?
