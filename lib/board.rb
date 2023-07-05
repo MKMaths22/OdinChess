@@ -25,11 +25,9 @@ class Board
   def castling_rights?(string)
     castling_rights[string]
   end
-
+  
   def castling_rights_from_vector?(vector)
-    part_of_string = vector[0].positive? ? '_0-0' : '_0-0-0'
-    string = "#{colour_moving}#{part_of_string}"
-    castling_rights[string]
+    castling_rights[castling_string_from_vector(vector)]
   end
 
   def remove_castling_rights(side)

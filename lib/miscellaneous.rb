@@ -126,4 +126,8 @@ module Miscellaneous
     castling[0] == 'W' ? 0 : 7
   end
 
+  def castling_string_from_vector(vector)
+    part_of_string = vector[0].positive? ? '_0-0' : '_0-0-0'
+    string = "#{colour_moving}#{part_of_string}"
+  end
 end
