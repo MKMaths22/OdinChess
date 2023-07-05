@@ -6,7 +6,7 @@ class GenerateLegalMoves
 
   include Miscellaneous
 
-  attr_accessor :board, :check_hash
+  attr_accessor :board, :colour_moving
 
   def initialize(board)
     @board = board
