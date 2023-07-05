@@ -35,7 +35,7 @@ class Game
 
 include Miscellaneous
   
-  attr_accessor :white, :black, :board, :result, :colour_moving
+  attr_accessor :white, :black, :board, :result, :colour_moving, :check
   
   def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new)
     @board = board
@@ -43,6 +43,7 @@ include Miscellaneous
     @black = black
     @result = result
     @colour_moving = 'White'
+    @check = false
     @display_board = DisplayBoard.new
   end
 
@@ -71,6 +72,8 @@ include Miscellaneous
     @display_board.show_the_board(board)
     player_name = (@colour_moving == 'White') ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
+    
+    
     next_move = @colour_moving == 'White' ? white.get_legal_move(board) : black.get_legal_move(board)
     # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
     update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
@@ -80,9 +83,9 @@ include Miscellaneous
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
     check_status = CheckForCheck.new(board.board_array, board.colour_moving, '')
-    output_hash = check_status.partly_boolean_king_in_check?
+    check_hash = check_status.partly_boolean_king_in_check?
     # board.colour_moving is the next player
-    find_moves = GenerateLegalMoves.new(board, output_hash)
+    find_moves = GenerateLegalMoves.new(board, check_hash)
     unless find_moves.legal_move_exists?
       check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
       # board.colour_moving is the colour of the player checkmated in that case
