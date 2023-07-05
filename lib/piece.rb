@@ -14,11 +14,16 @@ class Piece
       @base_vectors = nil
       @castling_vectors = []
       @square = nil
-      @moves_to_check_for_check = nil
+      @moves_to_check_for_check = []
     end
 
+    def apply_colour(array_of_strings)
+      colour_to_use = (colour == 'White' ? :light_white : :black)
+      array_of_strings.map { |string| string.colorize(color: colour_to_use) } 
+    end
+    
     def reset_moves_to_check
-      moves_to_check_for_check = nil
+      moves_to_check_for_check = []
     end
     
     def get_all_legal_moves_from(current_square, board)
@@ -68,7 +73,7 @@ class Piece
     end
 
     def make_move_objects(board, possible_squares, en_passent = false, castling = false)
-      possible_squares.map { |finish| Move.new()}
+      possible_squares.map { |finish| Move.new(board, square, finish, en_passent, castling) }
     end
 
     # Knight class will have movement vectors but no base vectors
@@ -77,3 +82,169 @@ class Piece
     # that would be legal if not for check issues
 
 end
+
+class Pawn < Piece
+  
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+
+  def initialize(colour)
+    @colour = colour
+    @capture_vectors = get_captures
+    @non_capture_vectors = get_non_captures
+    @castling_vectors = []
+    @square = nil
+    @moves_to_check_for_check = nil
+    @basic_display_strings = ['         ', '    o    ', '   / \   ', '   |_|   ']
+    @display_strings = apply_colour(@basic_display_strings)
+    @moved = false
+  end
+
+  def update_moved_variable
+    self.moved = true
+  end
+
+  def get_captures
+    colour == 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
+  end
+
+  def get_non_captures
+    if colour == 'White'
+      return moved ? [[0, 1]] : [[0, 1], [0, 2]]
+    else
+      return moved ? [[0, -1]] : [[0, -1], [0, -2]]
+    end
+    # rest of code can use the fact that the FIRST non_capture vector
+    # has to be playable onto an empty square to consider the SECOND one,
+    # if the second one exists.
+  end
+
+  def get_all_legal_moves_from(current_square, board)
+    self.square = current_square
+    reset_moves_to_check
+
+    capture_vectors.each do |vector|
+      capture_at = add_vector(current_square, vector)
+      poss_piece = board.get_piece_at(capture_at)
+      if poss_piece && poss_piece.colour != colour
+        moves_to_check_for_check.push(Move.new(board, square, capture_at))
+      end
+      moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
+    # no need to check for no piece on the en_passent capturing square, 
+    # because an opponent's pawn just passed through that square
+    end
+
+    first_non_capture_square = add_vector(current_square, non_capture_vectors[0])
+    poss_piece = board.get_piece_at(first_non_capture_square)
+    unless poss_piece
+      moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
+      if non_capture_vectors[1]
+        other_square = add_vector(current_square, non_capture_vectors[1])
+        other_poss_piece = board.get_piece_at(other_square)
+        moves_to_check_for_check.push(Move.new(board, square, other_square)) unless other_poss_piece
+      end
+    end
+    
+    moves_to_check_for_check.filter { |move| move.legal? }
+    # pawn promotion is dealt with in ChangeTheBoard but we don't
+    # need to know the piece the pawn promotes to in order to check
+    # whether the move is legal
+  end
+
+end
+
+class Bishop < Piece
+
+include Miscellaneous
+
+attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+
+  def initialize(colour)
+    @colour = colour
+    @movement_vectors = nil
+    @base_vectors = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+    @castling_vectors = []
+    @square = nil
+    @moves_to_check_for_check = nil
+    @basic_display_strings = ['    o    ', '   ( )   ', '   / \   ', '  /___\  ']
+    @display_strings = apply_colour(@basic_display_strings)
+  end
+
+end
+
+class Rook < Piece
+
+  include Miscellaneous
+  
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+  
+  def initialize(colour)
+    @colour = colour
+    @movement_vectors = nil
+    @base_vectors = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+    @castling_vectors = []
+    @square = nil
+    @moves_to_check_for_check = nil
+    @basic_display_strings = ['  n_n_n  ', '  \   /  ', '  |   |  ', '  /___\  ']
+    @display_strings = apply_colour(@basic_display_strings)
+  end
+  
+end
+
+class Queen < Piece
+
+  include Miscellaneous
+  
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+  
+  def initialize(colour)
+    @colour = colour
+    @movement_vectors = nil
+    @base_vectors = [[-1, 0], [0, 1], [1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
+    @castling_vectors = []
+    @square = nil
+    @moves_to_check_for_check = nil
+    @basic_display_strings = ['  ooooo  ', '   \ /   ', '   / \   ', '  /___\  ']
+    @display_strings = apply_colour(@basic_display_strings)
+  end
+  
+end
+
+class Knight < Piece
+
+  include Miscellaneous
+  
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+  
+  def initialize(colour)
+    @colour = colour
+    @movement_vectors = KNIGHT_VECTORS
+    # KNIGHT_VECTORS are listed in Miscellaneous
+    @base_vectors = nil
+    @castling_vectors = []
+    @square = nil
+    @moves_to_check_for_check = nil
+    @basic_display_strings = ['    __,  ', '  /  o\  ', '  \  \_> ', '  /__\   ']
+    @display_strings = apply_colour(@basic_display_strings)
+  end
+  
+end
+
+class King < Piece
+
+  include Miscellaneous
+  
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+  
+  def initialize(colour)
+    @colour = colour
+    @movement_vectors = [[-1, 0], [0, 1], [1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
+    @base_vectors = nil
+    @castling_vectors = [[2, 0], [-2, 0]]
+    @square = nil
+    @moves_to_check_for_check = nil
+    @basic_display_strings = ['    +    ', '   \ /   ', '   ( )   ', '   /_\   ']
+    @display_strings = apply_colour(@basic_display_strings)
+  end
+
+end
+
