@@ -8,6 +8,7 @@ class ChangeTheBoard
     @board = board
     @white_name = white_player_name
     @black_name = black_player_name
+    @colour = move.colour
   end
 
   def update_the_board
@@ -43,9 +44,9 @@ class ChangeTheBoard
   end
 
   def make_rook_move
-    start_rank = colour == 'White' ? 0 : 7
-    board.remove_castling_rights('0-0-0') if move.start_square == [0, start_rank]
-    board.remove_castling_rights('0-0') if move.start_square[0] == [7, start_rank]
+    back_rank = colour == 'White' ? 0 : 7
+    board.remove_castling_rights('0-0-0') if move.start_square == [0, back_rank]
+    board.remove_castling_rights('0-0') if move.start_square[0] == [7, back_rank]
     make_general_move
   end
 
@@ -53,6 +54,9 @@ class ChangeTheBoard
     board.update_array(move.poss_board_array)
     board.reset_en_passent
     board.add_en_passent_chance(move.finish_square) if move.our_piece.kind_of?(Pawn) && !move.vector[1].between?(-1, 1)
+    opponent_back_rank = colour == 'White' ? 7 : 0
+    board.remove_castling_rights('0-0', true) if move.finish_square == [7, opponent_back_rank]
+    board.remove_castling_rights('0-0-0', true) if move.finish_square == [0, opponent_back_rank]
   end
 
   def promote_pawn
