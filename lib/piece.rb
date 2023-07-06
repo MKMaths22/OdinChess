@@ -34,19 +34,22 @@ class Piece
       base_vectors ? use_the_base_vectors(board) : use_movement_vectors_and_castling(board)
       # this format covers all piece classes except Pawn, which will have
       # its own #get_all_legal_moves_from method
-      # moves_to_check_for_check.each_with_index do |move, index|
-        # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
-        # puts "The move has class #{move.class.to_s}"
-      # end
+      moves_to_check_for_check.each_with_index do |move, index|
+        puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
+        puts "The move has class #{move.class.to_s}"
+      end
       moves_to_check_for_check.filter { |move| move.legal? }
     end
       
     def use_the_base_vectors(board)
       # puts "use_the_base_vectors is executing on a piece of type #{self.class.to_s}"
-        base_vectors.each do |vector|
-          possible_squares = get_possible_squares_in_this_direction(vector, board)
-          moves_to_check_for_check = make_move_objects(board, possible_squares)
-        end
+      possible_squares = []
+      base_vectors.each do |vector|
+        puts "base vector = #{vector}"
+        possible_squares = possible_squares.concat(get_possible_squares_in_this_direction(vector, board))
+        puts "There are #{possible_squares.size} possible squares so far."
+      end 
+      self.moves_to_check_for_check = make_move_objects(board, possible_squares)
     end
 
     def use_movement_vectors_and_castling(board)
