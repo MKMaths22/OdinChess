@@ -86,16 +86,16 @@ module Miscellaneous
     "That move would leave your King in check. Please try again."
   end
 
-  # def find_squares_to_check(colour, vector)
+  def find_squares_to_check(colour, vector)
     # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
     # method outputs the squares that have to be empty between the King and Rook, as a 2-D array
-   # output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
-   # row = colour == 'White' ? 0 : 7
-   # output.each do |item|
-    #  item.push(row)
-   # end
-   # output
- # end
+    output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
+    row = colour == 'White' ? 0 : 7
+    output.each do |item|
+      item.push(row)
+    end
+   output
+  end
 
   def add_castling_to_hash(vector, colour, hash)
     # the hash takes the form of output_hash in the Piece class i.e.
@@ -126,7 +126,7 @@ module Miscellaneous
     castling[0] == 'W' ? 0 : 7
   end
 
-  def castling_string_from_vector(vector)
+  def castling_string_from_vector(vector, colour_moving)
     part_of_string = vector[0].positive? ? '_0-0' : '_0-0-0'
     string = "#{colour_moving}#{part_of_string}"
   end

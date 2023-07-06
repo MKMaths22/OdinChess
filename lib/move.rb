@@ -21,7 +21,7 @@ include Miscellaneous
     
     if castling  
       reduced_vector = get_reduced_vector(vector)
-      castling_string = castling_string_from_vector(vector)
+      castling_string = castling_string_from_vector(vector, colour)
       rook_start = get_rook_start(castling_string)
       rook_finish = get_rook_finish(castling_string)
       # reduced_vector is the vector the king travels to the square in the middle of the castling move e.g. from e1 to f1.

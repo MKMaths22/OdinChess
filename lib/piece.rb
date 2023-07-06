@@ -27,16 +27,22 @@ class Piece
     end
     
     def get_all_legal_moves_from(current_square, board)
+      puts "get_all_legal_moves_from is executing on a piece of type #{self.class.to_s}"
       self.square = current_square
       reset_moves_to_check
       
       base_vectors ? use_the_base_vectors(board) : use_movement_vectors_and_castling(board)
       # this format covers all piece classes except Pawn, which will have
       # its own #get_all_legal_moves_from method
+      moves_to_check_for_check.each_with_index do |move, index|
+        puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
+        puts "The move has class #{move.class.to_s}"
+      end
       moves_to_check_for_check.filter { |move| move.legal? }
     end
       
     def use_the_base_vectors(board)
+      puts "use_the_base_vectors is executing on a piece of type #{self.class.to_s}"
         base_vectors.each do |vector|
           possible_squares = get_possible_squares_in_this_direction(vector, board)
           moves_to_check_for_check = make_move_objects(board, possible_squares)
@@ -44,6 +50,7 @@ class Piece
     end
 
     def use_movement_vectors_and_castling(board)
+      puts "use_movement_vectors_and_castling is executing on a piece of type #{self.class.to_s}"
         possible_squares = []
         movement_vectors.each do |vector|
           maybe_square = add_vector(square, vector)
@@ -52,12 +59,12 @@ class Piece
             possible_squares.push(maybe_square) unless poss_piece && poss_piece.colour == colour
           end
         end
-        moves_to_check_for_check = make_move_objects(board, possible_squares)
-        possible_squares = []
-        castling_vectors.each do |vector|
-          possible_squares.push(add_vector(square, vector)) if board.castling_rights_from_vector?(vector)
-        end
-        moves_to_check_for_check.push(make_move_objects(board, possible_squares, false, true))
+      self.moves_to_check_for_check = make_move_objects(board, possible_squares)
+      possible_squares = []
+      castling_vectors.each do |vector|
+        possible_squares.push(add_vector(square, vector)) if board.castling_rights_from_vector?(vector) && !board.pieces_in_the_way?(find_squares_to_check(colour, vector))
+      end
+      moves_to_check_for_check.concat(make_move_objects(board, possible_squares, false, true))
     end
 
     def get_possible_squares_in_this_direction(vector, board)
@@ -85,7 +92,7 @@ end
 
 class Pawn < Piece
   
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check, :capture_vectors, :non_capture_vectors
 
   def initialize(colour)
     @colour = colour
@@ -93,7 +100,7 @@ class Pawn < Piece
     @non_capture_vectors = get_non_captures
     @castling_vectors = []
     @square = nil
-    @moves_to_check_for_check = nil
+    @moves_to_check_for_check = []
     @basic_display_strings = ['         ', '    o    ', '   / \   ', '   |_|   ']
     @display_strings = apply_colour(@basic_display_strings)
     @moved = false
@@ -103,15 +110,19 @@ class Pawn < Piece
     self.moved = true
   end
 
+  def moved?
+    @moved
+  end
+
   def get_captures
     colour == 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
   end
 
   def get_non_captures
     if colour == 'White'
-      return moved ? [[0, 1]] : [[0, 1], [0, 2]]
+      return moved? ? [[0, 1]] : [[0, 1], [0, 2]]
     else
-      return moved ? [[0, -1]] : [[0, -1], [0, -2]]
+      return moved? ? [[0, -1]] : [[0, -1], [0, -2]]
     end
     # rest of code can use the fact that the FIRST non_capture vector
     # has to be playable onto an empty square to consider the SECOND one,
@@ -124,26 +135,29 @@ class Pawn < Piece
 
     capture_vectors.each do |vector|
       capture_at = add_vector(current_square, vector)
-      poss_piece = board.get_piece_at(capture_at)
-      if poss_piece && poss_piece.colour != colour
-        moves_to_check_for_check.push(Move.new(board, square, capture_at))
+      if on_the_board?(capture_at)
+        poss_piece = board.get_piece_at(capture_at)
+        if poss_piece && poss_piece.colour != colour
+          moves_to_check_for_check.push(Move.new(board, square, capture_at))
+        end
+        moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
       end
-      moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
     # no need to check for no piece on the en_passent capturing square, 
     # because an opponent's pawn just passed through that square
     end
 
     first_non_capture_square = add_vector(current_square, non_capture_vectors[0])
-    poss_piece = board.get_piece_at(first_non_capture_square)
-    unless poss_piece
-      moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
-      if non_capture_vectors[1]
-        other_square = add_vector(current_square, non_capture_vectors[1])
-        other_poss_piece = board.get_piece_at(other_square)
-        moves_to_check_for_check.push(Move.new(board, square, other_square)) unless other_poss_piece
+    if on_the_board?(first_non_capture_square)
+      poss_piece = board.get_piece_at(first_non_capture_square)
+      unless poss_piece
+        moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
+        if non_capture_vectors[1]
+          other_square = add_vector(current_square, non_capture_vectors[1])
+          other_poss_piece = board.get_piece_at(other_square)
+          moves_to_check_for_check.push(Move.new(board, square, other_square)) unless other_poss_piece
+        end
       end
     end
-    
     moves_to_check_for_check.filter { |move| move.legal? }
     # pawn promotion is dealt with in ChangeTheBoard but we don't
     # need to know the piece the pawn promotes to in order to check
@@ -164,7 +178,7 @@ attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :dis
     @base_vectors = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     @castling_vectors = []
     @square = nil
-    @moves_to_check_for_check = nil
+    @moves_to_check_for_check = []
     @basic_display_strings = ['    o    ', '   ( )   ', '   / \   ', '  /___\  ']
     @display_strings = apply_colour(@basic_display_strings)
   end
@@ -183,7 +197,7 @@ class Rook < Piece
     @base_vectors = [[-1, 0], [0, 1], [1, 0], [0, -1]]
     @castling_vectors = []
     @square = nil
-    @moves_to_check_for_check = nil
+    @moves_to_check_for_check = []
     @basic_display_strings = ['  n_n_n  ', '  \   /  ', '  |   |  ', '  /___\  ']
     @display_strings = apply_colour(@basic_display_strings)
   end
@@ -202,7 +216,7 @@ class Queen < Piece
     @base_vectors = [[-1, 0], [0, 1], [1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
     @castling_vectors = []
     @square = nil
-    @moves_to_check_for_check = nil
+    @moves_to_check_for_check = []
     @basic_display_strings = ['  ooooo  ', '   \ /   ', '   / \   ', '  /___\  ']
     @display_strings = apply_colour(@basic_display_strings)
   end
@@ -222,7 +236,7 @@ class Knight < Piece
     @base_vectors = nil
     @castling_vectors = []
     @square = nil
-    @moves_to_check_for_check = nil
+    @moves_to_check_for_check = []
     @basic_display_strings = ['    __,  ', '  /  o\  ', '  \  \_> ', '  /__\   ']
     @display_strings = apply_colour(@basic_display_strings)
   end
@@ -241,7 +255,7 @@ class King < Piece
     @base_vectors = nil
     @castling_vectors = [[2, 0], [-2, 0]]
     @square = nil
-    @moves_to_check_for_check = nil
+    @moves_to_check_for_check = []
     @basic_display_strings = ['    +    ', '   \ /   ', '   ( )   ', '   /_\   ']
     @display_strings = apply_colour(@basic_display_strings)
   end

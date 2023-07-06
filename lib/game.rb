@@ -49,7 +49,12 @@ include Miscellaneous
   end
 
   def play_game
-    puts legal_moves.size
+     puts legal_moves.size
+   # legal_moves.each_with_index do |move, index|
+   #   puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
+   #   puts "The move has class #{move.class.to_s}"
+      # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
+    # end
     welcome
     offer_reload if games_saved?
     name_the_players unless white.name

@@ -27,7 +27,7 @@ class Board
   end
   
   def castling_rights_from_vector?(vector)
-    castling_rights[castling_string_from_vector(vector)]
+    castling_rights[castling_string_from_vector(vector, colour_moving)]
   end
 
   def remove_castling_rights(side)
