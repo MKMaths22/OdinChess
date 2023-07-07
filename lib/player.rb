@@ -18,7 +18,7 @@ include Miscellaneous
   def get_legal_move(board, legal_moves)
     maybe_move = gets.strip
     unless valid_input?(maybe_move)
-      return get_legal_move(board)
+      return get_legal_move(board, legal_moves)
     end
     start_square = string_to_coords(maybe_move[0,2])
     finish_square = string_to_coords(maybe_move[2,2])
