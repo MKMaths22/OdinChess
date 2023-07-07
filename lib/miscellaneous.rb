@@ -38,6 +38,10 @@ module Miscellaneous
 
   KNIGHT_VECTORS = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
 
+  def illegal_move_error
+    "That move is illegal. Please try again."
+  end
+  
   def piece_in_the_way_error
     "There is a piece in the way of that move. Please try again."
   end

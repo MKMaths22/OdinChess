@@ -15,19 +15,20 @@ include Miscellaneous
     @name = string
   end
 
-  def get_legal_move(board)
+  def get_legal_move(board, legal_moves)
     maybe_move = gets.strip
     unless valid_input?(maybe_move)
       return get_legal_move(board)
     end
     start_square = string_to_coords(maybe_move[0,2])
     finish_square = string_to_coords(maybe_move[2,2])
-    move_to_play = Move.new(board, start_square, finish_square)
-    boolean = move_to_play.legal? 
-    # the move_to_play object should be modified by the #legal? method but this
-    # does not seem to be working
-    boolean ? move_to_play : get_legal_move(board)
-    # move_to_play is either falsey if move not valid or it is a Move object
+    move_found = find_legal_move_with_squares(start_square, finish_square, legal_moves) # move_found is either false or a legal Move object
+    puts illegal_move_error unless move_found
+    move_found ? move_found : get_legal_move(board, legal_moves)
+  end
+
+  def find_legal_move_with_squares(start, finish, legal_moves)
+    legal_moves.find {|move| move.start_square == start && move.finish_square == finish }
   end
 
   def valid_input?(string)
