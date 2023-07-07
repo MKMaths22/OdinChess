@@ -83,8 +83,10 @@ include Miscellaneous
     
     next_move = @colour_moving == 'White' ? white.get_legal_move(board, legal_moves) : black.get_legal_move(board, legal_moves)
     # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
+    puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
     update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
     update_board.update_the_board
+    @display_board.show_the_board(board)
     pawn_move_or_capture = next_move.pawn_move_or_capture?
     # pawn_move_or_capture will be used later for updating information in Result class
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
