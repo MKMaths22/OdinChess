@@ -95,7 +95,7 @@ end
 
 class Pawn < Piece
   
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check, :capture_vectors, :non_capture_vectors
+  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check, :capture_vectors, :non_capture_vectors, :moved
 
   def initialize(colour)
     @colour = colour
@@ -110,7 +110,9 @@ class Pawn < Piece
   end
 
   def update_moved_variable
-    self.moved = true
+    puts "update_moved_variable has started running"
+    moved = true
+    puts "moved variable is now #{@moved}"
   end
 
   def moved?

@@ -41,9 +41,10 @@ class Board
   end
 
   def add_en_passent_chance(finish_square)
+    puts "Adding en_passent chance to board"
     file = finish_square[0]
     capture_rank = finish_square[1] == 3 ? 2 : 5
-    self.en_passent = { 'Pawn passed through' => [file, capture_rank], 'Pawn now at' => finish_square }
+    en_passent = { 'Pawn passed through' => [file, capture_rank], 'Pawn now at' => finish_square }
   end
 
   def reset_en_passent
