@@ -35,8 +35,8 @@ class Piece
       # this format covers all piece classes except Pawn, which will have
       # its own #get_all_legal_moves_from method
       moves_to_check_for_check.each_with_index do |move, index|
-        puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
-        puts "The move has class #{move.class.to_s}"
+        # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
+        # puts "The move has class #{move.class.to_s}"
       end
       moves_to_check_for_check.filter { |move| move.legal? }
     end
@@ -45,9 +45,9 @@ class Piece
       # puts "use_the_base_vectors is executing on a piece of type #{self.class.to_s}"
       possible_squares = []
       base_vectors.each do |vector|
-        puts "base vector = #{vector}"
+        # puts "base vector = #{vector}"
         possible_squares = possible_squares.concat(get_possible_squares_in_this_direction(vector, board))
-        puts "There are #{possible_squares.size} possible squares so far."
+        # puts "There are #{possible_squares.size} possible squares so far."
       end 
       self.moves_to_check_for_check = make_move_objects(board, possible_squares)
     end

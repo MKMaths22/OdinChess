@@ -37,7 +37,7 @@ include Miscellaneous
   
   attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves
   
-  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new(board.store_position))
+  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new({ board.store_position => 1 }))
     @board = board
     @white = white
     @black = black
@@ -48,7 +48,6 @@ include Miscellaneous
   end
 
   def play_game
-     puts legal_moves.size
    # legal_moves.each_with_index do |move, index|
    #   puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
    #   puts "The move has class #{move.class.to_s}"
@@ -75,6 +74,7 @@ include Miscellaneous
   end
 
   def one_turn
+    puts "There are #{legal_moves.size} legal moves."
     @display_board.show_the_board(board)
     player_name = (@colour_moving == 'White') ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
@@ -89,14 +89,17 @@ include Miscellaneous
     # @colour_moving in Game class gets toggled later
     check_status = CheckForCheck.new(board.board_array, board.colour_moving, '')
     check_hash = check_status.king_in_check?
+    puts "The value of check_hash is #{check_hash}"
     # board.colour_moving is the next player
     find_moves = GenerateLegalMoves.new(board)
     legal_moves = find_moves.find_all_legal_moves
     unless legal_moves.size.positive?
+      puts "this should not display from line 97"
       check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
       # board.colour_moving is the colour of the player checkmated in that case
     end
     boolean = next_move.pawn_move_or_capture?
+    puts "The value of boolean is #{boolean} for pawn move or capture."
     boolean ? result.reset_moves_count : result.increase_moves_count
     result.declare_fifty_move_draw if result.fifty_move_rule_draw?
     

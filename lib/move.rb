@@ -19,6 +19,10 @@ include Miscellaneous
     @other_piece = board.get_piece_at(finish_square)
   end
 
+  def pawn_move_or_capture?
+    our_piece.kind_of?(Pawn) || other_piece
+  end
+
   def legal?
     
     if castling  
