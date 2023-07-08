@@ -163,4 +163,9 @@ class Board
     new_array
   end
 
+  def store_position
+    # uses YAML to serialize the Board object in its current state. 
+    self.to_yaml
+  end
+
 end

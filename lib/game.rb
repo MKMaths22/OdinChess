@@ -35,15 +35,14 @@ class Game
 
 include Miscellaneous
   
-  attr_accessor :white, :black, :board, :result, :colour_moving, :check, :legal_moves
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves
   
-  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new)
+  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new(board.store_position))
     @board = board
     @white = white
     @black = black
     @result = result
     @colour_moving = 'White'
-    @check = false
     @display_board = DisplayBoard.new
     @legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
   end
@@ -71,7 +70,7 @@ include Miscellaneous
   end
 
   def turn_loop
-      one_turn until result.is_game_over?
+      one_turn until result.game_over?
 
   end
 
@@ -86,20 +85,24 @@ include Miscellaneous
     puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
     update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
     update_board.update_the_board
-    @display_board.show_the_board(board)
-    pawn_move_or_capture = next_move.pawn_move_or_capture?
-    # pawn_move_or_capture will be used later for updating information in Result class
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
     check_status = CheckForCheck.new(board.board_array, board.colour_moving, '')
-    check_hash = check_status.partly_boolean_king_in_check?
+    check_hash = check_status.king_in_check?
     # board.colour_moving is the next player
     find_moves = GenerateLegalMoves.new(board)
-    unless find_moves.legal_move_exists?
+    legal_moves = find_moves.find_all_legal_moves
+    unless legal_moves.size.positive?
       check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
       # board.colour_moving is the colour of the player checkmated in that case
     end
-
+    boolean = next_move.pawn_move_or_capture?
+    boolean ? result.reset_moves_count : result.increase_moves_count
+    result.declare_fifty_move_draw if result.fifty_move_rule_draw?
+    
+    result.wipe_previous_positions if boolean
+    result.add_position(board.store_position)
+    # Result class will declare reptition draw if the position added occurred twice previously
     
     toggle_colours
   end

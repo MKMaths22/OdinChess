@@ -15,9 +15,12 @@ include Miscellaneous
     @squares_between = []
   end
 
-  def king_in_check?
+  def king_in_check?(error = false)
     partly_boolean = partly_boolean_king_in_check?
-    puts error_message if partly_boolean
+    puts error_message if partly_boolean && error
+    # the default behaviour is now NOT to put an error message because the error messages
+    # are left over from the code which was checking a PARTICULAR move inputted by the player
+    # and are not relevant for the new way which is of generating ALL legal moves
     partly_boolean
   end
   
