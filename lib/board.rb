@@ -52,7 +52,9 @@ class Board
   end
 
   def update_array(poss_board_array)
+    puts "Before update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
     self.board_array = poss_board_array
+    puts "After update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
   end
 
   def replace_pawn_with(new_piece, square)

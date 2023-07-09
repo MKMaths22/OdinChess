@@ -134,4 +134,10 @@ module Miscellaneous
     part_of_string = vector[0].positive? ? '_0-0' : '_0-0-0'
     string = "#{colour_moving}#{part_of_string}"
   end
+
+  def make_the_hash(position)
+    output = Hash.new(0)
+    output[position] = 1
+    output
+  end
 end

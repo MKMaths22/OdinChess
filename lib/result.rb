@@ -15,17 +15,20 @@ class Result
   def add_position(position)
     # the positions stored are snapshots of the board object, which capture the current position with
     # whose turn it is to move and any en passent or castling opportunities
-    previous_positions[position] += 1
+    puts "The type of previous_positions is #{previous_positions.class.to_s}"
+    puts "The previous value of the previous_positions hash on key 'position' is #{@previous_positions[position]}"
+    self.previous_positions[position] = @previous_positions[position] + 1
     declare_repitition_draw if previous_positions[position] == 3
   end
 
   def wipe_previous_positions
     # this occurs if a pawn moves or a piece is captured
-    previous_positions = {}
+    previous_positions = Hash.new(0)
   end
 
   def increase_moves_count
-    half_moves_count += 1
+    self.half_moves_count = @half_moves_count + 1
+    puts "half_moves_count = #{@half_moves_count}"
   end
 
   def reset_moves_count

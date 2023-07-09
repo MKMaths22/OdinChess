@@ -23,13 +23,16 @@ class Piece
     end
     
     def reset_moves_to_check
-      moves_to_check_for_check = []
+      self.moves_to_check_for_check = []
     end
     
     def get_all_legal_moves_from(current_square, board)
       # puts "get_all_legal_moves_from is executing on a piece of type #{self.class.to_s}"
+      # puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
       self.square = current_square
       reset_moves_to_check
+      # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+      puts "Also, on this piece of class #{self.class.to_s} moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
       
       base_vectors ? use_the_base_vectors(board) : use_movement_vectors_and_castling(board)
       # this format covers all piece classes except Pawn, which will have
@@ -135,9 +138,13 @@ class Pawn < Piece
   end
 
   def get_all_legal_moves_from(current_square, board)
+    
+    puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
     self.square = current_square
     reset_moves_to_check
-
+    puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+    puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
+  
     capture_vectors.each do |vector|
       capture_at = add_vector(current_square, vector)
       if on_the_board?(capture_at)

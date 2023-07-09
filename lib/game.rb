@@ -37,7 +37,7 @@ include Miscellaneous
   
   attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves
   
-  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new({ board.store_position => 1 }))
+  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new(make_the_hash(board.store_position)))
     @board = board
     @white = white
     @black = black
@@ -75,6 +75,7 @@ include Miscellaneous
 
   def one_turn
     puts "There are #{legal_moves.size} legal moves."
+    puts "#{colour_moving} is the colour to Move."
     @display_board.show_the_board(board)
     player_name = (@colour_moving == 'White') ? white.name : black.name
     puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
@@ -92,7 +93,7 @@ include Miscellaneous
     puts "The value of check_hash is #{check_hash}"
     # board.colour_moving is the next player
     find_moves = GenerateLegalMoves.new(board)
-    legal_moves = find_moves.find_all_legal_moves
+    self.legal_moves = find_moves.find_all_legal_moves
     unless legal_moves.size.positive?
       puts "this should not display from line 97"
       check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
@@ -111,7 +112,8 @@ include Miscellaneous
   end
 
   def toggle_colours
-    colour_moving = other_colour(colour_moving)
+    puts "toggle_colours is working"
+    self.colour_moving = other_colour(colour_moving)
     # the colour_moving variable in the Board class needs to be toggled separately
   end
   
