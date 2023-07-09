@@ -114,8 +114,11 @@ class Pawn < Piece
 
   def update_moved_variable
     puts "update_moved_variable has started running"
-    moved = true
+    self.moved = true
     puts "moved variable is now #{@moved}"
+    self.non_capture_vectors = [@non_capture_vectors[0]]
+    p "Non_capture_vectors are #{@non_capture_vectors}"
+    puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
   end
 
   def moved?
@@ -127,11 +130,7 @@ class Pawn < Piece
   end
 
   def get_non_captures
-    if colour == 'White'
-      return moved? ? [[0, 1]] : [[0, 1], [0, 2]]
-    else
-      return moved? ? [[0, -1]] : [[0, -1], [0, -2]]
-    end
+    colour == 'White' ? [[0, 1], [0, 2]] : [[0, -1], [0, -2]]
     # rest of code can use the fact that the FIRST non_capture vector
     # has to be playable onto an empty square to consider the SECOND one,
     # if the second one exists.
