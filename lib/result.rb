@@ -35,6 +35,7 @@ class Result
 
   def reset_moves_count
     self.half_moves_count = 0
+    puts "half_moves_count = #{@half_moves_count}"
   end
 
   def fifty_move_rule_draw?

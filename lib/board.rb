@@ -55,6 +55,10 @@ class Board
     self.en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
   end
 
+  def any_en_passent_in_theory?
+    @en_passent['Pawn passed through'] ? true : false
+  end
+
   def update_array(poss_board_array)
     # puts "Before update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
     self.board_array = poss_board_array

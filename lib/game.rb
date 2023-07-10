@@ -99,6 +99,12 @@ include Miscellaneous
       check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
       # board.colour_moving is the colour of the player checkmated in that case
     end
+    # now, to store the Board totally accurately, we need to check, if there ARE en_passent possibilities IN THEORY created by a pawn moving two squares,
+    # are there REALLY any legal en_passent moves? If not, we tell the Board to reset its en_passent possibilities after all. This precision will allow
+    # three-fold repitition to trigger correctly 
+    if board.any_en_passent_in_theory?
+      board.reset_en_passent unless legal_moves.any? { |move| move.en_passent }
+    end
     boolean = next_move.pawn_move_or_capture?
     puts "The value of boolean is #{boolean} for pawn move or capture."
     boolean ? result.reset_moves_count : result.increase_moves_count
