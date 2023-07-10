@@ -15,7 +15,6 @@ class Result
   def add_position(position)
     # the positions stored are snapshots of the board object, which capture the current position with
     # whose turn it is to move and any en passent or castling opportunities
-    puts "The type of previous_positions is #{previous_positions.class.to_s}"
     puts "The previous value of the previous_positions hash on key 'position' is #{@previous_positions[position]}"
     self.previous_positions[position] = @previous_positions[position] + 1
     declare_repitition_draw if previous_positions[position] == 3
@@ -23,7 +22,9 @@ class Result
 
   def wipe_previous_positions
     # this occurs if a pawn moves or a piece is captured
-    previous_positions = Hash.new(0)
+    puts "previous positions being wiped"
+    self.previous_positions = Hash.new(0)
+    puts "The size of the previous positions is now #{@previous_positions.keys.size}"
   end
 
   def increase_moves_count
@@ -32,7 +33,7 @@ class Result
   end
 
   def reset_moves_count
-    half_moves_count = 0
+    self.half_moves_count = 0
   end
 
   def fifty_move_rule_draw?
@@ -49,14 +50,17 @@ class Result
 
   def declare_stalemate
     @game_over = true
+    puts "IT IS A STALEMATE BOZOS"
   end
 
   def declare_fifty_move_draw 
     @game_over = true
+    puts "IT IS A FIFTY MOVE RULE DRAW. BORRRIINNNGGG"
   end 
 
   def declare_repitition_draw
     @game_over = true
+    puts "IT IS A THREE FOLD REPITITION DRAW"
   end
 
 end

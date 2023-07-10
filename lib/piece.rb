@@ -32,7 +32,7 @@ class Piece
       self.square = current_square
       reset_moves_to_check
       # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
-      puts "Also, on this piece of class #{self.class.to_s} moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
+      # puts "Also, on this piece of class #{self.class.to_s} moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
       
       base_vectors ? use_the_base_vectors(board) : use_movement_vectors_and_castling(board)
       # this format covers all piece classes except Pawn, which will have
@@ -113,12 +113,12 @@ class Pawn < Piece
   end
 
   def update_moved_variable
-    puts "update_moved_variable has started running"
+    # puts "update_moved_variable has started running"
     self.moved = true
     puts "moved variable is now #{@moved}"
     self.non_capture_vectors = [@non_capture_vectors[0]]
-    p "Non_capture_vectors are #{@non_capture_vectors}"
-    puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
+    # p "Non_capture_vectors are #{@non_capture_vectors}"
+    # puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
   end
 
   def moved?
