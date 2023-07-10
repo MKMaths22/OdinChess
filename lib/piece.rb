@@ -41,7 +41,10 @@ class Piece
         # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
         # puts "The move has class #{move.class.to_s}"
       end
-      moves_to_check_for_check.filter { |move| move.legal? }
+      output = moves_to_check_for_check.filter { |move| move.legal? }
+      self.square = nil
+      reset_moves_to_check
+      output
     end
       
     def use_the_base_vectors(board)
@@ -138,11 +141,11 @@ class Pawn < Piece
 
   def get_all_legal_moves_from(current_square, board)
     
-    puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+    # puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
     self.square = current_square
     reset_moves_to_check
-    puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
-    puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
+    # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+    # puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
   
     capture_vectors.each do |vector|
       capture_at = add_vector(current_square, vector)
@@ -169,10 +172,13 @@ class Pawn < Piece
         end
       end
     end
-    moves_to_check_for_check.filter { |move| move.legal? }
+    output = moves_to_check_for_check.filter { |move| move.legal? }
     # pawn promotion is dealt with in ChangeTheBoard but we don't
     # need to know the piece the pawn promotes to in order to check
     # whether the move is legal
+    self.square = nil
+    reset_moves_to_check
+    output
   end
 
 end
