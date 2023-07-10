@@ -37,8 +37,11 @@ class Board
   def remove_castling_rights(side, opponent = false)
     # side is '0-0' or '0-0-0'
     puts  "remove_castling_rights is working on side #{side}"
-    colour = opponent ? other_colour(colour_moving) : colour_moving
+    puts "opponent = #{opponent} and colour_moving is #{colour_moving}"
+    colour = (opponent ? other_colour(colour_moving) : colour_moving)
+    puts "colour having castling rights removed is #{colour}"
     self.castling_rights["#{colour}_#{side}"] = false
+    puts "castling rights are now #{@castling_rights}"
   end
 
   def add_en_passent_chance(finish_square)
@@ -53,9 +56,9 @@ class Board
   end
 
   def update_array(poss_board_array)
-    puts "Before update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
+    # puts "Before update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
     self.board_array = poss_board_array
-    puts "After update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
+    # puts "After update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
   end
 
   def replace_pawn_with(new_piece, square)

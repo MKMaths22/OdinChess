@@ -14,8 +14,6 @@ class ChangeTheBoard
   def update_the_board
     # will ask questions of the Move object @move and tell the Board object to update itself
     puts "update_the_board is working"
-    board.toggle_colour_moving
-    # the position on the board will tell us whose turn it is to move, but only at the end of the one_turn method is its @colour_moving toggled
     case move.our_piece.class.to_s
     when 'Pawn'
       make_pawn_move
@@ -26,6 +24,8 @@ class ChangeTheBoard
     else
       make_general_move
     end
+    board.toggle_colour_moving
+    # the position on the board will tell us whose turn it is to move, but only at the end of the one_turn method is its @colour_moving toggled
   end
 
   def make_pawn_move
@@ -47,7 +47,7 @@ class ChangeTheBoard
   def make_rook_move
     back_rank = colour == 'White' ? 0 : 7
     board.remove_castling_rights('0-0-0') if move.start_square == [0, back_rank]
-    board.remove_castling_rights('0-0') if move.start_square[0] == [7, back_rank]
+    board.remove_castling_rights('0-0') if move.start_square == [7, back_rank]
     make_general_move
   end
 
