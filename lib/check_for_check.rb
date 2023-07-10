@@ -109,7 +109,7 @@ include Miscellaneous
       if poss_piece
         return true unless poss_piece.colour == colour || poss_piece.is_a?(Knight) || poss_piece.is_a?(Pawn) || poss_piece.is_a?(Bishop) || poss_piece.is_a?(King)
         # we already dealt with adjacent Kings case in find_both_king_coords so this works
-        
+        self.squares_between = []
       end
     end
     false
@@ -121,6 +121,7 @@ include Miscellaneous
       if poss_piece
         return true unless poss_piece.colour == colour || poss_piece.is_a?(Knight) || poss_piece.is_a?(Pawn) || poss_piece.is_a?(Rook) || poss_piece.is_a?(King)
         # pawns will be dealt with separately
+        self.squares_between = []
       end
     end
     false
