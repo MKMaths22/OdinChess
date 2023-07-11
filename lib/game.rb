@@ -111,6 +111,7 @@ include Miscellaneous
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
     result.declare_repitition_draw(first_name, second_name) if result.repitition_draw?
+    result.declare_insuff_material_draw(first_name, second_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
     toggle_colours
   end

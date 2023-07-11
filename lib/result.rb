@@ -52,23 +52,27 @@ class Result
 
   def declare_checkmate(winning_name, losing_name)
     # colour is the @colour_moving from Game class
-    @game_over = true
+    self.game_over = true
     puts "Congratulations, #{winning_name}. That's checkmate! Better luck next time, #{losing_name}."
   end
 
   def declare_stalemate(first_name, second_name)
-    @game_over = true
-    puts "It's a draw by stalemate! Well played #{first_name} and #{second_name}."
+    self.game_over = true
+    puts "It's a draw by stalemate! Well played, #{first_name} and #{second_name}."
   end
 
   def declare_fifty_move_draw(first_name, second_name)
-    @game_over = true
-    puts "IT IS A FIFTY MOVE RULE DRAW. BORRRIINNNGGG"
+    self.game_over = true
+    puts "You guys have shuffled your pieces for 50 moves with no real progress, so it's a draw. Well played, #{first_name} and #{second_name}."
   end 
 
   def declare_repitition_draw(first_name, second_name)
-    @game_over = true
-    puts "IT IS A THREE FOLD REPITITION DRAW"
+    self.game_over = true
+    puts "That's the exact same position, for the third time. It's a 3-fold repitition draw. Well played, #{first_name} and #{second_name}."
   end
 
+  def declare_insuff_material_draw(first_name, second_name)
+    self.game_over = true
+    puts "There isn't enough material on the board for a checkmate, so it's a draw by insufficient material. Well played, #{first_name} and #{second_name}."
+  end
 end

@@ -178,4 +178,16 @@ class Board
     self.to_yaml
   end
 
+  def insuff_material_draw?
+    # at most 3 pieces on the board, and no Rook, Queen or Pawn
+    pieces_count = 0
+    board_array.each do |file|
+      file.each do |piece|
+        pieces_count += 1 if piece
+        return false if pieces_count == 4 || piece.kind_of?(Pawn) || piece.kind_of?(Rook) || piece.kind_of?(Queen)
+      end
+    end
+    true
+  end
+
 end
