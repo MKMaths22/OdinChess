@@ -90,11 +90,13 @@ include Miscellaneous
     # @colour_moving in Game class gets toggled later
     check_status = CheckForCheck.new(board.board_array, board.colour_moving, '')
     check_hash = check_status.king_in_check?
-    puts "The value of check_hash is #{check_hash}"
+    # puts "The value of check_hash is #{check_hash}"
     # board.colour_moving is the next player
     find_moves = GenerateLegalMoves.new(board)
     self.legal_moves = find_moves.find_all_legal_moves
-    mate_or_mate(check_status, result) unless legal_moves.size.positive?
+    moving_name = get_player_name_from_colour(colour_moving)
+    other_name = get_player_name_from_colour(other_colour(colour_moving))
+    mate_or_mate(check_status, result, moving_name, other_name) unless legal_moves.size.positive?
     # now, to store the Board totally accurately, we need to check, if there ARE en_passent possibilities IN THEORY created by a pawn moving two squares,
     # are there REALLY any legal en_passent moves? If not, we tell the Board to reset its en_passent possibilities after all. This precision will allow
     # three-fold repitition to trigger correctly 
@@ -104,11 +106,11 @@ include Miscellaneous
     boolean = next_move.pawn_move_or_capture?
     puts "The value of boolean is #{boolean} for pawn move or capture."
     boolean ? result.reset_moves_count : result.increase_moves_count
-    result.declare_fifty_move_draw if result.fifty_move_rule_draw?
+    result.declare_fifty_move_draw(first_name, second_name) if result.fifty_move_rule_draw?
     
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
-    # Result class will declare reptition draw if the position added occurred twice previously
+    result.declare_repitition_draw(first_name, second_name) if result.repitition_draw?
     @display_board.show_the_board(board) if result.game_over?
     toggle_colours
   end
@@ -176,9 +178,7 @@ include Miscellaneous
     colour == 'White' ? white.name : black.name
   end
 
-  def mate_or_mate(check_for_check_object, result_object)
-    moving_name = get_player_name_from_colour(colour_moving)
-    other_name = get_player_name_from_colour(other_colour(colour_moving))
+  def mate_or_mate(check_for_check_object, result_object, moving_name, other_name)
     check_for_check_object.king_in_check? ? result_object.declare_checkmate(moving_name, other_name) : result_object.declare_stalemate(moving_name, other_name)
   end
 

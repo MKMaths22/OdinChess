@@ -41,6 +41,10 @@ class Result
   def fifty_move_rule_draw?
     half_moves_count == 100
   end
+
+  def repitition_draw?
+    previous_positions.values.max == 3
+  end
   
   def game_over?
     @game_over
@@ -57,12 +61,12 @@ class Result
     puts "It's a draw by stalemate! Well played #{first_name} and #{second_name}."
   end
 
-  def declare_fifty_move_draw 
+  def declare_fifty_move_draw(first_name, second_name)
     @game_over = true
     puts "IT IS A FIFTY MOVE RULE DRAW. BORRRIINNNGGG"
   end 
 
-  def declare_repitition_draw
+  def declare_repitition_draw(first_name, second_name)
     @game_over = true
     puts "IT IS A THREE FOLD REPITITION DRAW"
   end
