@@ -94,11 +94,7 @@ include Miscellaneous
     # board.colour_moving is the next player
     find_moves = GenerateLegalMoves.new(board)
     self.legal_moves = find_moves.find_all_legal_moves
-    unless legal_moves.size.positive?
-      puts "this should not display from line 97"
-      check_status.king_in_check? ? result.declare_checkmate(board.colour_moving) : result.declare_stalemate
-      # board.colour_moving is the colour of the player checkmated in that case
-    end
+    mate_or_mate(check_status, result) unless legal_moves.size.positive?
     # now, to store the Board totally accurately, we need to check, if there ARE en_passent possibilities IN THEORY created by a pawn moving two squares,
     # are there REALLY any legal en_passent moves? If not, we tell the Board to reset its en_passent possibilities after all. This precision will allow
     # three-fold repitition to trigger correctly 
@@ -113,7 +109,7 @@ include Miscellaneous
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
     # Result class will declare reptition draw if the position added occurred twice previously
-    
+    @display_board.show_the_board(board) if result.game_over?
     toggle_colours
   end
 
@@ -174,6 +170,16 @@ include Miscellaneous
     puts 'And now input the name of the player playing Black.'
     input = gets.strip
     black.set_name(input)
+  end
+
+  def get_player_name_from_colour(colour)
+    colour == 'White' ? white.name : black.name
+  end
+
+  def mate_or_mate(check_for_check_object, result_object)
+    moving_name = get_player_name_from_colour(colour_moving)
+    other_name = get_player_name_from_colour(other_colour(colour_moving))
+    check_for_check_object.king_in_check? ? result_object.declare_checkmate(moving_name, other_name) : result_object.declare_stalemate(moving_name, other_name)
   end
 
 end

@@ -46,13 +46,15 @@ class Result
     @game_over
   end
 
-  def declare_checkmate
+  def declare_checkmate(winning_name, losing_name)
+    # colour is the @colour_moving from Game class
     @game_over = true
+    puts "Congratulations, #{winning_name}. That's checkmate! Better luck next time, #{losing_name}."
   end
 
-  def declare_stalemate
+  def declare_stalemate(first_name, second_name)
     @game_over = true
-    puts "IT IS A STALEMATE BOZOS"
+    puts "It's a draw by stalemate! Well played #{first_name} and #{second_name}."
   end
 
   def declare_fifty_move_draw 
