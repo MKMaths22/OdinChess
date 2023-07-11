@@ -106,12 +106,12 @@ include Miscellaneous
     boolean = next_move.pawn_move_or_capture?
     puts "The value of boolean is #{boolean} for pawn move or capture."
     boolean ? result.reset_moves_count : result.increase_moves_count
-    result.declare_fifty_move_draw(first_name, second_name) if result.fifty_move_rule_draw?
+    result.declare_fifty_move_draw(moving_name, other_name) if result.fifty_move_rule_draw?
     
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
-    result.declare_repitition_draw(first_name, second_name) if result.repitition_draw?
-    result.declare_insuff_material_draw(first_name, second_name) if board.insuff_material_draw?
+    result.declare_repitition_draw(moving_name, other_name) if result.repitition_draw?
+    result.declare_insuff_material_draw(moving_name, other_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
     toggle_colours
   end
