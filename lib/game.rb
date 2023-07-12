@@ -78,11 +78,15 @@ include Miscellaneous
     puts "#{colour_moving} is the colour to Move."
     @display_board.show_the_board(board)
     player_name = (@colour_moving == 'White') ? white.name : black.name
-    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square"
+    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square. Or type 'save' to save the game."
     
     
     next_move = @colour_moving == 'White' ? white.get_legal_move(board, legal_moves) : black.get_legal_move(board, legal_moves)
-    # next_move is a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
+    unless next_move
+      save_the_game
+      # how to stop the one_turn and turn_loop from continuing?
+    end
+    # next_move is a either nil or a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
     puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
     update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
     update_board.update_the_board
@@ -160,6 +164,7 @@ include Miscellaneous
   end
 
   def save_the_game
+    puts "save_the_game is working"
     # require input to name the saved game
     # check if that name is already used (input needs to be validated)
     # then save the Board, Result, Player classes (any others) to chosen_name.txt in saved_games directory, creating

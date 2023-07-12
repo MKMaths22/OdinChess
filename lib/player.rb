@@ -20,6 +20,7 @@ include Miscellaneous
     unless valid_input?(maybe_move)
       return get_legal_move(board, legal_moves)
     end
+    return nil if maybe_move.upcase == 'SAVE'
     start_square = string_to_coords(maybe_move[0,2])
     finish_square = string_to_coords(maybe_move[2,2])
     move_found = find_legal_move_with_squares(start_square, finish_square, legal_moves) # move_found is either false or a legal Move object
@@ -38,6 +39,7 @@ include Miscellaneous
     valid = true
     valid = false unless ok_letters.include?(string[0]) && ok_letters.include?(string[2])
     valid = false unless ok_numbers.include?(string[1]) && ok_numbers.include?(string[3])
+    valid = true if string.upcase == 'SAVE'
     puts input_error(string) unless valid
     valid
   end
