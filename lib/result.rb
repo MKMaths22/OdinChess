@@ -18,7 +18,6 @@ class Result
     puts "The previous value of the previous_positions hash on key 'position' is #{@previous_positions[position]}"
     self.previous_positions[position] = @previous_positions[position] + 1
     puts "The size of the previous positions is now #{@previous_positions.keys.size}"
-    declare_repitition_draw if previous_positions[position] == 3
   end
 
   def wipe_previous_positions

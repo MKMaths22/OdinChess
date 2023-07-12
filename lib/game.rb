@@ -74,30 +74,35 @@ include Miscellaneous
   end
 
   def one_turn
-    puts "There are #{legal_moves.size} legal moves."
-    puts "#{colour_moving} is the colour to Move."
+    # puts "There are #{legal_moves.size} legal moves."
+    # puts "#{colour_moving} is the colour to Move."
     @display_board.show_the_board(board)
-    player_name = (@colour_moving == 'White') ? white.name : black.name
-    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square. Or type 'save' to save the game."
-    
-    
-    next_move = @colour_moving == 'White' ? white.get_legal_move(board, legal_moves) : black.get_legal_move(board, legal_moves)
-    unless next_move
-      save_the_game
-      # how to stop the one_turn and turn_loop from continuing?
-    end
+    next_move = enter_move_or_save_game
+    save_game unless next_move
     # next_move is a either nil or a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
-    puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
-    update_board = ChangeTheBoard.new(next_move, board, white.name, black.name)
-    update_board.update_the_board
+    # puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
+    boolean = next_move.pawn_move_or_capture?
+    p "The value of boolean is #{boolean} for pawn move or capture."
+    ChangeTheBoard.new(next_move, board, white.name, black.name).update_the_board
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
-    check_status = CheckForCheck.new(board.board_array, board.colour_moving, '')
-    check_hash = check_status.king_in_check?
-    # puts "The value of check_hash is #{check_hash}"
     # board.colour_moving is the next player
-    find_moves = GenerateLegalMoves.new(board)
-    self.legal_moves = find_moves.find_all_legal_moves
+    self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
+    consequences_of_move(boolean)
+    toggle_colours
+  end
+
+  def enter_move_or_save_game
+    player_name = (@colour_moving == 'White') ? white.name : black.name
+    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square. Or type 'save' to save the game."
+    next_move = @colour_moving == 'White' ? white.get_legal_move(board, legal_moves) : black.get_legal_move(board, legal_moves)
+  end
+
+  def consequences_of_move(boolean)
+    # boolean for whether the move was a pawn move or capture
+    check_status = CheckForCheck.new(board.board_array, board.colour_moving, '').king_in_check?
+    # puts "The value of check_status is #{check_status}"
+  
     moving_name = get_player_name_from_colour(colour_moving)
     other_name = get_player_name_from_colour(other_colour(colour_moving))
     mate_or_mate(check_status, result, moving_name, other_name) unless legal_moves.size.positive?
@@ -107,21 +112,19 @@ include Miscellaneous
     if board.any_en_passent_in_theory?
       board.reset_en_passent unless legal_moves.any? { |move| move.en_passent }
     end
-    boolean = next_move.pawn_move_or_capture?
-    puts "The value of boolean is #{boolean} for pawn move or capture."
     boolean ? result.reset_moves_count : result.increase_moves_count
     result.declare_fifty_move_draw(moving_name, other_name) if result.fifty_move_rule_draw?
     
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
+    puts "moving_name = #{moving_name}. other_name = #{other_name}."
     result.declare_repitition_draw(moving_name, other_name) if result.repitition_draw?
     result.declare_insuff_material_draw(moving_name, other_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
-    toggle_colours
   end
 
   def toggle_colours
-    puts "toggle_colours is working"
+    # puts "toggle_colours is working"
     self.colour_moving = other_colour(colour_moving)
     # the colour_moving variable in the Board class needs to be toggled separately
   end
@@ -184,8 +187,8 @@ include Miscellaneous
     colour == 'White' ? white.name : black.name
   end
 
-  def mate_or_mate(check_for_check_object, result_object, moving_name, other_name)
-    check_for_check_object.king_in_check? ? result_object.declare_checkmate(moving_name, other_name) : result_object.declare_stalemate(moving_name, other_name)
+  def mate_or_mate(check_status, result_object, moving_name, other_name)
+    check_status ? result_object.declare_checkmate(moving_name, other_name) : result_object.declare_stalemate(moving_name, other_name)
   end
 
 end
