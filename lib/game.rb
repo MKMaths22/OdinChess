@@ -35,7 +35,7 @@ class Game
 
 include Miscellaneous
   
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :save_slot, :reloaded
   
   def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new(make_the_hash(board.store_position)))
     @board = board
@@ -45,22 +45,21 @@ include Miscellaneous
     @colour_moving = 'White'
     @display_board = DisplayBoard.new
     @legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
+    @saved = false
+    @reloaded = false
   end
-
+  
   def play_game
    # legal_moves.each_with_index do |move, index|
    #   puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
    #   puts "The move has class #{move.class.to_s}"
       # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
     # end
-    welcome
     offer_reload if games_saved?
     name_the_players unless white.name
+    self.saved = false
+    # if reloading a saved game, this variable must be changed 
     turn_loop
-
-
-
-
   end
   
   def welcome
@@ -69,7 +68,7 @@ include Miscellaneous
   end
 
   def turn_loop
-      one_turn until result.game_over?
+      one_turn until result.game_over? || @saved
 
   end
 
@@ -78,23 +77,25 @@ include Miscellaneous
     # puts "#{colour_moving} is the colour to Move."
     @display_board.show_the_board(board)
     next_move = enter_move_or_save_game
-    save_game unless next_move
+    save_the_game unless next_move
     # next_move is a either nil or a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
     # puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
-    boolean = next_move.pawn_move_or_capture?
-    p "The value of boolean is #{boolean} for pawn move or capture."
-    ChangeTheBoard.new(next_move, board, white.name, black.name).update_the_board
+    if next_move
+      boolean = next_move.pawn_move_or_capture?
+      p "The value of boolean is #{boolean} for pawn move or capture."
+      ChangeTheBoard.new(next_move, board, white.name, black.name).update_the_board
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
     # board.colour_moving is the next player
-    self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
-    consequences_of_move(boolean)
-    toggle_colours
+      self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
+      consequences_of_move(boolean)
+      toggle_colours
+    end
   end
 
   def enter_move_or_save_game
     player_name = (@colour_moving == 'White') ? white.name : black.name
-    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square. Or type 'save' to save the game."
+    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square, or type 'save' to save the game."
     next_move = @colour_moving == 'White' ? white.get_legal_move(board, legal_moves) : black.get_legal_move(board, legal_moves)
   end
 
@@ -151,14 +152,14 @@ include Miscellaneous
 
   def list(array)
     array.each_with_index do |name, index|
-      puts "#{index.to_i + 1}.  #{name}"
+    puts "#{index.to_i + 1}.  #{name}"
     end
   end
 
   def reload_or_new(array, string)
     number = string.to_i - 1
     # if the string was not of numerical form, number will be -1 which is not valid for reloading anyway!
-    names_available[number] ? reload(names_available, number) : Game.new.play_game
+    array[number] ? reload(array, number) : Game.new.play_game
   end
 
   def reload(array, number)
@@ -167,11 +168,35 @@ include Miscellaneous
   end
 
   def save_the_game
-    puts "save_the_game is working"
+    self.saved = true
+    player_name = get_player_name_from_colour(colour_moving)
+    puts "#{player_name}, please choose a name for the saved game."
+    Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
+    Dir.chdir('saved_games')
+    name = get_save_name
+    saved_game_as_yaml = YAML.dump(self)
+    file_for_saving = File.new("#{name}.txt", 'w')
+    file_for_saving.puts saved_game_as_yaml
+    file_for_saving.close
+    puts "Game saved in 'saved_games/#{name}.txt"
+    Dir.chdir('..')
     # require input to name the saved game
     # check if that name is already used (input needs to be validated)
     # then save the Board, Result, Player classes (any others) to chosen_name.txt in saved_games directory, creating
     # the directory if necessary
+  end
+
+  def get_save_name
+    name_tried = gets
+    if already_used?(name_tried)
+      puts "There is already a saved game with that name. Please choose another."
+      return get_save_name
+    end
+    name_tried
+  end
+
+  def already_used?(name)
+    File.exist?("#{name}.txt")
   end
    
   def name_the_players
