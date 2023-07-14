@@ -21,6 +21,11 @@ class Piece
       colour_to_use = (colour == 'White' ? :light_white : :black)
       array_of_strings.map { |string| string.colorize(color: colour_to_use) } 
     end
+
+    def simplify
+      "#{colour}#{self.class.to_s}"
+      # for use when the board object is being stored in the Result object's @positions for 3-fold repetition
+    end
     
     def reset_moves_to_check
       self.moves_to_check_for_check = []
