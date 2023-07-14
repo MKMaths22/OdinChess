@@ -175,10 +175,10 @@ class Board
 
   def store_position
     # uses YAML to serialize the Board object in its current state. 
-    # self.to_yaml
-    simple_array = board_array.map { |file| file.map { |piece| piece.simplify if piece }}
-    simple_string = simple_array.flatten.join(',')
-    position_hash = { 'string' => simple_string, 'en_passent' => en_passent, 'castling_rights' => castling_rights, 'colour_moving' => colour_moving }
+    self.to_yaml
+    # simple_array = board_array.map { |file| file.map { |piece| piece.simplify if piece }}
+    # simple_string = simple_array.flatten.join(',')
+    # position_array = [simple_string, en_passent, castling_rights, colour_moving]
   end
 
   def insuff_material_draw?

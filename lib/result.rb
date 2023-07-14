@@ -15,8 +15,11 @@ class Result
   def add_position(position)
     # the positions stored are snapshots of the board object, which capture the current position with
     # whose turn it is to move and any en passent or castling opportunities
-    puts "The previous value of the previous_positions hash on key 'position' is #{@previous_positions[position]}"
-    self.previous_positions[position] = @previous_positions[position] + 1
+    # puts "The previous value of the previous_positions hash on key 'position' is #{@previous_positions[position]}"
+    # HYPOTHESIS is that when YAML of the Game is reloaded, although the instance variables in Result class are recovered,
+    # the fact that the previous_positions hash has a DEFAULT VALUE OF ZERO is forgotten, so we have to code the adding of 
+    # a position more defensively.
+    self.previous_positions[position] = @previous_positions[position].to_i + 1
     puts "The size of the previous positions is now #{@previous_positions.keys.size}"
   end
 
@@ -24,7 +27,7 @@ class Result
     # this occurs if a pawn moves or a piece is captured
     puts "previous positions being wiped"
     self.previous_positions = Hash.new(0)
-    puts "The size of the previous positions is now #{@previous_positions.keys.size}"
+    # puts "The size of the previous positions is now #{@previous_positions.keys.size}"
   end
 
   def increase_moves_count

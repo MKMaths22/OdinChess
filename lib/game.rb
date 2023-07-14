@@ -60,6 +60,7 @@ include Miscellaneous
       name_the_players
     end
     puts "It is #{colour_moving} to move." if saved
+    result.previous_positions.keys.each { |key| puts key }
     self.saved = false
     # if reloading a saved game, this variable must be changed 
     turn_loop
