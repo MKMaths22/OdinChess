@@ -55,13 +55,13 @@ include Miscellaneous
    #   puts "The move has class #{move.class.to_s}"
       # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
     # end
-    unless saved 
+    unless reloaded 
       offer_reload if games_saved?
       name_the_players
     end
-    puts "It is #{colour_moving} to move." if saved
-    result.previous_positions.keys.each { |key| puts key }
-    self.saved = false
+    puts "It is #{colour_moving} to move." if reloaded
+    # result.previous_positions.keys.each { |key| puts key }
+    self.reloaded = false
     # if reloading a saved game, this variable must be changed 
     turn_loop
   end
@@ -181,6 +181,7 @@ include Miscellaneous
     File.delete(file_for_loading)
     Dir.chdir('..')
     reloaded_game = YAML.unsafe_load(yaml_string)
+    reloaded_game.reloaded = true
     reloaded_game.play_game
     # the number is the actual place in the array enumerated from 0, not the number displayed (which is 1 higher)
     # this method TO BE WRITTEN 
