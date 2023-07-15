@@ -35,7 +35,7 @@ class Game
 
 include Miscellaneous
   
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :save_slot, :reloaded
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved
   
   def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new(make_the_hash(board.store_position)))
     @board = board
@@ -46,7 +46,6 @@ include Miscellaneous
     @display_board = DisplayBoard.new
     @legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
     @saved = false
-    @reloaded = false
   end
   
   def play_game
@@ -55,13 +54,13 @@ include Miscellaneous
    #   puts "The move has class #{move.class.to_s}"
       # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
     # end
-    unless reloaded 
+    unless saved
       offer_reload if games_saved?
       name_the_players
     end
-    puts "It is #{colour_moving} to move." if reloaded
+    puts "It is #{colour_moving} to move." if saved
     # result.previous_positions.keys.each { |key| puts key }
-    self.reloaded = false
+    self.saved = false
     # if reloading a saved game, this variable must be changed 
     turn_loop
   end
@@ -181,7 +180,6 @@ include Miscellaneous
     File.delete(file_for_loading)
     Dir.chdir('..')
     reloaded_game = YAML.unsafe_load(yaml_string)
-    reloaded_game.reloaded = true
     reloaded_game.play_game
     # the number is the actual place in the array enumerated from 0, not the number displayed (which is 1 higher)
     # this method TO BE WRITTEN 
