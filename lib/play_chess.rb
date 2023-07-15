@@ -1,6 +1,61 @@
 #frozen_string_literal: true
 
 require './game.rb'
+require 'yaml'
+
 puts "Welcome to Chess!"
 sleep(2)
-Game.new.play_game
+
+def games_saved?
+  Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
+  Dir.empty?('saved_games') ? false : true
+end
+
+def offer_reload
+  Dir.chdir('saved_games')
+  names_available = Dir['./*'].map { |string| string[2..-5] }
+  # which removes "./" and ".txt" just outputting the names chosen when games were saved
+  puts "I have found #{game_or_games(names_available.size) }."
+  list(names_available)
+  puts "Type the number of a saved game to reload it, or anything else for a new game."
+  Dir.chdir('..')
+  value = gets.strip
+  reload_or_new(names_available, value)
+end
+
+def reload_or_new(array, string)
+  number = string.to_i - 1
+  # if the string was not of numerical form, number will be -1 which is not valid for reloading anyway!
+  if array[number] && number.between?(0,array.size - 1)
+  # needed because otherwise ruby interprets array[-1] as last item in array
+    reload(array, number)
+  else
+    Game.new.play_game
+  end
+end
+
+def reload(array, number)
+  Dir.chdir('saved_games')
+  puts "Reloading..."
+  sleep(2)
+  name_of_file = "#{array[number]}.txt"
+  file_for_loading = File.open(name_of_file, 'r')
+  yaml_string = file_for_loading.read
+  File.delete(file_for_loading)
+  Dir.chdir('..')
+  reloaded_game = YAML.unsafe_load(yaml_string)
+  reloaded_game.play_game
+  # the number is the actual place in the array enumerated from 0, not the number displayed (which is 1 higher)
+end
+
+def game_or_games(num)
+  num > 1 ? 'some saved games' : 'a saved game'
+end
+
+def list(array)
+  array.each_with_index do |name, index|
+  puts "#{index.to_i + 1}.  #{name}"
+  end
+end
+
+games_saved? ? offer_reload : Game.new.play_game

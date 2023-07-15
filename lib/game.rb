@@ -54,20 +54,14 @@ include Miscellaneous
    #   puts "The move has class #{move.class.to_s}"
       # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
     # end
-    unless saved
-      offer_reload if games_saved?
-      name_the_players
-    end
+   
+    name_the_players unless saved
+  
     puts "It is #{colour_moving} to move." if saved
     # result.previous_positions.keys.each { |key| puts key }
     self.saved = false
     # if reloading a saved game, this variable must be changed 
     turn_loop
-  end
-  
-  def welcome
-    puts 'Welcome to Chess!'
-    sleep(2)
   end
 
   def turn_loop
@@ -132,57 +126,15 @@ include Miscellaneous
     self.colour_moving = other_colour(colour_moving)
     # the colour_moving variable in the Board class needs to be toggled separately
   end
-  
-  def games_saved?
-    Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
-    Dir.empty?('saved_games') ? false : true
-  end
 
   def game_or_games(num)
     num > 1 ? 'some saved games' : 'a saved game'
-  end
-  
-  def offer_reload
-    Dir.chdir('saved_games')
-    names_available = Dir['./*'].map { |string| string[2..-5] }
-    # which removes "./" and ".txt" just outputting the names chosen when games were saved
-    puts "I have found #{game_or_games(names_available.size) }."
-    list(names_available)
-    puts "Type the number of a saved game to reload it, or anything else for a new game."
-    Dir.chdir('..')
-    value = gets.strip
-    reload_or_new(names_available, value)
   end
 
   def list(array)
     array.each_with_index do |name, index|
     puts "#{index.to_i + 1}.  #{name}"
     end
-  end
-
-  def reload_or_new(array, string)
-    number = string.to_i - 1
-    puts "number for reloading = #{number}"
-    # if the string was not of numerical form, number will be -1 which is not valid for reloading anyway!
-    if array[number] && number.between?(0,array.size - 1)
-    # needed because otherwise ruby interprets array[-1] as last item in array
-      reload(array, number)
-    end
-  end
-
-  def reload(array, number)
-    Dir.chdir('saved_games')
-    puts "Reloading..."
-    sleep(2)
-    name_of_file = "#{array[number]}.txt"
-    file_for_loading = File.open(name_of_file, 'r')
-    yaml_string = file_for_loading.read
-    File.delete(file_for_loading)
-    Dir.chdir('..')
-    reloaded_game = YAML.unsafe_load(yaml_string)
-    reloaded_game.play_game
-    # the number is the actual place in the array enumerated from 0, not the number displayed (which is 1 higher)
-    # this method TO BE WRITTEN 
   end
 
   def save_the_game
