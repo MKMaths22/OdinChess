@@ -50,3 +50,7 @@ include Miscellaneous
     "#{string} is not acceptable input. Please type the algebraic notation for starting square and finishing square such as 'g1f3'. Castling is a King move. 'Save' to save the game, 'Resign' to resign."
   end
 end
+
+class Computer < Player
+
+end

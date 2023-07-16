@@ -37,7 +37,7 @@ include Miscellaneous
   
   attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved
   
-  def initialize(board = Board.new, white = Player.new('White', nil), black = Player.new('Black', nil), result = Result.new(make_the_hash(board.store_position)))
+  def initialize(board = Board.new, white = nil, black = nil, result = Result.new(make_the_hash(board.store_position)))
     @board = board
     @white = white
     @black = black
@@ -55,7 +55,7 @@ include Miscellaneous
       # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
     # end
    
-    name_the_players unless saved
+    create_the_players unless saved
   
     puts "It is #{colour_moving} to move." if saved
     # result.previous_positions.keys.each { |key| puts key }
@@ -167,13 +167,17 @@ include Miscellaneous
     File.exist?("#{name}.txt")
   end
    
-  def name_the_players
-    puts 'Please input the name of the player with the White pieces.'
+  def create_the_players
+    puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
     input = gets.strip
-    white.set_name(input)
-    puts 'And now input the name of the player playing Black.'
+    white = make_human_or_computer(input)
+    puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
     input = gets.strip
-    black.set_name(input)
+    black = make_human_or_computer(input)
+  end
+
+  def make_human_or_computer(input)
+
   end
 
   def get_player_name_from_colour(colour)
