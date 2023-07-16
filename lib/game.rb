@@ -127,16 +127,6 @@ include Miscellaneous
     # the colour_moving variable in the Board class needs to be toggled separately
   end
 
-  def game_or_games(num)
-    num > 1 ? 'some saved games' : 'a saved game'
-  end
-
-  def list(array)
-    array.each_with_index do |name, index|
-    puts "#{index.to_i + 1}.  #{name}"
-    end
-  end
-
   def save_the_game
     self.saved = true
     player_name = get_player_name_from_colour(colour_moving)

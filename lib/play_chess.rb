@@ -35,6 +35,7 @@ def reload_or_new(array, string)
 end
 
 def reload(array, number)
+  # the number is the actual place in the array enumerated from 0, not the number displayed (which is 1 higher)
   Dir.chdir('saved_games')
   puts "Reloading..."
   sleep(2)
@@ -45,7 +46,6 @@ def reload(array, number)
   Dir.chdir('..')
   reloaded_game = YAML.unsafe_load(yaml_string)
   reloaded_game.play_game
-  # the number is the actual place in the array enumerated from 0, not the number displayed (which is 1 higher)
 end
 
 def game_or_games(num)
@@ -58,4 +58,24 @@ def list(array)
   end
 end
 
-games_saved? ? offer_reload : Game.new.play_game
+def stop_chess_boolean
+  puts "Press Y to play again, or anything else to leave the Chess program."
+  text = gets.strip.upcase
+  text == 'Y' ? false : true
+end
+
+bye = false
+
+until bye
+  game = Game.new
+  games_saved? ? offer_reload : game.play_game
+  bye = stop_chess_boolean
+end
+
+puts "Thanks for playing Chess. Goodbye."
+
+# LATEST BUG IS WHEN IN LINE 71 ABOVE a new game is started, sometimes the Game object is not
+# initializing correctly. It fails to find all 20 legal moves at the start of the new game. It never finds extra moves, just misses up to 3 moves. It is related to what happened in the previous game. So if you play e2e4, save the game and then start a new one, it won't recognise e2e4 as legal. Why should this happen?
+# Knights appear to be unaffected, only pawns. How can we make Ruby forget the other objects and initialize the Game object correctly?
+
+
