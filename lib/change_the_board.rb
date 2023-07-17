@@ -1,19 +1,18 @@
 # ChangeTheBoard class implements the moving of pieces, including en passent/castling. Player who moved is prompted for promotion and en_passent chances and castling_rights are updated.
 class ChangeTheBoard
   
-  attr_accessor :move, :board, :white_name, :black_name, :colour
+  attr_accessor :move, :board, :player, :colour
   
-  def initialize(move, board, white_player_name, black_player_name)
+  def initialize(move, board, player_of_the_move)
     @move = move
     @board = board
-    @white_name = white_player_name
-    @black_name = black_player_name
+    @player = player_of_the_move
     @colour = move.colour
   end
 
   def update_the_board
     # will ask questions of the Move object @move and tell the Board object to update itself
-    puts "update_the_board is working"
+    # puts "update_the_board is working"
     case move.our_piece.class.to_s
     when 'Pawn'
       make_pawn_move
@@ -52,12 +51,12 @@ class ChangeTheBoard
   end
 
   def make_general_move
-    puts "make_general_move is working"
+    # puts "make_general_move is working"
     board.update_array(move.poss_board_array)
     board.reset_en_passent
     board.add_en_passent_chance(move.finish_square) if move.our_piece.kind_of?(Pawn) && !(move.vector[1].between?(-1, 1))
     opponent_back_rank = colour == 'White' ? 7 : 0
-    puts "opponent_back_rank = #{opponent_back_rank}"
+    # puts "opponent_back_rank = #{opponent_back_rank}"
     board.remove_castling_rights('0-0', true) if move.finish_square == [7, opponent_back_rank]
     board.remove_castling_rights('0-0-0', true) if move.finish_square == [0, opponent_back_rank]
   end
@@ -65,16 +64,16 @@ class ChangeTheBoard
   def promote_pawn
     make_general_move
     puts promotion_message(move.colour)
-    new_piece = get_piece_for_promotion(gets.strip.upcase, move.colour)
+    new_piece = get_piece_for_promotion(@player, move.colour)
     board.replace_pawn_with(new_piece, move.finish_square)
   end
 
   def promotion_message(colour)
-    name = colour == 'White' ? white_name : black_name
-    "You are promoting a pawn, #{name}. Please input 'N' to promote to a Knight, 'R' for Rook, 'B' for Bishop or anything else for a Queen."
+    "You are promoting a pawn, #{@player.name}. Please input 'N' to promote to a Knight, 'R' for Rook, 'B' for Bishop or anything else for a Queen."
   end
 
-  def get_piece_for_promotion(string, colour)
+  def get_piece_for_promotion(player, colour)
+    string = player.get_promotion_input
     case string
     when 'N'
       Knight.new(colour)

@@ -11,8 +11,8 @@ include Miscellaneous
     @name = name
   end
 
-  def set_name(string)
-    @name = string
+  def get_promotion_input
+    gets.strip.upcase
   end
 
   def get_legal_move(board, legal_moves)
@@ -52,5 +52,31 @@ include Miscellaneous
 end
 
 class Computer < Player
+
+include Miscellaneous
+
+  attr_reader :colour, :name
+
+  def initialize(colour)
+    @colour = colour
+    @name = "Computer(#{colour[0]})"
+    # name is either Computer('W') or Computer('B')
+  end
+
+  def get_legal_move(board, legal_moves)
+    puts "Choosing a capture at random or other move at random like a noob"
+    sleep(1)
+    queen_captures = legal_moves.filter { |move| move.other_piece && move.other_piece.kind_of?(Queen) }
+    rook_captures = legal_moves.filter { |move| move.other_piece && move.other_piece.kind_of?(Rook) }
+    other_captures = legal_moves.filter { |move| move.other_piece }
+    move = queen_captures.sample || rook_captures.sample || other_captures.sample || legal_moves.sample
+    puts "#{algebraic(move.start_square)}#{algebraic(move.finish_square)}"
+    move
+  end
+
+  def get_promotion_input
+    'Q'
+    # computer always promotes to a queen
+  end
 
 end

@@ -80,8 +80,9 @@ include Miscellaneous
     # puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
     if next_move.kind_of?(Move)
       boolean = next_move.pawn_move_or_capture?
-      p "The value of boolean is #{boolean} for pawn move or capture."
-      ChangeTheBoard.new(next_move, board, white.name, black.name).update_the_board
+      # p "The value of boolean is #{boolean} for pawn move or capture."
+      player_of_the_move = next_move.colour == 'White' ? white : black 
+      ChangeTheBoard.new(next_move, board, player_of_the_move).update_the_board
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
     # board.colour_moving is the next player
@@ -122,7 +123,7 @@ include Miscellaneous
     
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
-    puts "moving_name = #{moving_name}. other_name = #{other_name}."
+    # puts "moving_name = #{moving_name}. other_name = #{other_name}."
     result.declare_repitition_draw(moving_name, other_name) if result.repitition_draw?
     result.declare_insuff_material_draw(moving_name, other_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
@@ -141,7 +142,7 @@ include Miscellaneous
     Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
     Dir.chdir('saved_games')
     name = get_save_name
-    puts "name for saving file = #{name}"
+    # puts "name for saving file = #{name}"
     saved_game_as_yaml = YAML.dump(self)
     file_for_saving = File.new("#{name}.txt", 'w')
     file_for_saving.puts saved_game_as_yaml
@@ -170,14 +171,14 @@ include Miscellaneous
   def create_the_players
     puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
     input = gets.strip
-    white = make_human_or_computer(input)
+    self.white = make_human_or_computer('White', input)
     puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
     input = gets.strip
-    black = make_human_or_computer(input)
+    self.black = make_human_or_computer('Black', input)
   end
 
-  def make_human_or_computer(input)
-
+  def make_human_or_computer(colour, input)
+    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input)
   end
 
   def get_player_name_from_colour(colour)

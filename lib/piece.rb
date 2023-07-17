@@ -118,7 +118,7 @@ class Pawn < Piece
     @basic_display_strings = ['         ', '    o    ', '   / \   ', '   |_|   ']
     @display_strings = apply_colour(@basic_display_strings)
     @moved = false
-    puts "When created, this pawn has @square = #{@square} and #{moves_to_check_for_check.size} moves to check. The moved variable is #{@moved}."
+    # puts "When created, this pawn has @square = #{@square} and #{moves_to_check_for_check.size} moves to check. The moved variable is #{@moved}."
   end
 
   def update_moved_variable
@@ -146,7 +146,7 @@ class Pawn < Piece
   end
 
   def get_all_legal_moves_from(current_square, board)
-    puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+    # puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
     self.square = current_square
     reset_moves_to_check
     # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
@@ -169,12 +169,12 @@ class Pawn < Piece
     if on_the_board?(first_non_capture_square)
       poss_piece = board.get_piece_at(first_non_capture_square)
       unless poss_piece
-        puts "There is no piece in front of the pawn, so add this move to #{first_non_capture_square}"
+        # puts "There is no piece in front of the pawn, so add this move to #{first_non_capture_square}"
         moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
         if non_capture_vectors[1]
           other_square = add_vector(current_square, non_capture_vectors[1])
           other_poss_piece = board.get_piece_at(other_square)
-          puts "There is no piece two squares in front of the pawn, so add this move to #{other_square}" unless other_poss_piece
+          # puts "There is no piece two squares in front of the pawn, so add this move to #{other_square}" unless other_poss_piece
           moves_to_check_for_check.push(Move.new(board, square, other_square)) unless other_poss_piece
         end
       end

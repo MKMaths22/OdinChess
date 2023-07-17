@@ -140,4 +140,10 @@ module Miscellaneous
     output[position] = 1
     output
   end
+
+  def algebraic(coords)
+    # generates for example e4 from [4, 3]
+    files = ['a', 'b', 'c', 'd', 'e', 'f', 'g' , 'h']
+    "#{files[coords[0]]}#{1 + coords[1]}"
+  end
 end
