@@ -124,7 +124,7 @@ class Pawn < Piece
   def update_moved_variable
     # puts "update_moved_variable has started running"
     self.moved = true
-    puts "moved variable is now #{@moved}"
+    # puts "moved variable is now #{@moved}"
     self.non_capture_vectors = [@non_capture_vectors[0]]
     # p "Non_capture_vectors are #{@non_capture_vectors}"
     # puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
