@@ -4,56 +4,55 @@ class CheckForCheck
 
 include Miscellaneous
 
-  attr_accessor :colour, :poss_board_array, :error_message, :king_square, :checking_piece_square, :squares_between
+  attr_accessor :colour, :poss_board_array, :king_square, :checking_piece_square, :squares_between
   
-  def initialize(poss_board_array, colour, error_message = general_into_check_error)
+  def initialize(poss_board_array, colour)
     @colour = colour
     @poss_board_array = poss_board_array
-    @error_message = error_message
     @king_square = nil
     @checking_piece_square = nil
     @squares_between = []
   end
 
-  def king_in_check?(error = false)
-    partly_boolean = partly_boolean_king_in_check?
-    puts error_message if partly_boolean && error
+  # def king_in_check?
+    # partly_boolean = partly_boolean_king_in_check?
+    # puts error_message if partly_boolean && error
     # the default behaviour is now NOT to put an error message because the error messages
     # are left over from the code which was checking a PARTICULAR move inputted by the player
     # and are not relevant for the new way which is of generating ALL legal moves
-    partly_boolean
-  end
+   # partly_boolean
+  # end
   
-  def output_hash
-    { 'our_king_square' => king_square, 'checking_piece_square' => checking_piece_square, 'squares_between' => squares_between }
-  end
+  # def output_hash
+    # { 'our_king_square' => king_square, 'checking_piece_square' => checking_piece_square, 'squares_between' => squares_between }
+  # end
   
-  def partly_boolean_king_in_check?
+  # def partly_boolean_king_in_check?
     # outputs either false or a hash of { our_king_coords => king_square, checking_piece_coords => check_from_square, line_of_attack = 2_D array of coordinates of squares where check could be blocked } The return value features the details of ONE line of attack from A checking piece. It could be a double check, but we are just trying 
     # to provide minimum conditions for getting out of check
-    coords_hash = find_both_king_coords
-    return true if adjacent?(coords_hash[:our_king], coords_hash[:other_king])
+    # coords_hash = find_both_king_coords
+    # return true if adjacent?(coords_hash[:our_king], coords_hash[:other_king])
     # the position would be illegal anyway, so no need to output more detailed information to help us get out of check
     
-    self.king_square = coords_hash[:our_king]
+    # self.king_square = coords_hash[:our_king]
     # puts "king_square = #{king_square}"
-    return output_hash if any_hostile_knights?(king_square)
+    # return output_hash if any_hostile_knights?(king_square)
     
     
-    return output_hash if any_hostile_orthogonals?(king_square)
-    
-
-    return output_hash if any_hostile_diagonals?(king_square)
+    # return output_hash if any_hostile_orthogonals?(king_square)
     
 
-    return output_hash if any_hostile_pawns?(king_square)
+    # return output_hash if any_hostile_diagonals?(king_square)
+    
 
-    false
+    # return output_hash if any_hostile_pawns?(king_square)
+
+    # false
 
     # poss_board_array is an actual or hypothetical board position given in the
     # format of the Board class @board_array variable. We are checking whether the King
     # of colour 'colour' is in check.
-  end
+  # end
 
   def find_both_king_coords
     output = {}

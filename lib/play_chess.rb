@@ -74,8 +74,3 @@ end
 
 puts "Thanks for playing Chess. Goodbye."
 
-# LATEST BUG IS WHEN IN LINE 71 ABOVE a new game is started, sometimes the Game object is not
-# initializing correctly. It fails to find all 20 legal moves at the start of the new game. It never finds extra moves, just misses up to 3 moves. It is related to what happened in the previous game. So if you play e2e4, save the game and then start a new one, it won't recognise e2e4 as legal. Why should this happen?
-# Knights appear to be unaffected, only pawns. How can we make Ruby forget the other objects and initialize the Game object correctly?
-
-

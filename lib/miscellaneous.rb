@@ -40,27 +40,7 @@ module Miscellaneous
 
   def illegal_move_error
     "That move is illegal. Please try again."
-  end
-  
-  def piece_in_the_way_error
-    "There is a piece in the way of that move. Please try again."
-  end
-
-  def capture_own_piece_error
-    "You cannot capture your own pieces. Please try again."
-  end
-
-  def no_piece_error
-    "There is no piece on the starting square. Please input a valid move."
-  end
-
-  def wrong_piece_error(colour)
-    "That piece is #{other_colour(colour)}. Please input a valid move for #{colour}."
-  end
-
-  def en_passent_error
-    "There is no en_passent capture on that square. Please try again."
-  end
+  ends
 
   def get_reduced_vector(castling_vector)
     castling_vector[0].positive? ? [1, 0] : [-1, 0]
@@ -78,18 +58,6 @@ module Miscellaneous
     end
   end
 
-  def castle_from_check_error
-    "You cannot castle because you are in check. Please input another move."
-  end
-
-  def castle_through_check_error
-    "You cannot castle by passing your King through a square that is under attack. Please input another move."
-  end
-
-  def general_into_check_error
-    "That move would leave your King in check. Please try again."
-  end
-
   def find_squares_to_check(colour, vector)
     # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
     # method outputs the squares that have to be empty between the King and Rook, as a 2-D array
@@ -99,20 +67,6 @@ module Miscellaneous
       item.push(row)
     end
    output
-  end
-
-  def add_castling_to_hash(vector, colour, hash)
-    # the hash takes the form of output_hash in the Piece class i.e.
-    # output_hash = { 'castling' => false, 'en_passent' => false, 'sub_vectors' => [] }
-    # vector is either [2, 0] or [-2, 0]
-    # method sets the value of castling in the hash to 'White_0-0' or other as appropriate. It also
-    # adds the squares between to check, relative to the king's starting position, so will be [1, 0] and [2, 0] or [-1, 0], [-2, 0] and [-3, 0] 
-    output_hash = hash
-    output_hash['castling'] = "#{colour}_0-0-0" if vector[0].negative?
-    output_hash['castling'] = "#{colour}_0-0" if vector[0].positive?
-    output_hash['sub_vectors'] = [[1, 0], [2, 0]] if vector[0].positive?
-    output_hash['sub_vectors'] = [[-1, 0], [-2, 0], [-3, 0]] if vector[0].negative?
-    output_hash
   end
 
   def get_rook_start(castling)
