@@ -30,6 +30,29 @@ class Piece
     def reset_moves_to_check
       self.moves_to_check_for_check = []
     end
+
+    def capture_possible?(start_square, finish_square, board)
+      # the piece in question is on 'start_square' in a Board object, 'board' and we want to know if it can 
+      # capture the piece (actually the King) on the 'finish_square'
+      if base_vectors
+        base_vectors.each do |vector|
+          square_to_try = add_vector(start_square, vector)
+          way_is_clear = true
+          while on_the_board?(square_to_try) && way_is_clear
+            return true if square_to_try == finish_square
+            way_is_clear = false if board.get_piece_at(square_to_try)
+            square_to_try = add_vector(square_to_try, vector)
+          end
+        end
+        return false
+      end
+      # use movement vectors if there are no base vectors
+      movement_vectors.each do |vector|
+        square_to_try = add_vector(start_square, vector)
+        return true if square_to_try == finish_square
+      end
+      false
+    end
     
     def get_all_legal_moves_from(current_square, board)
       # puts "get_all_legal_moves_from is executing on a piece of type #{self.class.to_s}"
@@ -128,6 +151,16 @@ class Pawn < Piece
     self.non_capture_vectors = [@non_capture_vectors[0]]
     # p "Non_capture_vectors are #{@non_capture_vectors}"
     # puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
+  end
+
+  def capture_possible?(start_square, finish_square, board)
+    # we don't care about en_passent in this method because it is only used to see if
+    # the opposition king would be in check
+    @capture_vectors.each do |vector|
+      capture_square = add_vector(start_square, vector)
+      return true if capture_square == finish_square
+    end
+    false
   end
 
   def moved?

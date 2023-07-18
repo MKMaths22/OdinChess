@@ -106,7 +106,7 @@ include Miscellaneous
 
   def consequences_of_move(boolean)
     # boolean for whether the move was a pawn move or capture
-    check_status = CheckForCheck.new(board.board_array, board.colour_moving, '').king_in_check?
+    check_status = CheckForCheck.new(board.board_array, board.colour_moving).king_in_check?
     # puts "The value of check_status is #{check_status}"
   
     moving_name = get_player_name_from_colour(colour_moving)

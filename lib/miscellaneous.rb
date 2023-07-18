@@ -20,6 +20,12 @@ module Miscellaneous
     first_vector.each_with_index.map { |num, index| num + second_vector[index] }
   end
 
+  def next_square(coords)
+    return [coords[0], coords[1] + 1] unless coords[1] == 7
+    return [coords[0] + 1, 0] unless coords[0] == 7
+    nil
+  end
+
   def subtract_vector(first_vector, second_vector)
     first_vector.each_with_index.map { |num, index| num - second_vector[index] }
   end
@@ -40,7 +46,7 @@ module Miscellaneous
 
   def illegal_move_error
     "That move is illegal. Please try again."
-  ends
+  end
 
   def get_reduced_vector(castling_vector)
     castling_vector[0].positive? ? [1, 0] : [-1, 0]

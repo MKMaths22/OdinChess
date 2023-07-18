@@ -9,10 +9,10 @@ class Board
   
   attr_accessor :board_array, :castling_rights, :colour_moving, :en_passent
   
-  def initialize(board_array = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ])
+  def initialize(board_array = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ], colour_moving = 'White')
     @board_array = board_array
     @castling_rights = { 'White_0-0-0' => true, 'White_0-0' => true, 'Black_0-0-0' => true, 'Black_0-0' => true }
-    @colour_moving = 'White'
+    @colour_moving = colour_moving
     @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
   end
 
@@ -124,12 +124,6 @@ class Board
     next_square_with_piece_to_move(next_one)
   end
 
-  def next_square(coords)
-    return [coords[0], coords[1] + 1] unless coords[1] == 7
-    return [coords[0] + 1, 0] unless coords[0] == 7
-    nil
-  end
-
   def would_move_leave_us_in_check?(possible_board_array)
     checking = CheckForCheck.new(possible_board_array, colour_moving)
     !!checking.king_in_check?
@@ -138,12 +132,12 @@ class Board
   end
 
   def would_castling_be_illegal_due_to_check?(colour, start, vector, reduced_vector)
-    check_first = CheckForCheck.new(board_array, colour_moving, castle_from_check_error)
+    check_first = CheckForCheck.new(board_array, colour_moving)
     return true if check_first.king_in_check?
     
     middle_square = add_vector(start, reduced_vector)
     middle_of_castling = make_new_array(start, middle_square)
-    check_middle = CheckForCheck.new(middle_of_castling, colour_moving, castle_through_check_error)
+    check_middle = CheckForCheck.new(middle_of_castling, colour_moving)
     return true if check_middle.king_in_check?
     
     finish_square = add_vector(start, vector)
