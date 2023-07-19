@@ -221,6 +221,34 @@ class Pawn < Piece
     output
   end
 
+  def add_en_passent(board, move)
+    board.add_en_passent_chance(move.finish_square) unless move.vector[1].between?(-1, 1)
+  end
+
+  def promotion(board, player, square)
+    puts promotion_message(player)
+    new_piece = get_piece_for_promotion(player, board.colour_moving)
+    board.replace_pawn_with(new_piece, square)
+  end
+
+  def promotion_message(player)
+    "You are promoting a pawn, #{player.name}. Please input 'N' to promote to a Knight, 'R' for Rook, 'B' for Bishop or anything else for a Queen."
+  end
+
+  def get_piece_for_promotion(player, colour)
+    string = player.get_promotion_input
+      case string
+      when 'N'
+        Knight.new(colour)
+      when 'R'
+        Rook.new(colour)
+      when 'B'
+        Bishop.new(colour)
+      else
+        Queen.new(colour)
+     end
+  end
+
 end
 
 class Bishop < Piece
@@ -257,6 +285,12 @@ class Rook < Piece
     @moves_to_check_for_check = []
     @basic_display_strings = ['  n_n_n  ', '  \   /  ', '  |   |  ', '  /___\  ']
     @display_strings = apply_colour(@basic_display_strings)
+  end
+
+  def update_castling(board, start_square)
+    back_rank = board.colour_moving == 'White' ? 0 : 7
+    board.remove_castling_rights('0-0-0') if start_square == [0, back_rank]
+    board.remove_castling_rights('0-0') if start_square == [7, back_rank]
   end
   
 end
@@ -315,6 +349,11 @@ class King < Piece
     @moves_to_check_for_check = []
     @basic_display_strings = ['    +    ', '   \ /   ', '   ( )   ', '   /_\   ']
     @display_strings = apply_colour(@basic_display_strings)
+  end
+
+  def update_castling(board, start_square)
+    board.remove_castling_rights('0-0-0')
+    board.remove_castling_rights('0-0')
   end
 
 end
