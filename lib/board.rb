@@ -81,25 +81,6 @@ class Board
   def en_passent_capture_possible_at?(coords)
     en_passent['Pawn passed through'] == coords
   end
-
-  def castling_legal?(colour, start, vector)
-    # colour is the colour of the King trying to castle, which may not even be in its starting position and vector is [2, 0] or [-2, 0] Start is the King's initial square
-    query_string = colour + '_0-0'
-    query_string += '-0' if vector[0].negative?
-    # query_string is now the appropriate key for the castling_rights hash
-    unless castling_rights[query_string]
-      puts no_castling_error(query_string)
-      return false
-    end
-    # squares_to_check = find_squares_to_check(colour, vector)
-    # return false unless pieces_between_allow_move?(squares_to_check)
-
-    # reduced_vector = vector[0].negative? ? [-1, 0] : [1, 0]
-
-    # NEED TO MAKE THREE possible_board_array values to check in all three that 
-    # the king is not in check.
-    !check_castling_for_check?(colour, start, vector, reduced_vector)
-  end
   
   def pieces_in_the_way?(squares_between)
     # This method checks whether any pieces are in the way
@@ -127,7 +108,6 @@ class Board
   def would_move_leave_us_in_check?(possible_board_array)
     checking = CheckForCheck.new(possible_board_array, colour_moving)
     checking.king_in_check?
-    
   end
 
   def would_castling_be_illegal_due_to_check?(colour, start, vector, reduced_vector)
@@ -143,7 +123,6 @@ class Board
     finish_of_castling = make_new_array(start, finish_square)
     check_finish = CheckForCheck.new(finish_of_castling, colour_moving)
     return check_finish.king_in_check?
-    
   end
 
   def make_new_array(start, finish, e_p = false)
