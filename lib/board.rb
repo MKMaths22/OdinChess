@@ -126,9 +126,8 @@ class Board
 
   def would_move_leave_us_in_check?(possible_board_array)
     checking = CheckForCheck.new(possible_board_array, colour_moving)
-    !!checking.king_in_check?
-    # king_in_check? is to be a partly Boolean method, returning a hash of details if true
-    # or just returning false
+    checking.king_in_check?
+    
   end
 
   def would_castling_be_illegal_due_to_check?(colour, start, vector, reduced_vector)
@@ -143,9 +142,8 @@ class Board
     finish_square = add_vector(start, vector)
     finish_of_castling = make_new_array(start, finish_square)
     check_finish = CheckForCheck.new(finish_of_castling, colour_moving)
-    return !!check_finish.king_in_check?
-    # king_in_check? is to be a partly Boolean method, returning a hash of details if true
-    # or just returning false
+    return check_finish.king_in_check?
+    
   end
 
   def make_new_array(start, finish, e_p = false)
@@ -170,9 +168,6 @@ class Board
   def store_position
     # uses YAML to serialize the Board object in its current state. 
     self.to_yaml
-    # simple_array = board_array.map { |file| file.map { |piece| piece.simplify if piece }}
-    # simple_string = simple_array.flatten.join(',')
-    # position_array = [simple_string, en_passent, castling_rights, colour_moving]
   end
 
   def insuff_material_draw?

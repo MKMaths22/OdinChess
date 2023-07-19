@@ -87,6 +87,7 @@ include Miscellaneous
     # @colour_moving in Game class gets toggled later
     # board.colour_moving is the next player
       self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
+      puts "There are #{legal_moves.size} legal moves."
       consequences_of_move(boolean)
       toggle_colours
     end
