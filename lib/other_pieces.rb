@@ -77,8 +77,7 @@ class Bishop < Piece
     
     def initialize(colour)
       @colour = colour
-      @movement_vectors = KNIGHT_VECTORS
-      # KNIGHT_VECTORS are listed in Miscellaneous
+      @movement_vectors = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
       @base_vectors = nil
       @castling_vectors = []
       @square = nil

@@ -93,20 +93,6 @@ include Miscellaneous
   #  output
   # end
 
-  # def any_hostile_knights?(square)
-  #  KNIGHT_VECTORS.each do |vector|
-  #    poss_square = add_vector(square, vector)
-  #    if on_the_board?(poss_square)
-  #      poss_piece = get_item(poss_board_array, poss_square)
-  #      if poss_piece.kind_of?(Knight) && poss_piece.colour != colour
-  #        self.checking_piece_square = poss_square
-  #        return true
-  #      end
-  #    end
-  #  end
-  # false
-  # end
-
   # def find_first_piece_and_squares_between(square, direction)
     # returns the first piece encountered in direction e.g. [x, y] from square which
     # is also given as a coordinate vector. Returns nil if hits the edge of the board 

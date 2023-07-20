@@ -42,8 +42,6 @@ module Miscellaneous
     (coords_one[0] - coords_two[0]).between?(-1,1) && (coords_one[1] - coords_two[1]).between?(-1,1)
   end
 
-  KNIGHT_VECTORS = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
-
   def illegal_move_error
     "That move is illegal. Please try again."
   end
