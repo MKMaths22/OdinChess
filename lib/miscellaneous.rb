@@ -46,18 +46,6 @@ module Miscellaneous
     castling_vector[0].positive? ? [1, 0] : [-1, 0]
   end
 
-  def no_castling_error(query_string)
-    puts "query_string = #{query_string} with length #{query_string.length}"
-    case query_string.length
-    when 9
-      "#{query_string[0, 5]} can no longer castle on the King side."
-    when 11
-      "#{query_string[0, 5]} can no longer castle on the Queen side."
-    else
-      "Some sort of error in the no_castling_error method."
-    end
-  end
-
   def find_squares_to_check(colour, vector)
     # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
     # method outputs the squares that have to be empty between the King and Rook, as a 2-D array
