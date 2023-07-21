@@ -1,7 +1,7 @@
 # frozen-string-literal: true
 
 require 'colorize'
-# Factoring out as much repition as possible
+# Factoring out as much repitition as possible
 class Piece
 
   include Miscellaneous
@@ -21,14 +21,19 @@ class Piece
       colour_to_use = (colour == 'White' ? :light_white : :black)
       array_of_strings.map { |string| string.colorize(color: colour_to_use) } 
     end
-
-    def simplify
-      "#{colour}#{self.class.to_s}"
-      # for use when the board object is being stored in the Result object's @positions for 3-fold repetition
-    end
     
     def reset_moves_to_check
       self.moves_to_check_for_check = []
+    end
+
+    def validate_square_for_moving(board, square)
+      # asks if the Piece can move to the square 'square' on the 'board'. 
+      # Also tests whether the square is on the chessboard.
+      # returns either false, 'capture' or 'non-capture'
+      return false unless on_the_board?(square)
+      poss_piece = board.get_piece_at(square)
+      return 'non-capture' unless poss_piece
+      return poss_piece.colour == colour ? false : 'capture'
     end
 
     def capture_possible?(start_square, finish_square, board)
@@ -62,7 +67,7 @@ class Piece
       # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
       # puts "Also, on this piece of class #{self.class.to_s} moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
       
-      base_vectors ? use_the_base_vectors(board) : use_movement_vectors_and_castling(board)
+      base_vectors ? moves_from_base_vectors(board) : moves_from_movement_vectors_and_castling(board)
       # this format covers all piece classes except Pawn, which will have
       # its own #get_all_legal_moves_from method
       moves_to_check_for_check.each_with_index do |move, index|
@@ -75,7 +80,7 @@ class Piece
       output
     end
       
-    def use_the_base_vectors(board)
+    def moves_from_base_vectors(board)
       # puts "use_the_base_vectors is executing on a piece of type #{self.class.to_s}"
       possible_squares = []
       base_vectors.each do |vector|
@@ -86,7 +91,7 @@ class Piece
       self.moves_to_check_for_check = make_move_objects(board, possible_squares)
     end
 
-    def use_movement_vectors_and_castling(board)
+    def moves_from_movement_vectors_and_castling(board)
       # puts "use_movement_vectors_and_castling is executing on a piece of type #{self.class.to_s}"
         possible_squares = []
         movement_vectors.each do |vector|
