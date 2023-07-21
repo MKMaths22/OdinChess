@@ -39,6 +39,7 @@ class Piece
     def capture_possible?(start_square, finish_square, board)
       # the piece in question is on 'start_square' in a Board object, 'board' and we want to know if it can 
       # capture the piece (actually the King) on the 'finish_square'
+      # this method ASSUMES that the piece is on the finish_square
       if base_vectors
         base_vectors.each do |vector|
           square_to_try = add_vector(start_square, vector)
@@ -47,16 +48,13 @@ class Piece
             square_to_try = add_vector(square_to_try, vector)
             string_or_boolean = validate_square_for_moving(board, square_to_try)
           end
-          return true if string_or_boolean == 'capture' && square_to_try == finish_square
+          return true if square_to_try == finish_square
         end
-        return false
-      end
+        false
+      else
       # use movement vectors if there are no base vectors
-      movement_vectors.each do |vector|
-        square_to_try = add_vector(start_square, vector)
-        return true if square_to_try == finish_square
+      movement_vectors.map { |vector| add_vector(start_square, vector) }.include?(finish_square)
       end
-      false
     end
     
     def get_all_legal_moves_from(current_square, board)
@@ -93,31 +91,40 @@ class Piece
 
     def moves_from_movement_vectors_and_castling(board)
       # puts "use_movement_vectors_and_castling is executing on a piece of type #{self.class.to_s}"
-        possible_squares = []
-        movement_vectors.each do |vector|
-          maybe_square = add_vector(square, vector)
-          if on_the_board?(maybe_square)
-            poss_piece = board.get_piece_at(maybe_square)
-            possible_squares.push(maybe_square) unless poss_piece && poss_piece.colour == colour
-          end
-        end
+      #  possible_squares = []
+      #  movement_vectors.each do |vector|
+      #    maybe_square = add_vector(square, vector)
+      #    if on_the_board?(maybe_square)
+      #      poss_piece = board.get_piece_at(maybe_square)
+      #      possible_squares.push(maybe_square) unless poss_piece && poss_piece.colour == colour
+      #    end
+      #  end
+      possible_squares = movement_vectors.map { |vector| add_vector(square, vector) }.filter{ |poss_square| validate_square_for_moving(board, poss_square) }
       self.moves_to_check_for_check = make_move_objects(board, possible_squares)
-      possible_squares = []
-      castling_vectors.each do |vector|
-        possible_squares.push(add_vector(square, vector)) if board.castling_rights_from_vector?(vector) && !board.pieces_in_the_way?(find_squares_to_check(colour, vector))
-      end
+
+      possible_castling_vectors = castling_vectors.filter { |vector| board.castling_rights_from_vector?(vector) && !board.pieces_in_the_way?(find_squares_to_check(colour, vector)) }
+      
+      possible_squares = possible_castling_vectors.map { |vector| add_vector(square, vector) }
       moves_to_check_for_check.concat(make_move_objects(board, possible_squares, false, true))
     end
+      
+      
+      # castling_vectors.each do |vector|
+      #  possible_squares.push(add_vector(square, vector)) if board.castling_rights_from_vector?(vector) && !board.pieces_in_the_way?(find_squares_to_check(colour, vector))
+      # end
+      # moves_to_check_for_check.concat(make_move_objects(board, possible_squares, false, true))
+    # end
 
     def get_possible_squares_in_this_direction(vector, board)
       squares_found = []
-      poss_piece = nil
       square_to_try = add_vector(square, vector)
-      while on_the_board?(square_to_try) && !poss_piece
-        poss_piece = board.get_piece_at(square_to_try)
-        squares_found.push(square_to_try) unless poss_piece && poss_piece.colour == colour
+      string_or_boolean = validate_square_for_moving(board, square_to_try)
+      while string_or_boolean == 'non-capture'
+        squares_found.push(square_to_try)
         square_to_try = add_vector(square_to_try, vector)
+        string_or_boolean = validate_square_for_moving(board, square_to_try)
       end
+      squares_found.push(square_to_try) if string_or_boolean == 'capture'
       squares_found
     end
 
