@@ -42,12 +42,12 @@ class Piece
       if base_vectors
         base_vectors.each do |vector|
           square_to_try = add_vector(start_square, vector)
-          way_is_clear = true
-          while on_the_board?(square_to_try) && way_is_clear
-            return true if square_to_try == finish_square
-            way_is_clear = false if board.get_piece_at(square_to_try)
+          string_or_boolean = validate_square_for_moving(board, square_to_try)
+          while string_or_boolean == 'non-capture'
             square_to_try = add_vector(square_to_try, vector)
+            string_or_boolean = validate_square_for_moving(board, square_to_try)
           end
+          return true if string_or_boolean == 'capture' && square_to_try == finish_square
         end
         return false
       end

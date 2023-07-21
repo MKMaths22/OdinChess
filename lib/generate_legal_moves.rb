@@ -33,10 +33,10 @@ class GenerateLegalMoves
       return output[0] if output[0] && get_just_one
       hash_from_board = board.next_square_with_piece_to_move(current_square)
     end
-    # puts "#{output.size} legal moves found. They are as follows:"
-    # output.each do |move|
-      # puts "Start at #{move.start_square}, finish at #{move.finish_square}."
-    # end
+    puts "#{output.size} legal moves found. They are as follows:"
+      output.each do |move|
+        puts "Start at #{move.start_square}, finish at #{move.finish_square}."
+    end
     output
   end
 
