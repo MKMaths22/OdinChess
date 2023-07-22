@@ -24,7 +24,6 @@ include Miscellaneous
   end
 
   def legal?
-    
     if castling  
       reduced_vector = get_reduced_vector(vector)
       castling_string = castling_string_from_vector(vector, colour)
