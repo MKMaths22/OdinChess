@@ -112,8 +112,7 @@ class Board
   def make_new_array(start, finish, e_p = false)
     # array is a current board_array and we are moving a piece from start to finish co-ordinates
     new_array = board_array.map { |item| item.clone }
-    new_array[finish[0]][finish[1]] = board_array[start[0]][start[1]]
-    new_array[start[0]][start[1]] = nil
+    move_piece(new_array, start, finish)
     new_array[en_passent['Pawn now at'][0]][en_passent['Pawn now at'][1]] = nil if e_p
     # if it is en_passent we also remove the pawn captured
     new_array
@@ -121,11 +120,14 @@ class Board
 
   def make_new_array_for_castling(king_start, king_finish, rook_start, rook_finish)
     new_array = board_array.map { |item| item.clone }
-    new_array[king_finish[0]][king_finish[1]] = board_array[king_start[0]][king_start[1]]
-    new_array[king_start[0]][king_start[1]] = nil
-    new_array[rook_finish[0]][rook_finish[1]] = board_array[rook_start[0]][rook_start[1]]
-    new_array[rook_start[0]][rook_start[1]] = nil
+    move_piece(new_array, king_start, king_finish)
+    move_piece(new_array, rook_start, rook_finish)
     new_array
+  end
+
+  def move_piece(array, start, finish)
+    put_piece_at(array, finish, get_piece_at(start))
+    put_piece_at(array, start, nil)
   end
 
   def store_position
