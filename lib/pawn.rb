@@ -63,31 +63,19 @@ class Pawn < Piece
   
     capture_vectors.each do |vector|
       capture_at = add_vector(current_square, vector)
-      if on_the_board?(capture_at)
-        poss_piece = board.get_piece_at(capture_at)
-        if poss_piece && poss_piece.colour != colour
-          moves_to_check_for_check.push(Move.new(board, square, capture_at))
-        end
-        moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
-      end
-    # no need to check for no piece on the en_passent capturing square, 
-    # because an opponent's pawn just passed through that square
+      moves_to_check_for_check.push(Move.new(board, square, capture_at)) if validate_square_for_moving(board, capture_at) == 'capture'
+      moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
     end
 
     first_non_capture_square = add_vector(current_square, non_capture_vectors[0])
-    if on_the_board?(first_non_capture_square)
-      poss_piece = board.get_piece_at(first_non_capture_square)
-      unless poss_piece
-        # puts "There is no piece in front of the pawn, so add this move to #{first_non_capture_square}"
-        moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
-        if non_capture_vectors[1]
-          other_square = add_vector(current_square, non_capture_vectors[1])
-          other_poss_piece = board.get_piece_at(other_square)
-          # puts "There is no piece two squares in front of the pawn, so add this move to #{other_square}" unless other_poss_piece
-          moves_to_check_for_check.push(Move.new(board, square, other_square)) unless other_poss_piece
-        end
+    if validate_square_for_moving(board, first_non_capture_square) == 'non-capture'
+      moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
+      if non_capture_vectors[1]
+        other_square = add_vector(current_square, non_capture_vectors[1])
+        moves_to_check_for_check.push(Move.new(board, square, other_square)) if validate_square_for_moving(board, other_square) == 'non-capture'
       end
     end
+    
     output = moves_to_check_for_check.filter { |move| move.legal? }
     # pawn promotion is dealt with in ChangeTheBoard but we don't
     # need to know the piece the pawn promotes to in order to check

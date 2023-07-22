@@ -90,15 +90,6 @@ class Piece
     end
 
     def moves_from_movement_vectors_and_castling(board)
-      # puts "use_movement_vectors_and_castling is executing on a piece of type #{self.class.to_s}"
-      #  possible_squares = []
-      #  movement_vectors.each do |vector|
-      #    maybe_square = add_vector(square, vector)
-      #    if on_the_board?(maybe_square)
-      #      poss_piece = board.get_piece_at(maybe_square)
-      #      possible_squares.push(maybe_square) unless poss_piece && poss_piece.colour == colour
-      #    end
-      #  end
       possible_squares = movement_vectors.map { |vector| add_vector(square, vector) }.filter{ |poss_square| validate_square_for_moving(board, poss_square) }
       self.moves_to_check_for_check = make_move_objects(board, possible_squares)
 
@@ -107,13 +98,6 @@ class Piece
       possible_squares = possible_castling_vectors.map { |vector| add_vector(square, vector) }
       moves_to_check_for_check.concat(make_move_objects(board, possible_squares, false, true))
     end
-      
-      
-      # castling_vectors.each do |vector|
-      #  possible_squares.push(add_vector(square, vector)) if board.castling_rights_from_vector?(vector) && !board.pieces_in_the_way?(find_squares_to_check(colour, vector))
-      # end
-      # moves_to_check_for_check.concat(make_move_objects(board, possible_squares, false, true))
-    # end
 
     def get_possible_squares_in_this_direction(vector, board)
       squares_found = []
@@ -131,10 +115,4 @@ class Piece
     def make_move_objects(board, possible_squares, en_passent = false, castling = false)
       possible_squares.map { |finish| Move.new(board, square, finish, en_passent, castling) }
     end
-
-    # Knight class will have movement vectors but no base vectors
-
-    # other classes will use current_square and base_vectors to successively ask the Board if certain squares are clear or have opposition pieces to create moves_to_check_for_check, i.e. the moves 
-    # that would be legal if not for check issues
-
 end
