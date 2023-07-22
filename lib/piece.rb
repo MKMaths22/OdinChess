@@ -102,13 +102,11 @@ class Piece
     def get_possible_squares_in_this_direction(vector, board)
       squares_found = []
       square_to_try = add_vector(square, vector)
-      string_or_boolean = validate_square_for_moving(board, square_to_try)
-      while string_or_boolean == 'non-capture'
+      while validate_square_for_moving(board, square_to_try) == 'non-capture'
         squares_found.push(square_to_try)
         square_to_try = add_vector(square_to_try, vector)
-        string_or_boolean = validate_square_for_moving(board, square_to_try)
       end
-      squares_found.push(square_to_try) if string_or_boolean == 'capture'
+      squares_found.push(square_to_try) if validate_square_for_moving(board, square_to_try) == 'capture'
       squares_found
     end
 
