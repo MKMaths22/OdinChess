@@ -11,6 +11,10 @@ module Miscellaneous
     [char_to_num(string[0]), string[1].to_i - 1]
   end
 
+  def put_piece_at(array, coords, piece)
+    array[coords[0]][coords[1]] = piece
+  end
+
   def char_to_num(char)
     ok_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
     ok_letters.index(char)
