@@ -31,9 +31,11 @@ class Piece
       # Also tests whether the square is on the chessboard.
       # returns either false, 'capture' or 'non-capture'
       return false unless on_the_board?(square)
+      
       poss_piece = board.get_piece_at(square)
       return 'non-capture' unless poss_piece
-      return poss_piece.colour == colour ? false : 'capture'
+      
+      poss_piece.colour == colour ? false : 'capture'
     end
 
     def capture_possible?(start_square, finish_square, board)
@@ -43,10 +45,8 @@ class Piece
       if base_vectors
         base_vectors.each do |vector|
           square_to_try = add_vector(start_square, vector)
-          string_or_boolean = validate_square_for_moving(board, square_to_try)
-          while string_or_boolean == 'non-capture'
+          while validate_square_for_moving(board, square_to_try) == 'non-capture'
             square_to_try = add_vector(square_to_try, vector)
-            string_or_boolean = validate_square_for_moving(board, square_to_try)
           end
           return true if square_to_try == finish_square
         end
