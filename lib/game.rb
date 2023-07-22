@@ -37,7 +37,7 @@ class Game
 
 include Miscellaneous
   
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name
   
   def initialize(board = Board.new, white = nil, black = nil, result = Result.new(make_the_hash(board.store_position)))
     @board = board
@@ -48,6 +48,8 @@ include Miscellaneous
     @display_board = DisplayBoard.new
     @legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
     @saved = false
+    @moving_name = nil
+    @not_moving_name = nil
   end
   
   def play_game
@@ -68,7 +70,6 @@ include Miscellaneous
 
   def turn_loop
       one_turn until result.game_over? || @saved
-
   end
 
   def one_turn
@@ -95,15 +96,20 @@ include Miscellaneous
     end
   end
 
+  def update_moving_name
+    self.moving_name = get_player_name_from_colour(colour_moving)
+  end
+
+  def update_not_moving_name
+    self.not_moving_name = get_player_name_from_colour(other_colour(colour_moving))
+  end
+  
   def resign_the_game
-    moving_name = get_player_name_from_colour(colour_moving)
-    other_name = get_player_name_from_colour(other_colour(colour_moving))
     result.declare_resignation(moving_name, other_name)
   end
 
   def enter_move_or_save_game
-    player_name = (@colour_moving == 'White') ? white.name : black.name
-    puts "Enter your move, #{player_name}, in the format 'e4g6' for the starting square and finishing square, or type 'save' or 'resign' to save/resign the game."
+    puts "Enter your move, #{moving_name}, in the format 'e4g6' for the starting square and finishing square, or type 'save' or 'resign' to save/resign the game."
     next_move = @colour_moving == 'White' ? white.get_legal_move(board, legal_moves) : black.get_legal_move(board, legal_moves)
   end
 
@@ -112,9 +118,7 @@ include Miscellaneous
     check_status = CheckForCheck.new(board.board_array, board.colour_moving).king_in_check?
     # puts "The value of check_status is #{check_status}"
   
-    moving_name = get_player_name_from_colour(colour_moving)
-    other_name = get_player_name_from_colour(other_colour(colour_moving))
-    mate_or_mate(check_status, result, moving_name, other_name) unless legal_moves.size.positive?
+    mate_or_mate(check_status, result) unless legal_moves.size.positive?
     # now, to store the Board totally accurately, we need to check, if there ARE en_passent possibilities IN THEORY created by a pawn moving two squares,
     # are there REALLY any legal en_passent moves? If not, we tell the Board to reset its en_passent possibilities after all. This precision will allow
     # three-fold repitition to trigger correctly 
@@ -135,6 +139,8 @@ include Miscellaneous
   def toggle_colours
     # puts "toggle_colours is working"
     self.colour_moving = other_colour(colour_moving)
+    update_moving_name
+    update_not_moving_name
     # the colour_moving variable in the Board class needs to be toggled separately
   end
 
@@ -175,9 +181,11 @@ include Miscellaneous
     puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
     input = gets.strip
     self.white = make_human_or_computer('White', input)
+    self.moving_name = white.name
     puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
     input = gets.strip
     self.black = make_human_or_computer('Black', input)
+    self.not_moving_name = black.name
   end
 
   def make_human_or_computer(colour, input)
@@ -188,7 +196,7 @@ include Miscellaneous
     colour == 'White' ? white.name : black.name
   end
 
-  def mate_or_mate(check_status, result_object, moving_name, other_name)
+  def mate_or_mate(check_status, result_object)
     check_status ? result_object.declare_checkmate(moving_name, other_name) : result_object.declare_stalemate(moving_name, other_name)
   end
 
