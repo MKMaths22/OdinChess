@@ -25,10 +25,6 @@ class Board
   def toggle_colour_moving
     self.colour_moving = other_colour(colour_moving)
   end
-
-  def castling_rights?(string)
-    castling_rights[string]
-  end
   
   def castling_rights_from_vector?(vector)
     castling_rights[castling_string_from_vector(vector, colour_moving)]
