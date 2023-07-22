@@ -13,13 +13,8 @@ class GenerateLegalMoves
     @colour_moving = board.colour_moving
     # The board.colour_moving is the colour of the player whose turn it is to move
   end
-
-  # def legal_move_exists?
-   # true if find_all_legal_moves(true).size.positive?
-   # false
- # end
   
-  def find_all_legal_moves(get_just_one = false)
+  def find_all_legal_moves
     # outputs either an array of Move objects, which contains just one if get_just_one is true, or no items if there are no legal moves
     # puts "find_all_legal_moves is working"
     output = []
@@ -30,7 +25,6 @@ class GenerateLegalMoves
       current_piece = hash_from_board['piece']
       # puts "We have a piece of type #{current_piece.class.to_s} at #{current_square}"
       output.concat(current_piece.get_all_legal_moves_from(current_square, board))
-      return output[0] if output[0] && get_just_one
       hash_from_board = board.next_square_with_piece_to_move(current_square)
     end
     puts "#{output.size} legal moves found. They are as follows:"
