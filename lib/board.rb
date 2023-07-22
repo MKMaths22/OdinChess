@@ -83,14 +83,7 @@ class Board
   end
   
   def pieces_in_the_way?(squares_between)
-    # This method checks whether any pieces are in the way
-    # squares_between is a 2-D array of the squares in between where
-    # if a piece were present it would get in the way of the move
-    squares_between.each do |coords|
-      return true if get_piece_at(coords)
-        # get_piece_at returns piece on the square with coordinates coords, or nil if no piece is there.
-    end
-    false
+    squares_between.any? { |coords| get_piece_at(coords) }
   end
 
   def next_square_with_piece_to_move(square)
