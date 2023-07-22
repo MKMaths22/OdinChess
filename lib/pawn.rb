@@ -57,20 +57,8 @@ class Pawn < Piece
     # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
     # puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
   
-    capture_vectors.each do |vector|
-      capture_at = add_vector(current_square, vector)
-      moves_to_check_for_check.push(Move.new(board, square, capture_at)) if validate_square_for_moving(board, capture_at) == 'capture'
-      moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
-    end
-
-    first_non_capture_square = add_vector(current_square, non_capture_vectors[0])
-    if validate_square_for_moving(board, first_non_capture_square) == 'non-capture'
-      moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
-      if non_capture_vectors[1]
-        other_square = add_vector(current_square, non_capture_vectors[1])
-        moves_to_check_for_check.push(Move.new(board, square, other_square)) if validate_square_for_moving(board, other_square) == 'non-capture'
-      end
-    end
+    add_moves_from_capture_vectors(current_square, board)
+    add_moves_from_non_capture_vectors(current_square, board)
 
     output = moves_to_check_for_check.filter { |move| move.legal? }
     # pawn promotion is dealt with in ChangeTheBoard but we don't
@@ -79,6 +67,25 @@ class Pawn < Piece
     self.square = nil
     reset_moves_to_check
     output
+  end
+  
+  def add_moves_from_capture_vectors(current_square, board)
+    capture_vectors.each do |vector|
+      capture_at = add_vector(current_square, vector)
+      moves_to_check_for_check.push(Move.new(board, square, capture_at)) if validate_square_for_moving(board, capture_at) == 'capture'
+      self.moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
+    end
+  end
+  
+  def add_moves_from_non_capture_vectors(current_square, board)
+    first_non_capture_square = add_vector(current_square, non_capture_vectors[0])
+    if validate_square_for_moving(board, first_non_capture_square) == 'non-capture'
+      moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
+      if non_capture_vectors[1]
+        other_square = add_vector(current_square, non_capture_vectors[1])
+        self.moves_to_check_for_check.push(Move.new(board, square, other_square)) if validate_square_for_moving(board, other_square) == 'non-capture'
+      end
+    end
   end
 
   def add_en_passent(board, move)
