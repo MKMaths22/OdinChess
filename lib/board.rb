@@ -64,11 +64,6 @@ class Board
   def replace_pawn_with(new_piece, square)
     self.board_array[square[0]][square[1]] = new_piece
   end
-
-  def string_to_square(string)
-    # accepts a string of the form 'c6' and returns the contents of that square 
-    get_piece_at(string_to_coords(string))
-  end
   
   def get_piece_at(coords)
     get_item(board_array, coords)
