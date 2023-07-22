@@ -70,6 +70,8 @@ class Board
   end
   
   def en_passent_capture_possible_at?(coords)
+    # only takes into account whether a pawn has just passed through the square
+    # with coordinates 'coords', not whether an opposition pawn can execute the en_passent
     en_passent['Pawn passed through'] == coords
   end
   

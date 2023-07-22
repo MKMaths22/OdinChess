@@ -32,11 +32,7 @@ class Pawn < Piece
   def capture_possible?(start_square, finish_square, board)
     # we don't care about en_passent in this method because it is only used to see if
     # the opposition king would be in check
-    @capture_vectors.each do |vector|
-      capture_square = add_vector(start_square, vector)
-      return true if capture_square == finish_square
-    end
-    false
+    capture_vectors.any? { |vector| add_vector(start_square, vector) == finish_square }
   end
 
   def moved?
@@ -75,7 +71,7 @@ class Pawn < Piece
         moves_to_check_for_check.push(Move.new(board, square, other_square)) if validate_square_for_moving(board, other_square) == 'non-capture'
       end
     end
-    
+
     output = moves_to_check_for_check.filter { |move| move.legal? }
     # pawn promotion is dealt with in ChangeTheBoard but we don't
     # need to know the piece the pawn promotes to in order to check
