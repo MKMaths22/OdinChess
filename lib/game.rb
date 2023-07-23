@@ -38,16 +38,9 @@ include Miscellaneous
   end
   
   def play_game
-   # legal_moves.each_with_index do |move, index|
-   #   puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
-   #   puts "The move has class #{move.class.to_s}"
-      # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
-    # end
-   
     create_the_players unless saved
   
     puts "It is #{colour_moving} to move." if saved
-    # result.previous_positions.keys.each { |key| puts key }
     self.saved = false
     # if reloading a saved game, this variable must be changed 
     turn_loop
@@ -58,24 +51,19 @@ include Miscellaneous
   end
 
   def one_turn
-    # puts "There are #{legal_moves.size} legal moves."
-    # puts "#{colour_moving} is the colour to Move."
     @display_board.show_the_board(board)
     next_move = enter_move_or_save_game
     save_the_game if next_move == 'save'
     resign_the_game if next_move == 'resign'
     # next_move is a either nil or a Move object which knows the input 'string' that started it from the Player, 'start_square', 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square, start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
-    # puts "next_move has start square #{next_move.start_square} and ends at #{next_move.finish_square}"
     if next_move.kind_of?(Move)
       boolean = next_move.pawn_move_or_capture?
-      # p "The value of boolean is #{boolean} for pawn move or capture."
       player_of_the_move = next_move.colour == 'White' ? white : black 
       ChangeTheBoard.new(next_move, board, player_of_the_move).update_the_board
     # the #update_the_board method communicates with the move object next_move and the @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled later
     # board.colour_moving is the next player
       self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
-      puts "There are #{legal_moves.size} legal moves."
       consequences_of_move(boolean)
       toggle_colours
     end
@@ -101,8 +89,7 @@ include Miscellaneous
   def consequences_of_move(boolean)
     # boolean for whether the move was a pawn move or capture
     check_status = CheckForCheck.new(board.board_array, board.colour_moving).king_in_check?
-    # puts "The value of check_status is #{check_status}"
-  
+    
     mate_or_mate(check_status, result) unless legal_moves.size.positive?
     # now, to store the Board totally accurately, we need to check, if there ARE en_passent possibilities IN THEORY created by a pawn moving two squares,
     # are there REALLY any legal en_passent moves? If not, we tell the Board to reset its en_passent possibilities after all. This precision will allow
@@ -115,14 +102,12 @@ include Miscellaneous
     
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
-    # puts "moving_name = #{moving_name}. other_name = #{other_name}."
     result.declare_repitition_draw(moving_name, other_name) if result.repitition_draw?
     result.declare_insuff_material_draw(moving_name, other_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
   end
 
   def toggle_colours
-    # puts "toggle_colours is working"
     self.colour_moving = other_colour(colour_moving)
     update_moving_name
     update_not_moving_name
@@ -136,7 +121,6 @@ include Miscellaneous
     Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
     Dir.chdir('saved_games')
     name = get_save_name
-    # puts "name for saving file = #{name}"
     saved_game_as_yaml = YAML.dump(self)
     file_for_saving = File.new("#{name}.txt", 'w')
     file_for_saving.puts saved_game_as_yaml
