@@ -105,5 +105,26 @@ end
   puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
   puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
 
+  # In the GenerateLegalMoves class:
+
+  def find_all_legal_moves
+    # outputs either an array of Move objects, which contains just one if get_just_one is true, or no items if there are no legal moves
+    output = []
+    hash_from_board = board.next_square_with_piece_to_move([-1, 7])
+    # starting from [-1, 7] makes [0, 0] the next square, so it works out!
+    while hash_from_board
+      current_square = hash_from_board['square']
+      current_piece = hash_from_board['piece']
+      puts "We have a piece of type #{current_piece.class.to_s} at #{current_square}"
+      output.concat(current_piece.get_all_legal_moves_from(current_square, board))
+      hash_from_board = board.next_square_with_piece_to_move(current_square)
+    end
+    puts "#{output.size} legal moves found. They are as follows:"
+      output.each do |move|
+        puts "Start at #{move.start_square}, finish at #{move.finish_square}."
+    end
+    output
+  end
+
 
 
