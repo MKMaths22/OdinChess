@@ -1,5 +1,7 @@
 # frozen-string-literal: true
 
+#Board class: Board initialized with the starting position (using dependency injection) @position is a 2-D array 8 x 8 with nil for empty squares and Piece objects otherwise.
+# Castling rights/en Passent possibilities are accounted for & whose turn it is.
 class Board
 
   require './miscellaneous.rb'

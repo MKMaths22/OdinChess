@@ -1,7 +1,9 @@
 # frozen-string-literal: true
 
 require 'colorize'
-# Factoring out as much repitition as possible
+
+#Piece class is superclass of #Pawn, #Bishop,#Rook, #Queen, #Knight, #King. Each piece has a @colour' and the subclasses all have same-named methods for determining if moves are 'legal' for moving/capturing, not accounting for where
+# other pieces are or if own king is in Check.
 class Piece
 
   include Miscellaneous

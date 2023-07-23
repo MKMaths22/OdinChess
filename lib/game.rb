@@ -1,22 +1,5 @@
 # frozen-string-literal: true
 
-# Game class takes care of overall progress of the game, asking players their names at the start. Also responsible for saving the game.  
-# This is how Player objects are created and all of the other objects the Board object, which creates the Pieces.
-
-# Player class: each Player has a @colour attribute which is either 'White' or 'Black' and a name attribute. 
-
-#Board class: Board initialized with the starting position (using dependency injection) @position is a 2-D array 8 x 8 with nil for empty squares and Piece objects otherwise.
-# Castling rights/en Passent possibilities are accounted for & whose turn it is.
-
-#Piece class is superclass of #Pawn, #Bishop,#Rook, #Queen, #Knight, #King. Each piece has a @colour' and the subclasses all have same-named methods for determining if moves are 'legal' for moving/capturing, not accounting for where
-# other pieces are or if own king is in Check.
-
-# DisplayBoard class responsible for showing the board.
-
-# Result class takes care of monitoring previous positions (for 3-fold repitition) and how many moves with no captures/pawn moves (for 50 move rule).
-
-# Check class monitors whether either King is in check. Also to check if own King would be in check.
-
 # The procedure for determining if a move is legal
 
 require 'yaml'
@@ -33,6 +16,8 @@ require './move.rb'
 require './change_the_board.rb'
 require './generate_legal_moves.rb'
 
+# Game class takes care of overall progress of the game, asking players their names at the start. Also responsible for saving the game.  
+# This is how Player objects are created and all of the other objects the Board object, which creates the Pieces.
 class Game
 
 include Miscellaneous

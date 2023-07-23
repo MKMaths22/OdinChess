@@ -1,5 +1,7 @@
 # frozen-string-literal: true
 
+# Result class takes care of monitoring previous positions (for 3-fold repitition) and how many moves with no captures/pawn moves (for 50 move rule).
+# It also tells the Game class when it is game over and declares the result to the players.
 class Result
   
   attr_accessor :previous_positions, :half_moves_count

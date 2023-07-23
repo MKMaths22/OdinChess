@@ -1,5 +1,6 @@
 # frozen-string-literal: true
 
+# Player class: each Player has a @colour attribute which is either 'White' or 'Black' and a name attribute. 
 class Player
   
 include Miscellaneous
@@ -51,6 +52,7 @@ include Miscellaneous
   end
 end
 
+# The Computer is a kind of player that is named differently and chooses its moves with its own #get_legal_move method.
 class Computer < Player
 
 include Miscellaneous

@@ -1,5 +1,8 @@
 # frozen-string-literal: true
 
+# DisplayBoard class responsible for showing the board.
+# It displays so that the player whose turn it is to move sees their pawns going up the board,
+# as though the players are sat across a real-life board.
 class DisplayBoard
 
   require 'colorize'

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Miscellaneous module contains various methods to declutter some of the classes.
 module Miscellaneous
   def other_colour(colour)
     colour == 'White' ? 'Black' : 'White'

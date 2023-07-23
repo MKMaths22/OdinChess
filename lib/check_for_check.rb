@@ -1,5 +1,7 @@
 # frozen-string-literal: true
 
+# CheckForCheck class monitors whether either King is in check (to see if stalemate/checkmate when
+# no legal moves.) Also used by the Move class to verify legality re. check issues.
 class CheckForCheck
 
 include Miscellaneous

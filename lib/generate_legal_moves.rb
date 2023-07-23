@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# GenerateLegalMoves class is responsible for finding a single legal move to let us know that 
-# the game is not over, or finding all legal moves for a computer player.
+# GenerateLegalMoves class is responsible for finding all of the legal moves in a given position.
 class GenerateLegalMoves
 
   include Miscellaneous
