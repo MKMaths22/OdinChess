@@ -17,16 +17,11 @@ class Pawn < Piece
     @basic_display_strings = ['         ', '    o    ', '   / \   ', '   |_|   ']
     @display_strings = apply_colour(@basic_display_strings)
     @moved = false
-    # puts "When created, this pawn has @square = #{@square} and #{moves_to_check_for_check.size} moves to check. The moved variable is #{@moved}."
   end
 
   def update_moved_variable
-    # puts "update_moved_variable has started running"
     self.moved = true
-    # puts "moved variable is now #{@moved}"
     self.non_capture_vectors = [@non_capture_vectors[0]]
-    # p "Non_capture_vectors are #{@non_capture_vectors}"
-    # puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
   end
 
   def capture_possible?(start_square, finish_square, board)
@@ -51,12 +46,8 @@ class Pawn < Piece
   end
 
   def get_all_legal_moves_from(current_square, board)
-    # puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
     self.square = current_square
     reset_moves_to_check
-    # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
-    # puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
-  
     add_moves_from_capture_vectors(current_square, board)
     add_moves_from_non_capture_vectors(current_square, board)
 

@@ -87,4 +87,23 @@ base_vectors.each do |vector|
 end 
 self.moves_to_check_for_check = make_move_objects(board, possible_squares)
 
+# In Pawn class
+
+def update_moved_variable
+  # puts "update_moved_variable has started running"
+  self.moved = true
+  # puts "moved variable is now #{@moved}"
+  self.non_capture_vectors = [@non_capture_vectors[0]]
+  # p "Non_capture_vectors are #{@non_capture_vectors}"
+  # puts "The pawn now has #{@non_capture_vectors.size} non_capture vectors"
+end
+
+# In #get_all_legal_moves_from(current_square, board)
+  puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+  self.square = current_square
+  reset_moves_to_check
+  puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+  puts "Also, moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
+
+
 
