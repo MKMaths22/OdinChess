@@ -28,6 +28,22 @@ puts "name for saving file = #{name}"
   
    
 
-# Board class: Alternative @board array to test endgames and castling rights
+# Board class: Alternative @board arrays to test endgames and castling rights, or numbers
+# of legal moves
 
 [Array.new(8), Array.new(8), Array.new(8), Array.new(8), [King.new('White'), nil, nil, nil, nil, nil, nil, nil], Array.new(8), [nil, nil, nil, nil, nil, nil, nil, King.new('Black')], [Rook.new('White'), nil, nil, nil, nil, nil, nil, nil]]
+
+[[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), nil, nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
+
+[Array.new(8), Array.new(8), Array.new(8), Array.new(8), [King.new('White'), nil, nil, nil, nil, nil, nil, nil], Array.new(8), [Rook.new('Black'), nil, nil, nil, nil, nil, nil, King.new('Black')], [Knight.new('White'), nil, nil, nil, nil, Pawn.new('Black'), nil, nil]]
+
+# In #remove_castling_rights
+
+puts  "remove_castling_rights is working on side #{side}"
+puts "opponent = #{opponent} and colour_moving is #{colour_moving}"
+puts "colour having castling rights removed is #{colour}"
+puts "castling rights are now #{@castling_rights}"
+
+# In #add_en_passent_chance
+
+puts "Adding en_passent chance to board"

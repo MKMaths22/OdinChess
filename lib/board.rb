@@ -1,6 +1,6 @@
 # frozen-string-literal: true
 
-#Board class: Board initialized with the starting position (using dependency injection) @position is a 2-D array 8 x 8 with nil for empty squares and Piece objects otherwise.
+# Board class: Board initialized with the starting position (using dependency injection) @position is a 2-D array 8 x 8 with nil for empty squares and Piece objects otherwise.
 # Castling rights/en Passent possibilities are accounted for & whose turn it is.
 class Board
 
@@ -17,12 +17,6 @@ class Board
     @colour_moving = colour_moving
     @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
   end
-
-  # NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
-
-  # NEW_BOARD_ARRAY = [[Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Queen.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Queen.new('Black')], [King.new('White'), nil, nil, nil, nil, nil, Pawn.new('Black'), King.new('Black')], [Bishop.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Bishop.new('Black')], [Knight.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Knight.new('Black')], [Rook.new('White'), Pawn.new('White'), nil, nil, nil, nil, Pawn.new('Black'), Rook.new('Black')] ]
-
-  # NEW_BOARD_ARRAY = [Array.new(8), Array.new(8), Array.new(8), Array.new(8), [King.new('White'), nil, nil, nil, nil, nil, nil, nil], Array.new(8), [Rook.new('Black'), nil, nil, nil, nil, nil, nil, King.new('Black')], [Knight.new('White'), nil, nil, nil, nil, Pawn.new('Black'), nil, nil]]
   
   def toggle_colour_moving
     self.colour_moving = other_colour(colour_moving)
@@ -34,16 +28,11 @@ class Board
 
   def remove_castling_rights(side, opponent = false)
     # side is '0-0' or '0-0-0'
-    # puts  "remove_castling_rights is working on side #{side}"
-    # puts "opponent = #{opponent} and colour_moving is #{colour_moving}"
     colour = (opponent ? other_colour(colour_moving) : colour_moving)
-    # puts "colour having castling rights removed is #{colour}"
     self.castling_rights["#{colour}_#{side}"] = false
-    # puts "castling rights are now #{@castling_rights}"
   end
 
   def add_en_passent_chance(finish_square)
-    # puts "Adding en_passent chance to board"
     file = finish_square[0]
     capture_rank = finish_square[1] == 3 ? 2 : 5
     self.en_passent = { 'Pawn passed through' => [file, capture_rank], 'Pawn now at' => finish_square }
@@ -58,9 +47,7 @@ class Board
   end
 
   def update_array(poss_board_array)
-    # puts "Before update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
     self.board_array = poss_board_array
-    # puts "After update, at e2 there is a piece of type #{get_piece_at([4, 1]).class.to_s}"
   end
 
   def replace_pawn_with(new_piece, square)
