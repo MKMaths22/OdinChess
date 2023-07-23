@@ -15,7 +15,7 @@ class DisplayBoard
   
   EMPTY_STRING = '         '
 
-  FILE_LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+  FILE_LETTERS = *('a'..'h')
 
   def display_board(array)
     array = reverse_array(array) if @colour == 'Black'
