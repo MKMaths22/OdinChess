@@ -78,7 +78,7 @@ include Miscellaneous
   end
   
   def resign_the_game
-    result.declare_resignation(moving_name, other_name)
+    result.declare_resignation(moving_name, not_moving_name)
   end
 
   def enter_move_or_save_game
@@ -98,12 +98,12 @@ include Miscellaneous
       board.reset_en_passent unless legal_moves.any? { |move| move.en_passent }
     end
     boolean ? result.reset_moves_count : result.increase_moves_count
-    result.declare_fifty_move_draw(moving_name, other_name) if result.fifty_move_rule_draw?
+    result.declare_fifty_move_draw(moving_name, not_moving_name) if result.fifty_move_rule_draw?
     
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
-    result.declare_repitition_draw(moving_name, other_name) if result.repitition_draw?
-    result.declare_insuff_material_draw(moving_name, other_name) if board.insuff_material_draw?
+    result.declare_repitition_draw(moving_name, not_moving_name) if result.repitition_draw?
+    result.declare_insuff_material_draw(moving_name, not_moving_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
   end
 
@@ -166,7 +166,7 @@ include Miscellaneous
   end
 
   def mate_or_mate(check_status, result_object)
-    check_status ? result_object.declare_checkmate(moving_name, other_name) : result_object.declare_stalemate(moving_name, other_name)
+    check_status ? result_object.declare_checkmate(moving_name, not_moving_name) : result_object.declare_stalemate(moving_name, not_moving_name)
   end
 
 end
