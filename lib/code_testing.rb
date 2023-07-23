@@ -47,3 +47,17 @@ puts "castling rights are now #{@castling_rights}"
 # In #add_en_passent_chance
 
 puts "Adding en_passent chance to board"
+
+# In the Result class
+
+# In #add_position
+
+puts "The size of the previous positions is now #{@previous_positions.keys.size}"
+
+# In #wipe_previous_positions
+puts "previous positions being wiped"
+puts "The size of the previous positions is now #{@previous_positions.keys.size}"
+
+# In #increase_moves_count or #reset_moves_count
+puts "half_moves_count = #{@half_moves_count}"
+

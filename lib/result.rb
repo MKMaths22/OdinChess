@@ -1,7 +1,7 @@
 # frozen-string-literal: true
 
 # Result class takes care of monitoring previous positions (for 3-fold repitition) and how many moves with no captures/pawn moves (for 50 move rule).
-# It also tells the Game class when it is game over and declares the result to the players.
+# It also tells the Game class when it is game over and declares the result to the
 class Result
   
   attr_accessor :previous_positions, :half_moves_count
@@ -22,24 +22,19 @@ class Result
     # the fact that the previous_positions hash has a DEFAULT VALUE OF ZERO is forgotten, so we have to code the adding of 
     # a position more defensively.
     self.previous_positions[position] = @previous_positions[position].to_i + 1
-    # puts "The size of the previous positions is now #{@previous_positions.keys.size}"
   end
 
   def wipe_previous_positions
     # this occurs if a pawn moves or a piece is captured
-    # puts "previous positions being wiped"
     self.previous_positions = Hash.new(0)
-    # puts "The size of the previous positions is now #{@previous_positions.keys.size}"
   end
 
   def increase_moves_count
     self.half_moves_count = @half_moves_count + 1
-    # puts "half_moves_count = #{@half_moves_count}"
   end
 
   def reset_moves_count
     self.half_moves_count = 0
-    # puts "half_moves_count = #{@half_moves_count}"
   end
 
   def fifty_move_rule_draw?
