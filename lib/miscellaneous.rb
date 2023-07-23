@@ -17,7 +17,7 @@ module Miscellaneous
   end
 
   def char_to_num(char)
-    ok_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    ok_letters = *('a'..'h')
     ok_letters.index(char)
   end
 
@@ -90,7 +90,7 @@ module Miscellaneous
 
   def algebraic(coords)
     # generates for example e4 from [4, 3]
-    files = ['a', 'b', 'c', 'd', 'e', 'f', 'g' , 'h']
+    files = *('a'..'h')
     "#{files[coords[0]]}#{1 + coords[1]}"
   end
 end
