@@ -61,3 +61,30 @@ puts "The size of the previous positions is now #{@previous_positions.keys.size}
 # In #increase_moves_count or #reset_moves_count
 puts "half_moves_count = #{@half_moves_count}"
 
+# In the Piece class
+
+# In #get_all_legal_moves_from
+
+puts "get_all_legal_moves_from is executing on a piece of type #{self.class.to_s}"
+puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+self.square = current_square and 
+reset_moves_to_check 
+puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
+puts "Also, on this piece of class #{self.class.to_s} moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
+
+moves_to_check_for_check.each_with_index do |move, index|
+  puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
+  puts "The move has class #{move.class.to_s}"
+end
+
+# In #moves_from_base_vectors
+
+puts "moves_from_base_vectors is executing on a piece of type #{self.class.to_s}"
+base_vectors.each do |vector|
+  puts "base vector = #{vector}"
+  possible_squares = possible_squares.concat(get_possible_squares_in_this_direction(vector, board))
+  puts "There are #{possible_squares.size} possible squares so far."
+end 
+self.moves_to_check_for_check = make_move_objects(board, possible_squares)
+
+

@@ -60,20 +60,11 @@ class Piece
     end
     
     def get_all_legal_moves_from(current_square, board)
-      # puts "get_all_legal_moves_from is executing on a piece of type #{self.class.to_s}"
-      # puts "Before updating the square this piece of type #{self.class.to_s} has @square #{@square}."
       self.square = current_square
       reset_moves_to_check
-      # puts "After updating the square this piece of type #{self.class.to_s} has @square #{@square}."
-      # puts "Also, on this piece of class #{self.class.to_s} moves_to_check has reset. The size of it is #{@moves_to_check_for_check.size}."
-      
       base_vectors ? moves_from_base_vectors(board) : moves_from_movement_vectors_and_castling(board)
       # this format covers all piece classes except Pawn, which will have
       # its own #get_all_legal_moves_from method
-      moves_to_check_for_check.each_with_index do |move, index|
-        # puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}." if move.class.to_s == 'Move'
-        # puts "The move has class #{move.class.to_s}"
-      end
       output = moves_to_check_for_check.filter { |move| move.legal? }
       self.square = nil
       reset_moves_to_check
@@ -81,12 +72,9 @@ class Piece
     end
       
     def moves_from_base_vectors(board)
-      # puts "use_the_base_vectors is executing on a piece of type #{self.class.to_s}"
       possible_squares = []
       base_vectors.each do |vector|
-        # puts "base vector = #{vector}"
         possible_squares = possible_squares.concat(get_possible_squares_in_this_direction(vector, board))
-        # puts "There are #{possible_squares.size} possible squares so far."
       end 
       self.moves_to_check_for_check = make_move_objects(board, possible_squares)
     end
