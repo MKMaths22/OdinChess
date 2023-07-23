@@ -4,9 +4,18 @@ class DisplayBoard
 
   require 'colorize'
 
+  attr_accessor :colour
+  
+  def initialize
+    @colour = 'White'
+  end
+  
   EMPTY_STRING = '         '
 
+  FILE_LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+
   def display_board(array)
+    array = reverse_array(array) if @colour == 'Black'
     rank = 7
     until rank.negative?
       (0..3).each do |num|
@@ -18,12 +27,13 @@ class DisplayBoard
   end
 
   def number_string(rank_number)
-    "      #{rank_number + 1}  "
+    "      #{@colour == 'White' ? rank_number + 1 : 8 - rank_number}  "
   end
 
   def final_row
+    file_letters_to_use = @colour == 'White' ? FILE_LETTERS : FILE_LETTERS.reverse
     string = EMPTY_STRING
-    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].each do |letter|
+    file_letters_to_use.each do |letter|
       string += "    #{letter}    "
     end
     string
@@ -43,9 +53,14 @@ class DisplayBoard
     string
   end
   
+  def reverse_array(array)
+    array.map { |rank| rank.reverse }.reverse
+  end
+  
   def show_the_board(board)
     # method asks the board class for the type and colour of pieces to display
     # need to start with CarryingOutMove class which will have an object created after next_move has been shown to be legal in one_turn (Game class)
+    self.colour = board.colour_moving
     display_board(board.board_array)
   end
 
