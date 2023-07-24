@@ -1,7 +1,5 @@
 # frozen-string-literal: true
 
-# The procedure for determining if a move is legal
-
 require 'yaml'
 require './board'
 require './player'
