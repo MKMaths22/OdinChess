@@ -29,7 +29,7 @@ class Board
     castling_rights[castling_string_from_vector(vector, colour_moving)]
   end
 
-  def remove_castling_rights(side, opponent: false)
+  def remove_castling_rights(side, opponent = false)
     # side is '0-0' or '0-0-0'
     colour = (opponent ? other_colour(colour_moving) : colour_moving)
     castling_rights["#{colour}_#{side}"] = false

@@ -85,7 +85,7 @@ class Pawn < Piece
 
   def promotion(board, player, square)
     puts promotion_message(player)
-    new_piece = get_piece_for_promotion(player, board.colour_moving)
+    new_piece = piece_for_promotion(player, board.colour_moving)
     board.replace_pawn_with(new_piece, square)
   end
 
@@ -93,8 +93,8 @@ class Pawn < Piece
     "You are promoting a pawn, #{player.name}. Please input 'N' to promote to a Knight, 'R' for Rook, 'B' for Bishop or anything else for a Queen."
   end
 
-  def get_piece_for_promotion(player, colour)
-    string = player.get_promotion_input
+  def piece_for_promotion(player, colour)
+    string = player.promotion_input
       case string
       when 'N'
         Knight.new(colour)
