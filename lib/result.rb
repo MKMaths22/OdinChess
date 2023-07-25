@@ -1,26 +1,25 @@
 # frozen-string-literal: true
 
-# Result class takes care of monitoring previous positions (for 3-fold repitition) and how many moves with no captures/pawn moves (for 50 move rule).
-# It also tells the Game class when it is game over and declares the result to the
+# Result class takes care of monitoring previous positions (for 3-fold repitition)
+# and how many moves with no captures/pawn moves (for 50 move rule).
+# It also tells the Game class when it is game over and declares the result to the players.
 class Result
-  
   attr_accessor :previous_positions, :half_moves_count
 
   def initialize(previous_positions, half_moves_count = 0)
-    # MAYBE SHOULD INITIALIZE WITH STARTING POSITION IN PREVIOUS_POSITIONS HASH, depends how one_turn loop ends up ordered in Game class,
-    # check initial position is not missed
+    # Game class uses the initial Board position to put that position into
+    # previous_positions when the Result object is created.
     @previous_positions = previous_positions
     @half_moves_count = half_moves_count
     @game_over = false
   end
 
   def add_position(position)
-    # the positions stored are snapshots of the board object, which capture the current position with
-    # whose turn it is to move and any en passent or castling opportunities
-    # puts "The previous value of the previous_positions hash on key 'position' is #{@previous_positions[position]}"
-    # HYPOTHESIS is that when YAML of the Game is reloaded, although the instance variables in Result class are recovered,
-    # the fact that the previous_positions hash has a DEFAULT VALUE OF ZERO is forgotten, so we have to code the adding of 
-    # a position more defensively.
+    # the positions stored are snapshots of the Board object, which capture the
+    # current position with whose turn it is to move and any en passent chances/castling
+    # rights. Although previous_positions hash has default value of zero, this is
+    # forgotten when the game is reloaded, so the code below solves that bug
+    # by converting a value of nil to zero before adding one.
     self.previous_positions[position] = @previous_positions[position].to_i + 1
   end
 
@@ -44,13 +43,12 @@ class Result
   def repitition_draw?
     previous_positions.values.max == 3
   end
-  
+
   def game_over?
     @game_over
   end
 
   def declare_checkmate(winning_name, losing_name)
-    # colour is the @colour_moving from Game class
     @game_over = true
     puts "Congratulations, #{winning_name}. That's checkmate! Better luck next time, #{losing_name}."
   end
@@ -63,7 +61,7 @@ class Result
   def declare_fifty_move_draw(first_name, second_name)
     @game_over = true
     puts "You guys have shuffled your pieces for 50 moves with no real progress, so it's a draw. Well played, #{first_name} and #{second_name}."
-  end 
+  end
 
   def declare_repitition_draw(first_name, second_name)
     @game_over = true
