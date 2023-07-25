@@ -1,8 +1,10 @@
-# ChangeTheBoard class implements the moving of pieces, including en passent/castling. Player who moved is prompted for promotion and en_passent chances and castling_rights are updated.
+# frozen_string_literal: true
+
+# ChangeTheBoard class implements the moving of pieces, including en passent/castling. Player who moved
+# is prompted for promotion and en_passent chances and castling_rights are updated.
 class ChangeTheBoard
-  
   attr_accessor :move, :board, :player, :colour
-  
+
   def initialize(move, board, player_of_the_move)
     @move = move
     @board = board
