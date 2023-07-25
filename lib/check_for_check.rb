@@ -3,7 +3,7 @@
 # CheckForCheck class monitors whether either King is in check (to see if stalemate/checkmate when
 # no legal moves.) Also used by the Move class to verify legality re. check issues.
 class CheckForCheck
-include Miscellaneous
+  include Miscellaneous
 
   attr_accessor :colour, :poss_board_array, :king_square
 
@@ -11,7 +11,8 @@ include Miscellaneous
     @colour = colour
     # colour is the colour of the King we are asking about
     @hypoth_board = Board.new(poss_board_array, other_colour(colour))
-    # we want to ask whether if it is the other side to move, could they capture the King, neglecting check issues on their own King?
+    # we want to ask whether if it is the other side to move, could they capture
+    # the King, neglecting check issues on their own King?
     @king_square = nil
   end
 
@@ -22,6 +23,7 @@ include Miscellaneous
     # the pieces being found have the opposite colour to our king.
     while hash
       return true if hash['piece'].capture_possible?(hash['square'], @king_square, @hypoth_board)
+
       hash = @hypoth_board.next_square_with_piece_to_move(hash['square'])
     end
     false
@@ -34,10 +36,8 @@ include Miscellaneous
     until found
       current_square = next_square(current_square)
       poss_piece = @hypoth_board.get_piece_at(current_square)
-      found = true if poss_piece && poss_piece.colour == colour && poss_piece.kind_of?(King)
+      found = true if poss_piece&.colour == colour && poss_piece.is_a?(King)
     end
     current_square
   end
 end
-
-
