@@ -4,16 +4,12 @@ require 'colorize'
 
 # includes the methods that are specific to Pawns
 class Pawn < Piece
-  
   attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check, :capture_vectors, :non_capture_vectors, :moved
 
   def initialize(colour)
-    @colour = colour
-    @capture_vectors = get_captures
-    @non_capture_vectors = get_non_captures
-    @castling_vectors = []
-    @square = nil
-    @moves_to_check_for_check = []
+    super
+    @capture_vectors = define_captures
+    @non_capture_vectors = define_non_captures
     @basic_display_strings = ['         ', '    o    ', '   / \   ', '   |_|   ']
     @display_strings = apply_colour(@basic_display_strings)
     @moved = false
@@ -24,7 +20,7 @@ class Pawn < Piece
     self.non_capture_vectors = [@non_capture_vectors[0]]
   end
 
-  def capture_possible?(start_square, finish_square, board)
+  def capture_possible?(start_square, finish_square,_board)
     # we don't care about en_passent in this method because it is only used to see if
     # the opposition king would be in check
     capture_vectors.any? { |vector| add_vector(start_square, vector) == finish_square }
@@ -34,11 +30,11 @@ class Pawn < Piece
     @moved
   end
 
-  def get_captures
+  def define_captures
     colour == 'White' ? [[-1, 1], [1, 1]] : [[-1, -1], [1, -1]]
   end
 
-  def get_non_captures
+  def define_non_captures
     colour == 'White' ? [[0, 1], [0, 2]] : [[0, -1], [0, -2]]
     # rest of code can use the fact that the FIRST non_capture vector
     # has to be playable onto an empty square to consider the SECOND one,
@@ -51,7 +47,7 @@ class Pawn < Piece
     add_moves_from_capture_vectors(current_square, board)
     add_moves_from_non_capture_vectors(current_square, board)
 
-    output = moves_to_check_for_check.filter { |move| move.legal? }
+    output = moves_to_check_for_check.filter(&:legal?)
     # pawn promotion is dealt with in ChangeTheBoard but we don't
     # need to know the piece the pawn promotes to in order to check
     # whether the move is legal
@@ -59,7 +55,7 @@ class Pawn < Piece
     reset_moves_to_check
     output
   end
-  
+
   def add_moves_from_capture_vectors(current_square, board)
     capture_vectors.each do |vector|
       capture_at = add_vector(current_square, vector)
@@ -67,16 +63,16 @@ class Pawn < Piece
       self.moves_to_check_for_check.push(Move.new(board, square, capture_at, true, false)) if board.en_passent_capture_possible_at?(capture_at)
     end
   end
-  
+
   def add_moves_from_non_capture_vectors(current_square, board)
     first_non_capture_square = add_vector(current_square, non_capture_vectors[0])
-    if validate_square_for_moving(board, first_non_capture_square) == 'non-capture'
-      moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
-      if non_capture_vectors[1]
-        other_square = add_vector(current_square, non_capture_vectors[1])
-        self.moves_to_check_for_check.push(Move.new(board, square, other_square)) if validate_square_for_moving(board, other_square) == 'non-capture'
-      end
-    end
+    return unless validate_square_for_moving(board, first_non_capture_square) == 'non-capture'
+
+    moves_to_check_for_check.push(Move.new(board, square, first_non_capture_square))
+    return unless non_capture_vectors[1]
+
+    other_square = add_vector(current_square, non_capture_vectors[1])
+    self.moves_to_check_for_check.push(Move.new(board, square, other_square)) if validate_square_for_moving(board, other_square) == 'non-capture'
   end
 
   def add_en_passent(board, move)
@@ -95,16 +91,15 @@ class Pawn < Piece
 
   def piece_for_promotion(player, colour)
     string = player.promotion_input
-      case string
-      when 'N'
-        Knight.new(colour)
-      when 'R'
-        Rook.new(colour)
-      when 'B'
-        Bishop.new(colour)
-      else
-        Queen.new(colour)
-     end
+    case string
+    when 'N'
+      Knight.new(colour)
+    when 'R'
+      Rook.new(colour)
+    when 'B'
+      Bishop.new(colour)
+    else
+      Queen.new(colour)
+    end
   end
-
 end
