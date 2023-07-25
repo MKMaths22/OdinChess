@@ -51,7 +51,7 @@ module Miscellaneous
     castling_vector[0].positive? ? [1, 0] : [-1, 0]
   end
 
-  def find_squares_to_check(colour, vector)
+  def squares_to_check_clear_for_castling(colour, vector)
     # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0] to indicate King or Queenside castling
     # method outputs the squares that have to be empty between the King and Rook, as a 2-D array
     output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
