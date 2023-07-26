@@ -20,7 +20,7 @@ require './generate_legal_moves'
 class Game
   include Miscellaneous
 
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status
 
   def initialize
     @board = Board.new
@@ -33,15 +33,24 @@ class Game
     @saved = false
     @moving_name = nil
     @not_moving_name = nil
+    @check_status = false
   end
 
   def play_game
-    create_the_players unless saved
-    # when loading a saved game, do not create new players
-    puts "It is #{colour_moving} to move." if saved
+    @saved ? name_the_players : create_the_players
+    # when loading a saved game, reminds us who it playing and if in check.
     self.saved = false
     # if reloading a saved game, this variable must be changed.
     turn_loop
+  end
+
+  def name_the_players
+    puts "#{white.name} has the White pieces and #{black.name} is playing Black."
+    puts "It is #{colour_moving} to move #{remind_check}."
+  end
+
+  def remind_check
+    @check_status ? 'and they are in Check' : ''
   end
 
   def turn_loop
@@ -66,11 +75,11 @@ class Game
     # player needed in case they give input for pawn promotion
     # the #update_the_board method communicates with the move object next_move and the
     # @board to get the board to update itself, including changing its @colour_moving. The
-    # @colour_moving in Game class gets toggled later
-    # board.colour_moving is the next player
+    # @colour_moving in Game class gets toggled next.
+    # board.colour_moving is the next player to move
+    toggle_colours
     self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
     consequences_of_move(boolean)
-    toggle_colours
   end
 
   def update_moving_name
@@ -91,10 +100,10 @@ class Game
   end
 
   def consequences_of_move(boolean)
-    # boolean for whether the move was a pawn move or capture
-    check_status = CheckForCheck.new(board.board_array, board.colour_moving).king_in_check?
+    # boolean for whether the move was a (pawn move or capture) or not.
+    self.check_status = CheckForCheck.new(board.board_array, board.colour_moving).king_in_check?
 
-    mate_or_mate(check_status, result) unless legal_moves.size.positive?
+    legal_moves.size.positive? ? declare_check : mate_or_mate(result)
     # mate_or_mate will declare stalemate or checkmate when there are no legal moves
 
     # now, to store the Board totally accurately, we need to check, if there ARE en_passent
@@ -106,13 +115,17 @@ class Game
       board.reset_en_passent unless legal_moves.any?(&:en_passent)
     end
     boolean ? result.reset_moves_count : result.increase_moves_count
-    result.declare_fifty_move_draw(moving_name, not_moving_name) if result.fifty_move_rule_draw?
+    result.declare_fifty_move_draw(not_moving_name, moving_name) if result.fifty_move_rule_draw?
 
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
-    result.declare_repitition_draw(moving_name, not_moving_name) if result.repitition_draw?
-    result.declare_insuff_material_draw(moving_name, not_moving_name) if board.insuff_material_draw?
+    result.declare_repitition_draw(not_moving_name, moving_name) if result.repitition_draw?
+    result.declare_insuff_material_draw(not_moving_name, moving_name) if board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
+  end
+
+  def declare_check
+    puts check_message(moving_name) if @check_status
   end
 
   def toggle_colours
@@ -168,7 +181,7 @@ class Game
     colour == 'White' ? white.name : black.name
   end
 
-  def mate_or_mate(check_status, result_object)
-    check_status ? result_object.declare_checkmate(moving_name, not_moving_name) : result_object.declare_stalemate(moving_name, not_moving_name)
+  def mate_or_mate(result_object)
+    @check_status ? result_object.declare_checkmate(not_moving_name, moving_name) : result_object.declare_stalemate(not_moving_name, moving_name)
   end
 end

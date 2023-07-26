@@ -7,8 +7,8 @@ module Miscellaneous
   end
 
   def string_to_coords(string)
-    # accepts a string of the form 'e4' and returns co-ordinates
-    # for use in the board_array.
+    # accepts a string of the form e.g. 'e4' and returns co-ordinates
+    # for use in the board_array e.g. [4, 3]
     [char_to_num(string[0]), string[1].to_i - 1]
   end
 
@@ -19,8 +19,8 @@ module Miscellaneous
   def char_to_num(char)
     # converts file letters into numbers for Board array, e.g.
     # 'a' to 0, 'f' to 5 etc.
-    ok_letters = *('a'..'h')
-    ok_letters.index(char)
+    files = *('a'..'h')
+    files.index(char)
   end
 
   def add_vector(first_vector, second_vector)
@@ -49,6 +49,10 @@ module Miscellaneous
 
   def illegal_move_error
     'That move is illegal. Please try again.'
+  end
+
+  def check_message(name)
+    "#{name} is in Check!"
   end
 
   def get_reduced_vector(castling_vector)

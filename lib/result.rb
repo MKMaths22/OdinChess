@@ -73,8 +73,8 @@ class Result
     puts "There isn't enough material on the board for a checkmate, so it's a draw by insufficient material. Well played, #{first_name} and #{second_name}."
   end
 
-  def declare_resignation(first_name, second_name)
+  def declare_resignation(losing_name, winning_name)
     @game_over = true
-    puts "#{second_name} wins, congratulations! Better luck next time, #{first_name}."
+    puts "#{winning_name} wins, congratulations! Better luck next time, #{losing_name}."
   end
 end

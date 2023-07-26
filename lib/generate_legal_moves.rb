@@ -13,7 +13,7 @@ class GenerateLegalMoves
   end
 
   def find_all_legal_moves
-    # outputs an array of Move objects
+    # outputs either an array of Move objects, which contains just one if get_just_one is true, or no items if there are no legal moves
     output = []
     hash_from_board = board.next_square_with_piece_to_move([-1, 7])
     # starting from [-1, 7] makes [0, 0] the next square, so it works out!
