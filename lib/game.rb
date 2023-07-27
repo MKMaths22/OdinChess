@@ -64,7 +64,7 @@ class Game
     resign_the_game if next_move == 'resign'
     # next_move is a either a 'save' or 'resign' string or a Move object which knows the 'start_square',
     # 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square,
-    # start_square)), 'our_piece (the piece that is moving)', 'other_piece' which is nil unless it is
+    # start_square)), 'our_piece (the piece that is moving)', 'captured_piece' which is nil unless it is
     # a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing
     # move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
     return unless next_move.is_a?(Move)

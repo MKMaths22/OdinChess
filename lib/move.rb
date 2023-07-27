@@ -6,7 +6,7 @@
 class Move
   include Miscellaneous
 
-  attr_accessor :string, :colour, :board, :start_square, :finish_square, :en_passent, :castling, :poss_board_array, :vector, :our_piece, :other_piece
+  attr_accessor :string, :colour, :board, :start_square, :finish_square, :en_passent, :castling, :poss_board_array, :vector, :our_piece, :captured_piece
 
   def initialize(board, start_square, finish_square, en_passent = false, castling = false)
     @colour = board.colour_moving
@@ -18,11 +18,11 @@ class Move
     @castling = castling
     @poss_board_array = nil
     @our_piece = board.get_piece_at(start_square)
-    @other_piece = board.get_piece_at(finish_square)
+    @captured_piece = board.get_piece_at(finish_square)
   end
 
   def pawn_move_or_capture?
-    our_piece.is_a?(Pawn) || other_piece
+    our_piece.is_a?(Pawn) || captured_piece
   end
 
   def legal?

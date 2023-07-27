@@ -69,9 +69,9 @@ class Computer < Player
   def get_legal_move(board, legal_moves)
     puts 'Choosing a move randomly like a noob'
     sleep(1)
-    queen_captures = legal_moves.filter { |move| move.other_piece&.is_a?(Queen) }
-    rook_captures = legal_moves.filter { |move| move.other_piece&.is_a?(Rook) }
-    other_captures = legal_moves.filter(&:other_piece)
+    queen_captures = legal_moves.filter { |move| move.captured_piece&.is_a?(Queen) }
+    rook_captures = legal_moves.filter { |move| move.captured_piece&.is_a?(Rook) }
+    other_captures = legal_moves.filter(&:captured_piece)
     move = queen_captures.sample || rook_captures.sample || other_captures.sample || legal_moves.sample
     puts "#{algebraic(move.start_square)}#{algebraic(move.finish_square)}"
     move
