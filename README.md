@@ -5,8 +5,6 @@ This project uses the MIT License.
 
 Credit to a user called u/tsojtsojtsoj on Reddit for their post which I saw at https://www.reddit.com/r/AnarchyChess/comments/cmbv5e/for_those_who_want_to_play_chess_in_a_terminal/ . I looked at their design of chess pieces and coded it myself I did not copy any code of theirs, but this saved some time working out where forward slashes, back slashes etc. should go.
 
-Also include the Colorize information.
-
 Colorize license.
 ---------------------------------
 
@@ -26,3 +24,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-------------------------------
+
+Author notes by Peter Hawes:
+
+I feel quite content with most of the code, although some methods still have more arguments being fed into them than I would like ideally. YAML works beautifully for the saving of games, however it forgets that the hash @previous_positions in Result class has a default value of 0. This caused a quite puzzling bug until I realised what was happening and used .to_i in the Result class's #add_position method, converting an erroneous nil value to zero as needed.
+It is a lot of fun to generate two computer players and watch them play nonsense against each other --- usually they play out a draw by insufficient material. 
