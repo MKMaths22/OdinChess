@@ -120,7 +120,7 @@ class Game
     result.wipe_previous_positions if boolean
     result.add_position(board.store_position)
     result.declare_repitition_draw(not_moving_name, moving_name) if result.repitition_draw?
-    result.declare_insuff_material_draw(not_moving_name, moving_name) if board.insuff_material_draw?
+    result.declare_insuff_material_draw(not_moving_name, moving_name) if boolean && board.insuff_material_draw?
     @display_board.show_the_board(board) if result.game_over?
   end
 

@@ -22,6 +22,7 @@ class Board
   end
 
   def toggle_colours
+    # The Game class calls this method as well as toggling its own colours.
     self.colour_moving = other_colour(colour_moving)
   end
 
