@@ -38,7 +38,7 @@ class Game
 
   def play_game
     @saved ? name_the_players : create_the_players
-    # when loading a saved game, reminds us who it playing and if in check.
+    # when loading a saved game, reminds us who is playing and if in check.
     self.saved = false
     # if reloading a saved game, this variable must be changed.
     turn_loop
@@ -69,7 +69,7 @@ class Game
     # move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
     return unless next_move.is_a?(Move)
 
-    boolean = next_move.pawn_move_or_capture?
+    pawn_or_capture_boolean = next_move.pawn_move_or_capture?
     player_of_the_move = next_move.colour == 'White' ? white : black
     ChangeTheBoard.new(next_move, board, player_of_the_move).update_the_board
     # player needed in case they give input for pawn promotion
@@ -79,7 +79,7 @@ class Game
     # board.colour_moving is the next player to move
     toggle_colours
     self.legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
-    consequences_of_move(boolean)
+    consequences_of_move(pawn_or_capture_boolean)
   end
 
   def update_moving_name

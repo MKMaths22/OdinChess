@@ -26,6 +26,7 @@ class Board
   end
 
   def castling_rights_from_vector?(vector)
+    # throughout this project, vector is the movement vector of a piece, in this case a King when castling.
     castling_rights[castling_string_from_vector(vector, colour_moving)]
   end
 
@@ -107,7 +108,7 @@ class Board
     # array is a current board_array and we are moving a piece from start to finish co-ordinates.
     new_array = board_array.map(&:clone)
     move_piece(new_array, start, finish)
-    new_array[en_passent['Pawn now at'][0]][en_passent['Pawn now at'][1]] = nil if e_p
+    put_piece_at(new_array, en_passent['Pawn now at'], nil) if e_p
     # if it is en_passent we also remove the pawn captured
     new_array
   end
