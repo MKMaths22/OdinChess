@@ -46,11 +46,11 @@ class Game
 
   def name_the_players
     puts "#{white.name} has the White pieces and #{black.name} is playing Black."
-    puts "It is #{colour_moving} to move #{remind_check}."
+    puts "It is #{colour_moving} to move#{remind_check}."
   end
 
   def remind_check
-    @check_status ? 'and they are in Check' : ''
+    @check_status ? ' and they are in Check' : ''
   end
 
   def turn_loop
@@ -132,6 +132,7 @@ class Game
     self.colour_moving = other_colour(colour_moving)
     update_moving_name
     update_not_moving_name
+    board.toggle_colours
     # the colour_moving variable in the Board class needs to be toggled separately
   end
 

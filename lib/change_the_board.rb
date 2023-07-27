@@ -22,6 +22,5 @@ class ChangeTheBoard
     opponent_back_rank = colour == 'White' ? 7 : 0
     board.remove_castling_rights('0-0', true) if move.finish_square == [7, opponent_back_rank]
     board.remove_castling_rights('0-0-0', true) if move.finish_square == [0, opponent_back_rank]
-    board.toggle_colour_moving
   end
 end

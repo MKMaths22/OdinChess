@@ -21,7 +21,7 @@ class Board
     @en_passent = { 'Pawn passed through' => nil, 'Pawn now at' => nil }
   end
 
-  def toggle_colour_moving
+  def toggle_colours
     self.colour_moving = other_colour(colour_moving)
   end
 
