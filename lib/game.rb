@@ -1,18 +1,18 @@
 # frozen-string-literal: true
 
 require 'yaml'
-require './board'
-require './player'
-require './display_board'
-require './check_for_check'
-require './result'
-require './piece'
-require './pawn'
-require './other_pieces'
-require './miscellaneous'
-require './move'
-require './change_the_board'
-require './generate_legal_moves'
+require_relative './board'
+require_relative './player'
+require_relative './display_board'
+require_relative './check_for_check'
+require_relative './result'
+require_relative './piece'
+require_relative './pawn'
+require_relative './other_pieces'
+require_relative './miscellaneous'
+require_relative './move'
+require_relative './change_the_board'
+require_relative './generate_legal_moves'
 
 # Game class takes care of overall progress of the game, asking players their names at the start.
 # Also responsible for saving the game.
