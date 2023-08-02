@@ -53,6 +53,21 @@ class Game
     @check_status ? ' and they are in Check' : ''
   end
 
+  def create_the_players
+    puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
+    input = gets.strip
+    self.white = make_human_or_computer('White', input)
+    self.moving_name = white.name
+    puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
+    input = gets.strip
+    self.black = make_human_or_computer('Black', input)
+    self.not_moving_name = black.name
+  end
+
+  def make_human_or_computer(colour, input)
+    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input)
+  end
+
   def turn_loop
     one_turn until result.game_over? || @saved
   end
@@ -163,21 +178,6 @@ class Game
 
   def already_used?(name)
     File.exist?("#{name}.txt")
-  end
-
-  def create_the_players
-    puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
-    input = gets.strip
-    self.white = make_human_or_computer('White', input)
-    self.moving_name = white.name
-    puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
-    input = gets.strip
-    self.black = make_human_or_computer('Black', input)
-    self.not_moving_name = black.name
-  end
-
-  def make_human_or_computer(colour, input)
-    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input)
   end
 
   def get_player_name_from_colour(colour)

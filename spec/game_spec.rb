@@ -34,6 +34,36 @@ describe Game do
       end
     end
   end
+
+  describe '#create_the_players' do
+    context 'two humans playing' do
+      subject(:game) { described_class.new }
+      let(:peter) { instance_double(Player) }
+      let(:chris) { instance_double(Player) }
+      it 'sets white to be Peter' do
+        allow(subject).to receive(:gets).twice.and_return('Peter', 'Chris')
+        allow(Player).to receive(:new).with('White', 'Peter').and_return(peter)
+        allow(Player).to receive(:new).with('Black', 'Chris').and_return(chris)
+        allow(subject).to receive(:make_human_or_computer).with('White', 'Peter').and_return(peter)
+        allow(subject).to receive(:make_human_or_computer).with('Black', 'Chris').and_return(chris)
+        allow(peter).to receive(:name).and_return('Peter')
+        allow(chris).to receive(:name).and_return('Chris')
+        game.create_the_players
+        expect(game.instance_variable_get(:@white)).to eq(peter)
+      end
+      it 'sets black to be Chris' do
+        allow(subject).to receive(:gets).twice.and_return('Peter', 'Chris')
+        allow(Player).to receive(:new).with('White', 'Peter').and_return(peter)
+        allow(Player).to receive(:new).with('Black', 'Chris').and_return(chris)
+        allow(subject).to receive(:make_human_or_computer).with('White', 'Peter').and_return(peter)
+        allow(subject).to receive(:make_human_or_computer).with('Black', 'Chris').and_return(chris)
+        allow(peter).to receive(:name).and_return('Peter')
+        allow(chris).to receive(:name).and_return('Chris')
+        game.create_the_players
+        expect(game.instance_variable_get(:@black)).to eq(chris)
+      end
+    end
+  end
   
 
 end
