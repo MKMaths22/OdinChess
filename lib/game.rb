@@ -22,18 +22,18 @@ class Game
 
   attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status
 
-  def initialize
-    @board = Board.new
-    @white = nil
-    @black = nil
-    @result = Result.new(make_the_hash(board.store_position))
-    @colour_moving = 'White'
-    @display_board = DisplayBoard.new
-    @legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves
-    @saved = false
-    @moving_name = nil
-    @not_moving_name = nil
-    @check_status = false
+  def initialize(board = Board.new, white = nil, black = nil, result = Result.new(make_the_hash(board.store_position)), colour_moving = 'White', display_board = DisplayBoard.new, legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves, saved = false, moving_name = nil, not_moving_name = nil, check_status = false)
+    @board = board
+    @white = white
+    @black = black
+    @result = result
+    @colour_moving = colour_moving
+    @display_board = display_board
+    @legal_moves = legal_moves
+    @saved = saved
+    @moving_name = moving_name
+    @not_moving_name = not_moving_name
+    @check_status = check_status
   end
 
   def play_game
@@ -62,18 +62,20 @@ class Game
     next_move = enter_move_or_save_game
     save_the_game if next_move == 'save'
     resign_the_game if next_move == 'resign'
+    carry_out_move(next_move) if next_move.is_a?(Move)
+  end
     # next_move is a either a 'save' or 'resign' string or a Move object which knows the 'start_square',
     # 'finish_square', 'colour', 'board' object, 'vector' (which is just subtract_vector(finish_square,
     # start_square)), 'our_piece (the piece that is moving)', 'captured_piece' which is nil unless it is
     # a conventional capturing move, 'en_passent' which is Boolean (the only non-conventional capturing
     # move) and 'castling' which is either false or gives the string of the form e.g. 'Black_0-0-0'
-    return unless next_move.is_a?(Move)
 
-    pawn_or_capture_boolean = next_move.pawn_move_or_capture?
-    player_of_the_move = next_move.colour == 'White' ? white : black
-    ChangeTheBoard.new(next_move, board, player_of_the_move).update_the_board
+  def carry_out_move(move)
+    pawn_or_capture_boolean = move.pawn_move_or_capture?
+    player_of_the_move = move.colour == 'White' ? white : black
+    ChangeTheBoard.new(move, board, player_of_the_move).update_the_board
     # player needed in case they give input for pawn promotion
-    # the #update_the_board method communicates with the move object next_move and the
+    # the #update_the_board method communicates with the Move object move and the
     # @board to get the board to update itself, including changing its @colour_moving. The
     # @colour_moving in Game class gets toggled next.
     # board.colour_moving is the next player to move
