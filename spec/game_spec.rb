@@ -85,7 +85,7 @@ describe Game do
       let(:result) { instance_double(Result) }
       it 'calls one_turn 10 times' do
         allow(result).to receive(:game_over?).exactly(11).times.and_return(false, false, false, false, false, false, false, false, false, false, true)
-        allow(game).to receive(:@saved).exactly(10).times.and_return(false, false, false, false, false, false, false, false, false, false)
+        allow(game).to receive(:@saved).exactly(11).times.and_return(false, false, false, false, false, false, false, false, false, false)
         expect(game).to receive(:one_turn).exactly(10).times
         game.turn_loop
       end
