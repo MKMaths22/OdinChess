@@ -37,7 +37,6 @@ describe Game do
 
   describe '#create_the_players' do
     context 'two humans playing' do
-      subject(:game) { described_class.new }
       let(:peter) { instance_double(Player) }
       let(:chris) { instance_double(Player) }
       it 'sets white to be Peter' do
@@ -63,6 +62,35 @@ describe Game do
         expect(game.instance_variable_get(:@black)).to eq(chris)
       end
     end
+    context 'human versus computer' do
+      let(:peter) { instance_double(Player) }
+      let(:computer_black) { instance_double(Computer) }
+      it 'sets black to be the computer' do
+        allow(subject).to receive(:gets).twice.and_return('Peter', 'C')
+        allow(Player).to receive(:new).with('White', 'Peter').and_return(peter)
+        allow(Computer).to receive(:new).with('Black').and_return(computer_black)
+        allow(subject).to receive(:make_human_or_computer).with('White', 'Peter').and_return(peter)
+        allow(subject).to receive(:make_human_or_computer).with('Black', 'C').and_return(computer_black)
+        allow(peter).to receive(:name).and_return('Peter')
+        allow(computer_black).to receive(:name).and_return('Computer(B)')
+        game.create_the_players
+        expect(game.instance_variable_get(:@black)).to eq(computer_black)
+      end
+ 
+    end
+  end
+
+  describe '#turn_loop' do
+    context 'the game has 10 turns' do
+      let(:result) { instance_double(Result) }
+      it 'calls one_turn 10 times' do
+        allow(result).to receive(:game_over?).exactly(11).times.and_return(false, false, false, false, false, false, false, false, false, false, true)
+        allow(game).to receive(:@saved).exactly(10).times.and_return(false, false, false, false, false, false, false, false, false, false)
+        expect(game).to receive(:one_turn).exactly(10).times
+        game.turn_loop
+      end
+    end
+
   end
   
 
