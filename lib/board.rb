@@ -59,8 +59,16 @@ class Board
     board_array[square[0]][square[1]] = new_piece
   end
 
+  def put_piece_at(array, coords, piece)
+    array[coords[0]][coords[1]] = piece
+  end
+  
   def get_piece_at(coords)
     get_item(board_array, coords)
+  end
+
+  def get_item(array, coords)
+    array[coords[0]][coords[1]]
   end
 
   def en_passent_capture_possible_at?(coords)

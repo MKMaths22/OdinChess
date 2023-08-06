@@ -29,6 +29,26 @@ class Move
     castling ? legal_castling? : legal_non_castling?
   end
 
+  def get_reduced_vector(castling_vector)
+    castling_vector[0].positive? ? [1, 0] : [-1, 0]
+  end
+
+  def get_rook_rank(castling)
+    castling[0] == 'W' ? 0 : 7
+  end
+  
+  def get_rook_start(castling)
+    # outputs the rook's starting co-ordinates for a string 'castling' such as
+    # appears as s key in the Board's @castling_rights hash
+    file = castling.length == 9 ? 7 : 0
+    [file, get_rook_rank(castling)]
+  end
+
+  def get_rook_finish(castling)
+    file = castling.length == 9 ? 5 : 3
+    [file, get_rook_rank(castling)]
+  end
+
   def legal_castling?
     reduced_vector = get_reduced_vector(vector)
     castling_string = castling_string_from_vector(vector, colour)

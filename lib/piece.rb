@@ -28,6 +28,10 @@ class Piece
     self.moves_to_check_for_check = []
   end
 
+  def on_the_board?(coords)
+    coords[0].between?(0, 7) && coords[1].between?(0, 7)
+  end
+
   def validate_square_for_moving(board, square)
     # asks if the Piece can move to the square 'square' on the 'board',
     # ignoring issues of check. This is not used for castling/en_passent.
@@ -90,6 +94,19 @@ class Piece
 
     possible_squares = possible_castling_vectors.map { |vector| add_vector(square, vector) }
     moves_to_check_for_check.concat(make_move_objects(board, possible_squares, false, true))
+  end
+
+  def squares_to_check_clear_for_castling(colour, vector)
+    # colour = 'White' or 'Black'. Vector = [2, 0] or [-2, 0]
+    # to indicate King or Queenside castling.
+    # method outputs the squares that have to be empty between
+    # the King and Rook, as a 2-D array.
+    output = vector[0].positive? ? [[5], [6]] : [[1], [2], [3]]
+    row = colour == 'White' ? 0 : 7
+    output.each do |item|
+      item.push(row)
+    end
+    output
   end
 
   def get_possible_squares_in_this_direction(vector, board)

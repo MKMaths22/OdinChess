@@ -15,6 +15,25 @@ class Player
     gets.strip.upcase
   end
 
+  def char_to_num(char)
+    # converts file letters into numbers for Board array, e.g.
+    # 'a' to 0, 'f' to 5 etc.
+    files = *('a'..'h')
+    files.index(char)
+  end
+  
+  def string_to_coords(string)
+    # accepts a string of the form e.g. 'e4' and returns co-ordinates
+    # for use in the board_array e.g. [4, 3]
+    [char_to_num(string[0]), string[1].to_i - 1]
+  end
+
+  def algebraic(coords)
+    # generates for example e4 from [4, 3]
+    files = *('a'..'h')
+    "#{files[coords[0]]}#{1 + coords[1]}"
+  end
+
   def get_legal_move(board, legal_moves)
     maybe_move = gets.strip
     return get_legal_move(board, legal_moves) unless valid_input?(maybe_move)
@@ -29,6 +48,10 @@ class Player
     # move_found is either false or a legal Move object.
     puts illegal_move_error unless move_found
     move_found || get_legal_move(board, legal_moves)
+  end
+
+  def illegal_move_error
+    'That move is illegal. Please try again.'
   end
 
   def find_legal_move_with_squares(start, finish, legal_moves)

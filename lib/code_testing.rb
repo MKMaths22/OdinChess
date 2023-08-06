@@ -11,6 +11,13 @@ legal_moves.each_with_index do |move, index|
   puts "Move number #{index} is from #{move.start_square} to #{move.finish_square}."
 end
 
+def make_the_hash(position)
+  # used to be used when initializing the Result object in Game class. However, since YAML does not store the default value of 0 anyway, this method is now redundant.
+  output = Hash.new(0)
+  output[position] = 1
+  output
+end
+
 # the two lines below can be used e.g. in #one_turn
 puts "There are #{legal_moves.size} legal moves."
 puts "#{colour_moving} is the colour to Move."
