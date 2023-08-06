@@ -4,7 +4,7 @@ require 'colorize'
 
 # includes the methods that are specific to Pawns
 class Pawn < Piece
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check, :capture_vectors, :non_capture_vectors, :moved
+  attr_accessor :capture_vectors, :non_capture_vectors, :moved
 
   def initialize(colour)
     super

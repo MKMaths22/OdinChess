@@ -6,8 +6,6 @@ require 'colorize'
 class Bishop < Piece
   include Miscellaneous
 
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
-
   def initialize(colour)
     super
     @base_vectors = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
@@ -20,8 +18,6 @@ end
 # on one side when a Rook moves
 class Rook < Piece
   include Miscellaneous
-
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
 
   def initialize(colour)
     super
@@ -42,8 +38,6 @@ end
 class Queen < Piece
   include Miscellaneous
 
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
-
   def initialize(colour)
     super
     @base_vectors = [[-1, 0], [0, 1], [1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
@@ -56,8 +50,6 @@ end
 class Knight < Piece
   include Miscellaneous
 
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
-
   def initialize(colour)
     super
     @movement_vectors = [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
@@ -69,8 +61,6 @@ end
 # includes the King's instance variables and removal of castling when he moves
 class King < Piece
   include Miscellaneous
-
-  attr_accessor :colour, :movement_vectors, :castling_vectors, :base_vectors, :display_strings, :square, :moves_to_check_for_check
 
   def initialize(colour)
     super
