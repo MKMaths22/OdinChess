@@ -22,7 +22,7 @@ class CheckForCheck
     hash = @hypoth_board.next_square_with_piece_to_move(current_square)
     # the pieces being found have the opposite colour to our king.
     while hash
-      return true if hash['piece'].capture_possible?(hash['square'], @king_square, @hypoth_board)
+      return true if hash['piece'].capture_king_possible?(hash['square'], @king_square, @hypoth_board)
 
       hash = @hypoth_board.next_square_with_piece_to_move(hash['square'])
     end

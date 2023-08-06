@@ -20,7 +20,7 @@ class Pawn < Piece
     self.non_capture_vectors = [@non_capture_vectors[0]]
   end
 
-  def capture_possible?(start_square, finish_square,_board)
+  def capture_king_possible?(start_square, finish_square,_board)
     # we don't care about en_passent in this method because it is only used to see if
     # the opposition king would be in check
     capture_vectors.any? { |vector| add_vector(start_square, vector) == finish_square }

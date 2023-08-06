@@ -45,7 +45,7 @@ class Piece
     poss_piece.colour == colour ? false : 'capture'
   end
 
-  def capture_possible?(start_square, finish_square, board)
+  def capture_king_possible?(start_square, finish_square, board)
     # the piece in question is on 'start_square' in a Board object, 'board' and we want
     # to know if it can capture the King on the finish_square, ignoring
     # check issues on our own King.
