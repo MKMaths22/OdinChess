@@ -74,7 +74,6 @@ class Game
 
   def one_turn
     @display_board.show_the_board(board)
-    puts "There are #{legal_moves.size} legal moves."
     next_move = enter_move_or_save_game
     save_the_game if next_move == 'save'
     resign_the_game if next_move == 'resign'
