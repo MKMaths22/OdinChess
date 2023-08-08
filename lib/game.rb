@@ -24,6 +24,7 @@ class Game
   attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status, :game_inputs
 
   def initialize(board = Board.new, game_inputs = [], white = nil, black = nil, result = Result.new({ (board.store_position) => 1 }), colour_moving = 'White', display_board = DisplayBoard.new, legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves, saved = false, moving_name = nil, not_moving_name = nil, check_status = false)
+    @game_inputs = GameInputs.new(game_inputs)
     @board = board
     @white = white
     @black = black
@@ -35,7 +36,6 @@ class Game
     @moving_name = moving_name
     @not_moving_name = not_moving_name
     @check_status = check_status
-    @game_inputs = GameInputs.new(game_inputs)
   end
 
   def input_to_use

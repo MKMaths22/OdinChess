@@ -2,7 +2,7 @@
 
 require './game.rb'
 require 'yaml'
-require 'minitest'
+require 'minitest/autorun'
 
 puts "Welcome to Chess!"
 sleep(2)
@@ -68,15 +68,9 @@ end
 bye = false
 
 until bye
-  game = Game.new(Board.new, ['player_one', 'player_two', 'e2e4', 'e7e5', 'd1f3', 'a7a6', 'f1c4', 'h7h6', 'f3f7'])
+  game = Game.new
   games_saved? ? offer_reload : game.play_game
   bye = stop_chess_boolean
 end
 
 puts "Thanks for playing Chess. Goodbye."
-
-class ChessTest < Minitest::Test
-
-
-end
-
