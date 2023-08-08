@@ -6,13 +6,18 @@ class Player
 
   attr_reader :colour, :name
 
-  def initialize(colour, name = nil)
+  def initialize(colour, name = nil, game_inputs)
     @colour = colour
     @name = name
+    @game_inputs = game_inputs
+  end
+
+  def input_to_use
+    @game_inputs.supply_input
   end
 
   def promotion_input
-    gets.strip.upcase
+    input_to_use.strip.upcase
   end
 
   def char_to_num(char)
@@ -35,7 +40,7 @@ class Player
   end
 
   def get_legal_move(board, legal_moves)
-    maybe_move = gets.strip
+    maybe_move = input_to_use.strip
     return get_legal_move(board, legal_moves) unless valid_input?(maybe_move)
 
     return 'save' if maybe_move.upcase == 'SAVE'

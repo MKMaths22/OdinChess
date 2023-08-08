@@ -13,6 +13,7 @@ require_relative './miscellaneous'
 require_relative './move'
 require_relative './change_the_board'
 require_relative './generate_legal_moves'
+require_relative './game_inputs'
 
 # Game class takes care of overall progress of the game, asking players their names at the start.
 # Also responsible for saving the game.
@@ -20,9 +21,9 @@ require_relative './generate_legal_moves'
 class Game
   include Miscellaneous
 
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status, :game_inputs
 
-  def initialize(board = Board.new, white = nil, black = nil, result = Result.new({ (board.store_position) => 1 }), colour_moving = 'White', display_board = DisplayBoard.new, legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves, saved = false, moving_name = nil, not_moving_name = nil, check_status = false)
+  def initialize(board = Board.new, game_inputs = [], white = nil, black = nil, result = Result.new({ (board.store_position) => 1 }), colour_moving = 'White', display_board = DisplayBoard.new, legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves, saved = false, moving_name = nil, not_moving_name = nil, check_status = false)
     @board = board
     @white = white
     @black = black
@@ -34,6 +35,13 @@ class Game
     @moving_name = moving_name
     @not_moving_name = not_moving_name
     @check_status = check_status
+    @game_inputs = GameInputs.new(game_inputs)
+  end
+
+  def input_to_use
+    # shifts an input from the beginning of the game_inputs array 
+    # or applies uses gets if array is empty
+    @game_inputs.supply_input
   end
 
   def play_game
@@ -55,17 +63,17 @@ class Game
 
   def create_the_players
     puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
-    input = gets.strip
+    input = input_to_use.strip
     self.white = make_human_or_computer('White', input)
     self.moving_name = white.name
     puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
-    input = gets.strip
+    input = input_to_use.strip
     self.black = make_human_or_computer('Black', input)
     self.not_moving_name = black.name
   end
 
   def make_human_or_computer(colour, input)
-    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input)
+    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input, @game_inputs)
   end
 
   def turn_loop
@@ -168,7 +176,7 @@ class Game
   end
 
   def make_save_name
-    name_tried = gets
+    name_tried = input_to_use
     if already_used?(name_tried)
       puts 'There is already a saved game with that name. Please choose another.'
       return make_save_name

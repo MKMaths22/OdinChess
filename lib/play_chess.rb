@@ -2,6 +2,7 @@
 
 require './game.rb'
 require 'yaml'
+require 'minitest'
 
 puts "Welcome to Chess!"
 sleep(2)
@@ -73,4 +74,9 @@ until bye
 end
 
 puts "Thanks for playing Chess. Goodbye."
+
+class ChessTest < Minitest::Test
+
+
+end
 
