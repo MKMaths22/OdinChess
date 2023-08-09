@@ -47,6 +47,10 @@ class ChessTest < Minitest::Test
     assert test_game.result.game_end_message == "That's the exact same position, for the third time. It's a 3-fold repitition draw. Well played, player_two and player_one."
   end
 
+  # def test_insufficient_material_draw
+    # test_board = Board.new()
+  # end
+
 
 
 
