@@ -41,7 +41,9 @@ class Game
   def input_to_use
     # shifts an input from the beginning of the game_inputs array 
     # or applies uses gets if array is empty
-    @game_inputs.supply_input
+    possible_input = @game_inputs.supply_input
+    return possible_input if possible_input
+    abort "Not enough inputs supplied"
   end
 
   def play_game

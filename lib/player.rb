@@ -13,7 +13,9 @@ class Player
   end
 
   def input_to_use
-    @game_inputs.supply_input
+    possible_input = @game_inputs.supply_input
+    return possible_input if possible_input
+    abort "Not enough inputs supplied"
   end
 
   def promotion_input

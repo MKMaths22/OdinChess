@@ -2,7 +2,7 @@
 
 require './game.rb'
 require 'yaml'
-require 'minitest/autorun'
+# require 'minitest/autorun'
 
 puts "Welcome to Chess!"
 sleep(2)
