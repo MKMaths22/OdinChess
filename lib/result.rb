@@ -4,7 +4,7 @@
 # and how many moves with no captures/pawn moves (for 50 move rule).
 # It also tells the Game class when it is game over and declares the result to the players.
 class Result
-  attr_accessor :previous_positions, :half_moves_count
+  attr_accessor :previous_positions, :half_moves_count, :game_end_message
 
   def initialize(previous_positions, half_moves_count = 0)
     # Game class uses the initial Board position to put that position into
@@ -12,6 +12,7 @@ class Result
     @previous_positions = previous_positions
     @half_moves_count = half_moves_count
     @game_over = false
+    @game_end_message = nil
   end
 
   def add_position(position)
@@ -50,31 +51,37 @@ class Result
 
   def declare_checkmate(winning_name, losing_name)
     @game_over = true
-    puts "Congratulations, #{winning_name}. That's checkmate! Better luck next time, #{losing_name}."
+    self.game_end_message = "Congratulations, #{winning_name}. That's checkmate! Better luck next time, #{losing_name}."
+    puts @game_end_message
   end
 
   def declare_stalemate(first_name, second_name)
     @game_over = true
-    puts "It's a draw by stalemate! Well played, #{first_name} and #{second_name}."
+    self.game_end_message = "It's a draw by stalemate! Well played, #{first_name} and #{second_name}."
+    puts @game_end_message
   end
 
   def declare_fifty_move_draw(first_name, second_name)
     @game_over = true
-    puts "You guys have shuffled your pieces for 50 moves with no real progress, so it's a draw. Well played, #{first_name} and #{second_name}."
+    self.game_end_message = "You guys have shuffled your pieces for 50 moves with no real progress, so it's a draw. Well played, #{first_name} and #{second_name}."
+    puts @game_end_message
   end
 
   def declare_repitition_draw(first_name, second_name)
     @game_over = true
-    puts "That's the exact same position, for the third time. It's a 3-fold repitition draw. Well played, #{first_name} and #{second_name}."
+    self.game_end_message = "That's the exact same position, for the third time. It's a 3-fold repitition draw. Well played, #{first_name} and #{second_name}."
+    puts @game_end_message
   end
 
   def declare_insuff_material_draw(first_name, second_name)
     @game_over = true
-    puts "There isn't enough material on the board for a checkmate, so it's a draw by insufficient material. Well played, #{first_name} and #{second_name}."
+    self.game_end_message = "There isn't enough material on the board for a checkmate, so it's a draw by insufficient material. Well played, #{first_name} and #{second_name}."
+    puts @game_end_message
   end
 
   def declare_resignation(losing_name, winning_name)
     @game_over = true
-    puts "#{winning_name} wins, congratulations! Better luck next time, #{losing_name}."
+    self.game_end_message = "#{winning_name} wins, congratulations! Better luck next time, #{losing_name}."
+    puts @game_end_message
   end
 end
