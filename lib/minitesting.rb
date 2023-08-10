@@ -92,6 +92,14 @@ class ChessTest < Minitest::Test
     assert test_game.result.game_end_message == "It's a draw by stalemate! Well played, player_one and player_two."
   end
 
+  def test_first_move_only_not_real_test
+    # skip
+    list_of_inputs = ['player_one', 'player_two', 'e2e4']
+    test_game = Game.new(Board.new, list_of_inputs)
+    test_game.play_game
+    refute test_game.result.game_over?
+  end
+
 
 
 

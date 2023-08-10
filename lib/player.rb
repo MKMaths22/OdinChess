@@ -15,11 +15,16 @@ class Player
   def input_to_use
     possible_input = @game_inputs.supply_input
     return possible_input if possible_input
-    abort "Not enough inputs supplied"
+    # only if inputs WERE GIVEN but not enough to finish the game does 
+    # the below Array get outputted
+    ["Not enough inputs supplied"]
   end
 
   def promotion_input
-    input_to_use.strip.upcase
+    possible_input = input_to_use
+    return input_to_use.strip.upcase unless input_to_use.is_a?(Array)
+    # if inputs supplied ran out, we shall assume promotion to Queen
+    'Q'
   end
 
   def char_to_num(char)
@@ -43,6 +48,9 @@ class Player
 
   def get_legal_move(board, legal_moves)
     maybe_move = input_to_use.strip
+    if maybe_move.is_a?(Array)
+      return
+    end
     return get_legal_move(board, legal_moves) unless valid_input?(maybe_move)
 
     return 'save' if maybe_move.upcase == 'SAVE'

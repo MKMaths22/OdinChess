@@ -21,7 +21,7 @@ require_relative './game_inputs'
 class Game
   include Miscellaneous
 
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status, :game_inputs
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status, :game_inputs, :stop_with_not_enough_inputs
 
   def initialize(board = Board.new, game_inputs = [], white = nil, black = nil, result = Result.new({ (board.store_position) => 1 }), colour_moving = 'White', display_board = DisplayBoard.new, legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves, saved = false, moving_name = nil, not_moving_name = nil, check_status = false)
     @game_inputs = GameInputs.new(game_inputs)
@@ -36,6 +36,7 @@ class Game
     @moving_name = moving_name
     @not_moving_name = not_moving_name
     @check_status = check_status
+    @stop_with_not_enough_inputs = false
   end
 
   def input_to_use
@@ -43,7 +44,9 @@ class Game
     # or applies uses gets if array is empty
     possible_input = @game_inputs.supply_input
     return possible_input if possible_input
-    abort "Not enough inputs supplied"
+    # only if inputs WERE GIVEN but not enough to finish the game does 
+    # the below Array get outputted
+    ["Not enough inputs supplied"]
   end
 
   def play_game
@@ -66,10 +69,22 @@ class Game
   def create_the_players
     puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
     input = input_to_use.strip
+    if input.is_a?(Array)
+      self.stop_with_not_enough_inputs = true
+      return
+    end
+    # only if inputs were supplied for Minitest tests but were not sufficient
+
     self.white = make_human_or_computer('White', input)
     self.moving_name = white.name
     puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
     input = input_to_use.strip
+    if input.is_a?(Array)
+      self.stop_with_not_enough_inputs = true
+      return
+    end
+    # only if inputs were supplied for Minitest tests but were not sufficient
+    
     self.black = make_human_or_computer('Black', input)
     self.not_moving_name = black.name
   end
@@ -79,12 +94,16 @@ class Game
   end
 
   def turn_loop
-    one_turn until result.game_over? || @saved
+    one_turn until result.game_over? || @saved || @stop_with_not_enough_inputs
   end
 
   def one_turn
     @display_board.show_the_board(board)
     next_move = enter_move_or_save_game
+    unless next_move
+      self.stop_with_not_enough_inputs = true
+      return
+    end
     save_the_game if next_move == 'save'
     resign_the_game if next_move == 'resign'
     carry_out_move(next_move) if next_move.is_a?(Move)
