@@ -84,6 +84,14 @@ class ChessTest < Minitest::Test
     assert test_game.result.game_end_message == "You guys have shuffled your pieces for 50 moves with no real progress, so it's a draw. Well played, player_two and player_one."
   end
 
+  def test_quickish_stalemate
+    # skip
+    list_of_inputs = ['player_one', 'player_two', 'e2e3', 'a7a5', 'd1h5', 'a8a6', 'h5a5', 'h7h5', 'h2h4', 'a6h6', 'a5c7', 'f7f6', 'c7d7', 'e8f7', 'd7b7', 'd8d3', 'b7b8', 'd3h7', 'b8c8', 'f7g6', 'c8e6']
+    test_game = Game.new(Board.new, list_of_inputs)
+    test_game.play_game
+    assert test_game.result.game_end_message == "It's a draw by stalemate! Well played, player_one and player_two."
+  end
+
 
 
 
