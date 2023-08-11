@@ -100,6 +100,14 @@ class ChessTest < Minitest::Test
     refute test_game.result.game_over?
   end
 
+  def test_illegal_move_counted
+    #skip
+    list_of_inputs = ['player_one', 'player_two', 'e2e5']
+    test_game = Game.new(Board.new, list_of_inputs)
+    test_game.play_game
+    assert test_game.illegal_move_count.report_count == 1
+  end
+
 
 
 

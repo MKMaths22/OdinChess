@@ -14,6 +14,7 @@ require_relative './move'
 require_relative './change_the_board'
 require_relative './generate_legal_moves'
 require_relative './game_inputs'
+require_relative './illegal_move_count'
 
 # Game class takes care of overall progress of the game, asking players their names at the start.
 # Also responsible for saving the game.
@@ -21,7 +22,7 @@ require_relative './game_inputs'
 class Game
   include Miscellaneous
 
-  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status, :game_inputs, :stop_with_not_enough_inputs
+  attr_accessor :white, :black, :board, :result, :colour_moving, :legal_moves, :saved, :moving_name, :not_moving_name, :check_status, :game_inputs, :stop_with_not_enough_inputs, :illegal_move_count
 
   def initialize(board = Board.new, game_inputs = [], white = nil, black = nil, result = Result.new({ (board.store_position) => 1 }), colour_moving = 'White', display_board = DisplayBoard.new, legal_moves = GenerateLegalMoves.new(board).find_all_legal_moves, saved = false, moving_name = nil, not_moving_name = nil, check_status = false)
     @game_inputs = GameInputs.new(game_inputs)
@@ -37,6 +38,7 @@ class Game
     @not_moving_name = not_moving_name
     @check_status = check_status
     @stop_with_not_enough_inputs = false
+    @illegal_move_count = IllegalMoveCount.new
   end
 
   def input_to_use
@@ -85,7 +87,7 @@ class Game
   end
 
   def make_human_or_computer(colour, input)
-    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input, @game_inputs)
+    input.upcase == 'C' ? Computer.new(colour) : Player.new(colour, input, @game_inputs, @illegal_move_count)
   end
 
   def turn_loop

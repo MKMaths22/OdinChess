@@ -5,11 +5,13 @@ class Player
   include Miscellaneous
 
   attr_reader :colour, :name
+  attr_accessor :illegal_move_count
 
-  def initialize(colour, name = nil, game_inputs)
+  def initialize(colour, name = nil, game_inputs, illegal_move_count)
     @colour = colour
     @name = name
     @game_inputs = game_inputs
+    @illegal_move_count = illegal_move_count
   end
 
   def input_to_use
@@ -62,12 +64,13 @@ class Player
     finish_square = string_to_coords(maybe_move[2, 2])
     move_found = find_legal_move_with_squares(start_square, finish_square, legal_moves)
     # move_found is either false or a legal Move object.
-    puts illegal_move_error unless move_found
+    illegal_move_error unless move_found
     move_found || get_legal_move(board, legal_moves)
   end
 
   def illegal_move_error
-    'That move is illegal. Please try again.'
+    puts 'That move is illegal. Please try again.'
+    @illegal_move_count.increment_counter
   end
 
   def find_legal_move_with_squares(start, finish, legal_moves)
