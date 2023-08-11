@@ -41,8 +41,8 @@ class Game
     @illegal_move_count = IllegalMoveCount.new
   end
 
-  def count_illegal_moves
-    @illegal_move_count.report_count
+  def output_illegal_moves
+    @illegal_move_count.report_illegal_moves
   end
 
   def input_to_use

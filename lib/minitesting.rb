@@ -102,10 +102,10 @@ class ChessTest < Minitest::Test
 
   def test_illegal_move_counted
     #skip
-    list_of_inputs = ['player_one', 'player_two', 'e2e5']
+    list_of_inputs = ['player_one', 'player_two', 'e2e4', 'e7d4']
     test_game = Game.new(Board.new, list_of_inputs)
     test_game.play_game
-    assert test_game.count_illegal_moves == 1
+    assert test_game.output_illegal_moves == [2]
   end
 
 

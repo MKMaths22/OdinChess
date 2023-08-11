@@ -64,13 +64,13 @@ class Player
     finish_square = string_to_coords(maybe_move[2, 2])
     move_found = find_legal_move_with_squares(start_square, finish_square, legal_moves)
     # move_found is either false or a legal Move object.
-    illegal_move_error unless move_found
+    move_found ? @illegal_move_count.record_legal_move : illegal_move_error
     move_found || get_legal_move(board, legal_moves)
   end
 
   def illegal_move_error
     puts 'That move is illegal. Please try again.'
-    @illegal_move_count.increment_counter
+    @illegal_move_count.record_illegal_move
   end
 
   def find_legal_move_with_squares(start, finish, legal_moves)
