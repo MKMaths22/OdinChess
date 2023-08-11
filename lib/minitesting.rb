@@ -101,15 +101,26 @@ class ChessTest < Minitest::Test
   end
 
   def test_illegal_move_counted
-    #skip
-    list_of_inputs = ['player_one', 'player_two', 'e2e4', 'e7d4']
+     # skip
+     list_of_inputs = ['player_one', 'player_two', 'e2e4', 'e7d4']
+     test_game = Game.new(Board.new, list_of_inputs)
+     test_game.play_game
+     assert test_game.output_illegal_moves == [2]
+   end
+
+  def test_long_game_outcome
+    # skip
+    list_of_inputs = ['Peter', 'Chris', 'd2e3', 'c2c3', 'f8c5', 'g8h6', 'd2d4', 'd7d5', 'd4d5', 'c3c5', 'a1a7', 'c1h6', 'g7h6', 'd1a4', 'c7c5', 'c7c6', 'e1c1', 'b1a3', 'c6c5', 'd8b6', 'e2e4', 'b6b1', 'b6b2', 'e1c1', 'e4e5', 'b2b3', 'e1c1', 'h2h4', 'b3c3', 'e1c1', 'e1e2', 'f7f5', 'e5d6', 'e5f6', 'b8d7', 'a4a7', 'c3d4', 'e2e1', 'e7e5', 'a7a8', 'd4h4', 'e1c1', 'f1a6', 'd7c5', 'a8b7', 'c8b7', 'g2g3', 'e8c8', 'f8d6', 'f2f3', 'e8g8', 'h1h4', 'g8h8', 'a6b7', 'c5a4', 'f6f7', 'f8e8', 'f7e8', 'Q', 'h8g8', 'h8g7', 'h4f4', 'e5e4', 'f4f6', 'e4e3', 'e8e5', 'g7h8', 'f6f8']
     test_game = Game.new(Board.new, list_of_inputs)
     test_game.play_game
-    assert test_game.output_illegal_moves == [2]
+    assert test_game.result.game_end_message == "Congratulations, Peter. That's checkmate! Better luck next time, Chris."
   end
 
-
-
-
-
+  def test_long_game_illegal_moves
+    # skip
+    list_of_inputs = ['Peter', 'Chris', 'd2e3', 'c2c3', 'f8c5', 'g8h6', 'd2d4', 'd7d5', 'd4d5', 'c3c5', 'a1a7', 'c1h6', 'g7h6', 'd1a4', 'c7c5', 'c7c6', 'e1c1', 'b1a3', 'c6c5', 'd8b6', 'e2e4', 'b6b1', 'b6b2', 'e1c1', 'e4e5', 'b2b3', 'e1c1', 'h2h4', 'b3c3', 'e1c1', 'e1e2', 'f7f5', 'e5d6', 'e5f6', 'b8d7', 'a4a7', 'c3d4', 'e2e1', 'e7e5', 'a7a8', 'd4h4', 'e1c1', 'f1a6', 'd7c5', 'a8b7', 'c8b7', 'g2g3', 'e8c8', 'f8d6', 'f2f3', 'e8g8', 'h1h4', 'g8h8', 'a6b7', 'c5a4', 'f6f7', 'f8e8', 'f7e8', 'Q', 'h8g8', 'h8g7', 'h4f4', 'e5e4', 'f4f6', 'e4e3', 'e8e5', 'g7h8', 'f6f8']
+    test_game = Game.new(Board.new, list_of_inputs)
+    test_game.play_game
+    assert test_game.output_illegal_moves == [1, 3, 7, 8, 9, 13, 15, 17, 20, 22, 25, 28, 31, 40, 46, 57]
+  end
 end
