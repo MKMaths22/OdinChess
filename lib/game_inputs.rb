@@ -9,6 +9,6 @@ class GameInputs
 
   def supply_input
     return @inputs_array.shift if @inputs_given
-    @inputs_given ? nil : gets
+    gets unless @inputs_given
   end
 end

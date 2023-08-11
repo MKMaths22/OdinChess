@@ -69,22 +69,17 @@ class Game
   def create_the_players
     puts 'Please input the name of the player with the White pieces. Alternatively, enter "C" for a computer player.'
     input = input_to_use.strip
-    if input.is_a?(Array)
-      self.stop_with_not_enough_inputs = true
-      return
-    end
-    # only if inputs were supplied for Minitest tests but were not sufficient
-
     self.white = make_human_or_computer('White', input)
     self.moving_name = white.name
     puts 'And now input the name of the player playing Black. Or enter "C" for a computer player.'
-    input = input_to_use.strip
-    if input.is_a?(Array)
+    possible_input = input_to_use
+    if possible_input.is_a?(Array)
       self.stop_with_not_enough_inputs = true
       return
     end
     # only if inputs were supplied for Minitest tests but were not sufficient
     
+    input = possible_input.strip
     self.black = make_human_or_computer('Black', input)
     self.not_moving_name = black.name
   end

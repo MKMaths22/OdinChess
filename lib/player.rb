@@ -22,7 +22,7 @@ class Player
 
   def promotion_input
     possible_input = input_to_use
-    return input_to_use.strip.upcase unless input_to_use.is_a?(Array)
+    return possible_input.strip.upcase unless possible_input.is_a?(Array)
     # if inputs supplied ran out, we shall assume promotion to Queen
     'Q'
   end
@@ -47,10 +47,11 @@ class Player
   end
 
   def get_legal_move(board, legal_moves)
-    maybe_move = input_to_use.strip
-    if maybe_move.is_a?(Array)
+    possible_input = input_to_use
+    if possible_input.is_a?(Array)
       return
     end
+    maybe_move = possible_input.strip
     return get_legal_move(board, legal_moves) unless valid_input?(maybe_move)
 
     return 'save' if maybe_move.upcase == 'SAVE'
