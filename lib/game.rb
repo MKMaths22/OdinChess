@@ -41,6 +41,10 @@ class Game
     @illegal_move_count = IllegalMoveCount.new
   end
 
+  def count_illegal_moves
+    @illegal_move_count.report_count
+  end
+
   def input_to_use
     # shifts an input from the beginning of the game_inputs array 
     # or applies uses gets if array is empty
