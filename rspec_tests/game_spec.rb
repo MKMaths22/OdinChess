@@ -25,7 +25,7 @@ describe Game do
     end
 
     context 'the game has been reloaded' do
-      subject(:game) { described_class.new(Board.new, nil, nil, result, 'White', DisplayBoard.new, GenerateLegalMoves.new(Board.new).find_all_legal_moves, true, nil, nil, false)}
+      subject(:game) { described_class.new(Board.new, [], nil, nil, result, 'White', DisplayBoard.new, GenerateLegalMoves.new(Board.new).find_all_legal_moves, true, nil, nil, false)}
       let(:result) { instance_double(Result) }
       it 'calls #name_the_players' do
         expect(subject).to receive(:name_the_players)
@@ -40,7 +40,7 @@ describe Game do
       let(:peter) { instance_double(Player) }
       let(:chris) { instance_double(Player) }
       it 'sets white to be Peter' do
-        allow(subject).to receive(:gets).twice.and_return('Peter', 'Chris')
+        allow(subject).to receive(:input_to_use).twice.and_return('Peter', 'Chris')
         allow(Player).to receive(:new).with('White', 'Peter').and_return(peter)
         allow(Player).to receive(:new).with('Black', 'Chris').and_return(chris)
         allow(subject).to receive(:make_human_or_computer).with('White', 'Peter').and_return(peter)
@@ -51,7 +51,7 @@ describe Game do
         expect(game.instance_variable_get(:@white)).to eq(peter)
       end
       it 'sets black to be Chris' do
-        allow(subject).to receive(:gets).twice.and_return('Peter', 'Chris')
+        allow(subject).to receive(:input_to_use).twice.and_return('Peter', 'Chris')
         allow(Player).to receive(:new).with('White', 'Peter').and_return(peter)
         allow(Player).to receive(:new).with('Black', 'Chris').and_return(chris)
         allow(subject).to receive(:make_human_or_computer).with('White', 'Peter').and_return(peter)
@@ -66,7 +66,7 @@ describe Game do
       let(:peter) { instance_double(Player) }
       let(:computer_black) { instance_double(Computer) }
       it 'sets black to be the computer' do
-        allow(subject).to receive(:gets).twice.and_return('Peter', 'C')
+        allow(subject).to receive(:input_to_use).twice.and_return('Peter', 'C')
         allow(Player).to receive(:new).with('White', 'Peter').and_return(peter)
         allow(Computer).to receive(:new).with('Black').and_return(computer_black)
         allow(subject).to receive(:make_human_or_computer).with('White', 'Peter').and_return(peter)
