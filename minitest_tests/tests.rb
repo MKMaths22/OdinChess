@@ -1,6 +1,6 @@
 #frozen_string_literal: true
 
-require './game.rb'
+require './../lib/game.rb'
 require 'minitest/autorun'
 
 class ChessTest < Minitest::Test
