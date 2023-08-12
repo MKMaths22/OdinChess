@@ -1,11 +1,14 @@
 # frozen-string-literal: true
 
-# IllegalMoveCount class simply keeps count of how many times there has been an illegal move 
-# attempted. This can be good for testing purposes.
+# IllegalMoveCount class keeps track of which moves have been illegal.
+# This is good for testing purposes, in which a GameInputs object feeds moves
+# in to a Game automatically. The two names of non-computer players are inputted
+# first, then all subsequent inputs count 1, 2, 3... as 'moves', except for any inputs
+# such as 'N', 'Q' etc. to choose the piece for promoting a pawn to.
 class IllegalMoveCount
-  
+
   attr_accessor :which_moves_illegal, :total_move_count
-  
+
   def initialize
     @which_moves_illegal = []
     @total_move_count = 0

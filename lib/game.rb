@@ -102,6 +102,8 @@ class Game
     @display_board.show_the_board(board)
     next_move = enter_move_or_save_game
     unless next_move
+      # only scenario in which next_move is nil is if inputs were supplied to the GameInputs
+      # object for testing but we have used them all up.
       self.stop_with_not_enough_inputs = true
       return
     end
